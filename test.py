@@ -18,10 +18,10 @@ from pyqt import FreakingQtImageViewer
 
 def capture():
 	with picamera.array.PiRGBArray(camera) as stream:
-		camera.capture(stream, format='wb')
+		camera.capture(stream, format='rgb')
 		img = stream.array
 		print(img)
-		im = Image.fromarray(img)
+		im = Image.fromarray(img).convert('LA')
 		im.save('./tmp.jpg')
 
 if __name__ == '__main__':
