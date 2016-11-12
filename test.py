@@ -18,7 +18,7 @@ from pyqt import FreakingQtImageViewer
 from skimage.transform import hough_ellipse
 from skimage.filters import roberts, sobel, scharr, prewitt
 
-global WIDTH, HEIGHT = 0
+global WIDTH, HEIGHT
 
 def capture():
 	with picamera.array.PiRGBArray(camera) as stream:
