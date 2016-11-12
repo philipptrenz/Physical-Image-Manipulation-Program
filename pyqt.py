@@ -30,7 +30,7 @@ class FreakingQtImageViewer(QWidget):
         else: 
             self.refresh = False
         
-    def initUI(self, function):      
+    def initUI(self, function):
 
         hbox = QHBoxLayout(self)
         

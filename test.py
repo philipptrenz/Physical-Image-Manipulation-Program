@@ -36,13 +36,12 @@ def capture():
 
 
 if __name__ == '__main__':
-        camera = picamera.PiCamera()
+	camera = picamera.PiCamera()
 
-        app = QApplication(sys.argv)
+	app = QApplication(sys.argv)
 
-        screen_rect = app.desktop().screenGeometry()
-		WIDTH, HEIGHT = screen_rect.width(), screen_rect.height()
+	screen_rect = app.desktop().screenGeometry()
+	WIDTH, HEIGHT = screen_rect.width(), screen_rect.height()
 
-        viewer = FreakingQtImageViewer(capture)
-        sys.exit(app.exec_())
-
+	viewer = FreakingQtImageViewer(capture)
+	sys.exit(app.exec_())
