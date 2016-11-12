@@ -15,6 +15,9 @@ from PIL import Image
 from PyQt5.QtWidgets import QApplication
 from pyqt import FreakingQtImageViewer
 
+from skimage.transform import hough_ellipse
+from skimage.filters import roberts, sobel, scharr, prewitt
+
 
 def capture():
 	with picamera.array.PiRGBArray(camera) as stream:
@@ -23,6 +26,13 @@ def capture():
 		print(img)
 		im = Image.fromarray(img).convert('LA')
 		im.save('./tmp.png')
+
+		result = hough_ellipse(im, min_size=15, max_size=90)
+		print('detected')
+		result.tolist()
+		print(result)
+
+
 
 if __name__ == '__main__':
         camera = picamera.PiCamera()
