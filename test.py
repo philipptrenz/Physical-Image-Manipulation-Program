@@ -18,7 +18,7 @@ from pyqt import FreakingQtImageViewer
 
 def capture():
 	with picamera.array.PiRGBArray(camera) as stream:
-		camera.capture(stream, format='rgb')
+		camera.capture(stream, format='wb')
 		img = stream.array
 		print(img)
 		im = Image.fromarray(img)
