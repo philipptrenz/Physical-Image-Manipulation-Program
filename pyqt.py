@@ -19,7 +19,7 @@ class FreakingQtImageViewer(QWidget):
         self.function()
         
         pixmap = QPixmap("tmp.jpg")
-        pixmap = pixmap.scaledToWidth(1280)
+        pixmap = pixmap.scaledToWidth(800)
         self.lbl.setPixmap(pixmap)
         
     def initUI(self, function):      
