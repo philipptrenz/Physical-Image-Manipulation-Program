@@ -22,7 +22,7 @@ def capture():
 		img = stream.array
 		print(img)
 		im = Image.fromarray(img).convert('LA')
-		im.save('./tmp.jpg')
+		im.save('./tmp.png')
 
 if __name__ == '__main__':
         camera = picamera.PiCamera()

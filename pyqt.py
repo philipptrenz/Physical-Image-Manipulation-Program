@@ -18,7 +18,7 @@ class FreakingQtImageViewer(QWidget):
     def refresh(self):
         self.function()
         
-        pixmap = QPixmap("tmp.jpg")
+        pixmap = QPixmap("tmp.png")
         pixmap = pixmap.scaledToWidth(800)
         self.lbl.setPixmap(pixmap)
         
