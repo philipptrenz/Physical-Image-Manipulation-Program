@@ -18,7 +18,7 @@ class FreakingQtImageViewer(QWidget):
     
       
     def refresh(self):
-        if !self.refresh:
+        if not self.refresh:
             self.refresh = True
             while self.refresh:
                 self.function()

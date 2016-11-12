@@ -18,6 +18,7 @@ from pyqt import FreakingQtImageViewer
 from skimage.transform import hough_ellipse
 from skimage.filters import roberts, sobel, scharr, prewitt
 
+global WIDTH, HEIGHT = 0
 
 def capture():
 	with picamera.array.PiRGBArray(camera) as stream:
@@ -38,6 +39,10 @@ if __name__ == '__main__':
         camera = picamera.PiCamera()
 
         app = QApplication(sys.argv)
+
+        screen_rect = app.desktop().screenGeometry()
+		WIDTH, HEIGHT = screen_rect.width(), screen_rect.height()
+
         viewer = FreakingQtImageViewer(capture)
         sys.exit(app.exec_())
 
