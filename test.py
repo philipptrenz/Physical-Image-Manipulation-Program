@@ -75,7 +75,7 @@ def circle_detection(rgb_img):
 	scipy.misc.imsave('outfile.jpg', edges)
 	print('edges')
 	# Detect two radii
-	hough_radii = numpy.arange(30, 80, 1)
+	hough_radii = numpy.arange(30, 70, 1)
 	hough_res = hough_circle(edges, hough_radii)
 	print('hough_circle finished')
 	centers = []
@@ -85,7 +85,7 @@ def circle_detection(rgb_img):
 
 	for radius, h in zip(hough_radii, hough_res):
 		# For each radius, extract two circles
-		num_peaks = 2
+		num_peaks = 8
 		peaks = peak_local_max(h, num_peaks=num_peaks)
 		count = count + 1
 		print('peak_local_max finished ', count)
