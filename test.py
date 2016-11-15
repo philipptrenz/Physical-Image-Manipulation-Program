@@ -16,7 +16,8 @@ from PIL import Image
 from PyQt5.QtWidgets import QApplication
 from pyqt import FreakingQtImageViewer
 
-#from skimage import data, color
+#from skimage import color
+from slimage import data
 from skimage.feature import canny
 from skimage.transform import hough_ellipse
 from skimage.draw import ellipse_perimeter
@@ -31,7 +32,7 @@ def rgb2gray(rgb_img):
 def ellipseDetection(rgb_img):
 	# copy picture, convert to grayscale and detect edges
 	image_rgb = numpy.array(rgb_img, copy=True)
-	image_gray = color.rgb2gray(image_rgb)
+	image_gray = rgb2gray(image_rgb)
 	edges = canny(image_gray, sigma=2.0, low_threshold=0.55, high_threshold=0.8)
 	# Perform a Hough Transform
 	# The accuracy corresponds to the bin size of a major axis.
@@ -62,7 +63,7 @@ def capture():
 
 		#original_img = numpy.array(img, copy=True)
 		#gray_img = rgb2gray(img)
-		#ellipseDetection(img)
+		ellipseDetection(img)
 
 	#result = hough_ellipse(gray_img, min_size=15, max_size=90)
 	#print('detected')

@@ -2,7 +2,7 @@
 
 import sys
 import time
-from PyQt5.QtWidgets import (QWidget, QHBoxLayout, 
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, 
     QLabel, QApplication, QPushButton)
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QObject
@@ -38,7 +38,7 @@ class FreakingQtImageViewer(QWidget):
 
     def initUI(self, function):
 
-        hbox = QHBoxLayout(self)
+        hbox = QVBoxLayout(self)
 
         self.lbl = QLabel(self)
 
