@@ -32,14 +32,19 @@ def rgb2gray(rgb_img):
 def ellipseDetection(rgb_img):
 	# copy picture, convert to grayscale and detect edges
 	image_rgb = numpy.array(rgb_img, copy=True)
+	print('new image')
 	image_gray = rgb2gray(image_rgb)
+	print('gray image')
 	edges = canny(image_gray, sigma=2.0, low_threshold=0.55, high_threshold=0.8)
+	print('edges')
 	# Perform a Hough Transform
 	# The accuracy corresponds to the bin size of a major axis.
 	# The value is chosen in order to get a single high accumulator.
 	# The threshold eliminates low accumulators
 	result = hough_ellipse(edges, accuracy=20, threshold=250, min_size=100, max_size=120)
+	print('ellipses')
 	result.sort(order='accumulator')
+	print('sorted')
 	print(result)
 
 	# Estimated parameters for the ellipse
