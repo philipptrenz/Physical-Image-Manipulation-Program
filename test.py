@@ -89,7 +89,7 @@ def circle_detection(rgb_img):
 	    centers.extend(peaks)
 	    accums.extend(h[peaks[:, 0], peaks[:, 1]]) # wie 'gut' ??
 	    radii.extend([radius] * num_peaks)
-	print('loop 1')
+	print('loop 1 %d',len(accums))
 
 	for idx in numpy.argsort(accums)[::-1][:20]: # nach quali sortieren (beste 10)
 	    center_x, center_y = centers[idx]
