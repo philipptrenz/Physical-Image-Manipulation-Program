@@ -22,7 +22,7 @@ from skimage.filters import roberts, sobel, scharr, prewitt
 global WIDTH, HEIGHT
 
 def rgb2gray(rgb_img):
-	gray_img = array()
+	gray_img = []
 	numpy.dot(rgb_img[...,:3],[0.2989,0.5870,0.1140], gray_img)
 	return gray_img
 
