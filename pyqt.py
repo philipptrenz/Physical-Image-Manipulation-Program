@@ -12,7 +12,7 @@ import threading
 class FreakingQtImageViewer(QWidget):
 
 
-    def refresh_thread():
+    def refresh_thread(self):
         while self.running:
             self.function()
 
