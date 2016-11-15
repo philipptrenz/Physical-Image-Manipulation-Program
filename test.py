@@ -15,8 +15,8 @@ from PIL import Image
 from PyQt5.QtWidgets import QApplication
 from pyqt import FreakingQtImageViewer
 
-#from skimage.transform import hough_ellipse
-#from skimage.filters import roberts, sobel, scharr, prewitt
+from skimage.transform import hough_ellipse
+from skimage.filters import roberts, sobel, scharr, prewitt
 
 global WIDTH, HEIGHT
 
