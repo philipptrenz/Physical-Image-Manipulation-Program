@@ -71,7 +71,7 @@ def circle_detection(rgb_img):
 	print('new image')
 	image_gray = rgb2gray(image_rgb)
 	print('gray image')
-	edges = canny(image_gray, sigma=20.0, low_threshold=0.55, high_threshold=0.8)
+	edges = canny(image_gray, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
 	scipy.misc.imsave('outfile.jpg', edges)
 	print('edges')
 	# Detect two radii
