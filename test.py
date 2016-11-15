@@ -25,7 +25,7 @@ def capture():
 		camera.capture(stream, format='rgb')
 		img = stream.array
 		print(img)
-		#im = Image.fromarray(img).convert('LA')
+		im = Image.fromarray(img)#.convert('LA')
 		im.save('./tmp.png')
 
 		#result = hough_ellipse(im, min_size=15, max_size=90)
