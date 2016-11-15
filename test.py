@@ -22,15 +22,14 @@ from skimage.filters import roberts, sobel, scharr, prewitt
 global WIDTH, HEIGHT
 
 def rgb2gray(rgb_img):
-	gray_img = []
-	numpy.dot(rgb_img[...,:3],[0.2989,0.5870,0.1140], gray_img)
-	return gray_img
+	return numpy.dot(rgb_img[...,:3],[0.2989,0.5870,0.1140])
 
 def capture():
 	with picamera.array.PiRGBArray(camera) as stream:
 		camera.capture(stream, format='rgb')
 		img = stream.array
 	im = Image.fromarray(img)#.convert('LA')
+	original_img = numpy.array(img, copy=True)
 	gray_img = rgb2gray(img)
 	im.save('./tmp.png')
 
