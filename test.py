@@ -86,10 +86,14 @@ def circle_detection(rgb_img):
 	    # For each radius, extract two circles
 	    num_peaks = 2
 	    peaks = peak_local_max(h, num_peaks=num_peaks)
+		print('peak_local_max finished')
 	    centers.extend(peaks)
+		print('extend1')
 	    accums.extend(h[peaks[:, 0], peaks[:, 1]]) # wie 'gut' ??
+		print('extend2')
 	    radii.extend([radius] * num_peaks)
-	print('loop 1 %d',len(accums))
+		print('extend3')
+	print('loop 1 ',len(accums))
 
 	for idx in numpy.argsort(accums)[::-1][:20]: # nach quali sortieren (beste 10)
 	    center_x, center_y = centers[idx]
