@@ -10,52 +10,52 @@ import threading
 
 
 class FreakingQtImageViewer(QWidget):
-    
+
     def __init__(self, function):
         super().__init__()
         self.function = function
         self.initUI(function)
         self.running = False
         self.thread = threading.Thread(name='refresh_image', target=refresh_thread)
-        
-        
+
+
     def refresh(self):
-       if not self.running:
-        self.running = True
-        self.thread.start()
-    else:
-        self.running = False
+        if not self.running:
+            self.running = True
+            self.thread.start()
+        else:
+            self.running = False
 
 
     def refresh_thread():
         while self.running:
             self.function()
-            
+
             pixmap = QPixmap("tmp.png")
             pixmap = pixmap.scaledToWidth(800)
             self.lbl.setPixmap(pixmap)
             time.sleep(0.5)
-                    
+
     def initUI(self, function):
 
         hbox = QHBoxLayout(self)
-        
+
         self.lbl = QLabel(self)
         self.refresh()
-        
+
         btn = QPushButton(self)
         btn.setText('Drück mich')
         btn.clicked.connect(self.refresh)
-        
+
         hbox.addWidget(self.lbl)
         hbox.addWidget(btn)
         self.setLayout(hbox)
-        
+
         self.move(300, 200)
         self.setWindowTitle('Freaking Qt Image Viewer')
         self.show()
 
 
-                        
-                        
+
+
 
