@@ -63,7 +63,7 @@ def capture():
 
 		#original_img = numpy.array(img, copy=True)
 		#gray_img = rgb2gray(img)
-		ellipseDetection(img)
+		#ellipseDetection(img)
 
 	#result = hough_ellipse(gray_img, min_size=15, max_size=90)
 	#print('detected')
