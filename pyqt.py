@@ -11,6 +11,16 @@ import threading
 
 class FreakingQtImageViewer(QWidget):
 
+
+    def refresh_thread():
+        while self.running:
+            self.function()
+
+            pixmap = QPixmap("tmp.png")
+            pixmap = pixmap.scaledToWidth(800)
+            self.lbl.setPixmap(pixmap)
+            time.sleep(0.5)
+
     def __init__(self, function):
         super().__init__()
         self.function = function
@@ -25,16 +35,6 @@ class FreakingQtImageViewer(QWidget):
             self.thread.start()
         else:
             self.running = False
-
-
-    def refresh_thread():
-        while self.running:
-            self.function()
-
-            pixmap = QPixmap("tmp.png")
-            pixmap = pixmap.scaledToWidth(800)
-            self.lbl.setPixmap(pixmap)
-            time.sleep(0.5)
 
     def initUI(self, function):
 
