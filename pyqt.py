@@ -14,8 +14,8 @@ class FreakingQtImageViewer(QWidget):
     def __init__(self, function):
         super().__init__()
         self.function = function
-        self.initUI(function)
         self.running = False
+        self.initUI(function)
         self.thread = threading.Thread(name='refresh_image', target=refresh_thread)
 
 
