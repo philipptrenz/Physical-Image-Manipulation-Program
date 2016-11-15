@@ -21,9 +21,8 @@ from skimage.filters import roberts, sobel, scharr, prewitt
 
 global WIDTH, HEIGHT
 
-'''def rgb2gray(rgb_img):
-	r,g,b = rgb_img[:,:,0],rgb_img[:,:,1],rgb_img[:,:,2]
-	return r * 0.2989 + g * 0.5870 + b * 0.1140'''
+def rgb2gray(rgb_img):
+	return numpy.dot(rgb_img[...,:3],[0.2989,0.5870,0.1140])
 
 def capture():
 	with picamera.array.PiRGBArray(camera) as stream:
