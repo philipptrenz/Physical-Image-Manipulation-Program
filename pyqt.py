@@ -19,18 +19,18 @@ class FreakingQtImageViewer(QWidget):
             pixmap = QPixmap("tmp.png")
             pixmap = pixmap.scaledToWidth(800)
             self.lbl.setPixmap(pixmap)
-            time.sleep(0.5)
+            time.sleep(0.1)
 
     def __init__(self, function):
         super().__init__()
         self.function = function
         self.running = False
-        self.thread = threading.Thread(name='refresh_image', target=self.refresh_thread)
         self.initUI(function)
 
 
     def refresh(self):
         if not self.running:
+            self.thread = threading.Thread(name='refresh_image', target=self.refresh_thread)
             self.running = True
             self.thread.start()
         else:
@@ -41,7 +41,6 @@ class FreakingQtImageViewer(QWidget):
         hbox = QHBoxLayout(self)
 
         self.lbl = QLabel(self)
-        self.refresh()
 
         btn = QPushButton(self)
         btn.setText('Drück mich')
