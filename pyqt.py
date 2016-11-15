@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (QWidget, QHBoxLayout,
     QLabel, QApplication, QPushButton)
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QObject
+import threading
 
 
 class FreakingQtImageViewer(QWidget):
@@ -14,21 +15,26 @@ class FreakingQtImageViewer(QWidget):
         super().__init__()
         self.function = function
         self.initUI(function)
-        self.refresh = False
+        self.running = False
+        self.thread = threading.Thread(name='refresh_image', target=refresh_thread)
     
       
     def refresh(self):
-        if not self.refresh:
-            self.refresh = True
-            while self.refresh:
+	if not self.running:
+            self.running = True
+	    self.thread.start()
+        else:
+            self.running = False
+
+
+    def refresh_thread():
+        while self.running:
                 self.function()
                 
                 pixmap = QPixmap("tmp.png")
                 pixmap = pixmap.scaledToWidth(800)
                 self.lbl.setPixmap(pixmap)
                 time.sleep(0.5)
-        else: 
-            self.refresh = False
         
     def initUI(self, function):
 
