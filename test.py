@@ -27,7 +27,7 @@ def capture():
 		im = Image.fromarray(img)#.convert('LA')
 		im.save('./tmp.png')
 
-		result = hough_ellipse(im, min_size=15, max_size=90)
+		result = hough_ellipse(img, min_size=15, max_size=90)
 		print('detected')
 		result.tolist()
 		print(result)
