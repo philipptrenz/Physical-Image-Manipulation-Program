@@ -37,8 +37,7 @@ def ellipseDetection(rgb_img):
 	# The accuracy corresponds to the bin size of a major axis.
 	# The value is chosen in order to get a single high accumulator.
 	# The threshold eliminates low accumulators
-	result = hough_ellipse(edges, accuracy=20, threshold=250,
-	                       min_size=100, max_size=120)
+	result = hough_ellipse(edges, accuracy=20, threshold=250, min_size=100, max_size=120)
 	result.sort(order='accumulator')
 	print(result)
 
@@ -59,7 +58,6 @@ def capture():
 		camera.capture(stream, format='rgb')
 		img = stream.array
 		im = Image.fromarray(img)#.convert('LA')
-
 		im.save('./tmp.png')
 
 		#original_img = numpy.array(img, copy=True)
