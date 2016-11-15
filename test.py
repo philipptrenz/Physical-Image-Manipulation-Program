@@ -23,6 +23,9 @@ from skimage.transform import hough_ellipse
 from skimage.draw import ellipse_perimeter
 
 from skimage.transform import hough_circle
+from skimage.feature import peak_local_max
+from skimage.draw import circle_perimeter
+from skimage.util import img_as_ubyte
 
 
 global WIDTH, HEIGHT
@@ -69,21 +72,40 @@ def circle_detection(rgb_img):
 	edges = canny(image_gray, sigma=2.0, low_threshold=0.55, high_threshold=0.8)
 	print('edges')
 	# Detect two radii
-	hough_radii = numpy.arange(15, 30, 2)
+	hough_radii = numpy.arange(20, 200, 2)
 	hough_res = hough_circle(edges, hough_radii)
+	print('detection finished')
+	centers = []
+	accums = []
+	radii = []
+
+	for radius, h in zip(hough_radii, hough_res):
+	    # For each radius, extract two circles
+	    num_peaks = 2
+	    peaks = peak_local_max(h, num_peaks=num_peaks)
+	    centers.extend(peaks)
+	    accums.extend(h[peaks[:, 0], peaks[:, 1]])
+	    radii.extend([radius] * num_peaks)
+
+	for idx in numpy.argsort(accums)[::-1][:5]:
+	    center_x, center_y = centers[idx]
+	    radius = radii[idx]
+	    cx, cy = circle_perimeter(center_y, center_x, radius)
+	    image_rgb[cy, cx] = (220, 20, 20)
 	print('done')
+	return image_rgb
 
 def capture():
 	with picamera.array.PiRGBArray(camera) as stream:
 		camera.capture(stream, format='rgb')
 		img = stream.array
+		img = circle_detection(img)
 		im = Image.fromarray(img)#.convert('LA')
 		im.save('./tmp.png')
 
 		#original_img = numpy.array(img, copy=True)
 		#gray_img = rgb2gray(img)
 		#ellipseDetection(img)
-		circle_detection(img)
 
 	#result = hough_ellipse(gray_img, min_size=15, max_size=90)
 	#print('detected')
