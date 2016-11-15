@@ -30,7 +30,7 @@ def capture():
 		camera.capture(stream, format='rgb')
 		img = stream.array
 		im = Image.fromarray(img)#.convert('LA')
-		grayscale = rgb2gray(img)
+		grayscale = matplotlib.rgb2gray(img)
 		im.save('./tmp.png')
 
 		result = hough_ellipse(img, min_size=15, max_size=90)
