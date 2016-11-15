@@ -17,25 +17,25 @@ class FreakingQtImageViewer(QWidget):
         self.initUI(function)
         self.running = False
         self.thread = threading.Thread(name='refresh_image', target=refresh_thread)
-    
-      
+        
+        
     def refresh(self):
-	if not self.running:
-            self.running = True
-	    self.thread.start()
-        else:
-            self.running = False
+       if not self.running:
+        self.running = True
+        self.thread.start()
+    else:
+        self.running = False
 
 
     def refresh_thread():
         while self.running:
-                self.function()
-                
-                pixmap = QPixmap("tmp.png")
-                pixmap = pixmap.scaledToWidth(800)
-                self.lbl.setPixmap(pixmap)
-                time.sleep(0.5)
-        
+            self.function()
+            
+            pixmap = QPixmap("tmp.png")
+            pixmap = pixmap.scaledToWidth(800)
+            self.lbl.setPixmap(pixmap)
+            time.sleep(0.5)
+                    
     def initUI(self, function):
 
         hbox = QHBoxLayout(self)
@@ -56,6 +56,6 @@ class FreakingQtImageViewer(QWidget):
         self.show()
 
 
-        
-        
+                        
+                        
 
