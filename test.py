@@ -90,6 +90,7 @@ def circle_detection(rgb_img):
 	for idx in numpy.argsort(accums)[::-1][:5]:
 	    center_x, center_y = centers[idx]
 	    radius = radii[idx]
+	    print('radius: ' + str(radius))
 	    cx, cy = circle_perimeter(center_y, center_x, radius)
 	    image_rgb[cy, cx] = (220, 20, 20)
 	print('done')
