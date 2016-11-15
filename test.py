@@ -16,7 +16,7 @@ from PIL import Image
 from PyQt5.QtWidgets import QApplication
 from pyqt import FreakingQtImageViewer
 
-from skimage import data, color
+#from skimage import data, color
 from skimage.feature import canny
 from skimage.transform import hough_ellipse
 from skimage.draw import ellipse_perimeter
