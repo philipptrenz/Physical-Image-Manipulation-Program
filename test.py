@@ -24,14 +24,13 @@ def capture():
 	with picamera.array.PiRGBArray(camera) as stream:
 		camera.capture(stream, format='rgb')
 		img = stream.array
-		print(img)
 		im = Image.fromarray(img)#.convert('LA')
 		im.save('./tmp.png')
 
-		#result = hough_ellipse(im, min_size=15, max_size=90)
-		#print('detected')
-		#result.tolist()
-		#print(result)
+		result = hough_ellipse(im, min_size=15, max_size=90)
+		print('detected')
+		result.tolist()
+		print(result)
 
 
 
