@@ -43,7 +43,6 @@ def ellipseDetection(rgb_img):
 	image_gray = rgb2gray(image_rgb)
 	print('gray image')
 	edges = canny(image_gray, sigma=2.0, low_threshold=0.55, high_threshold=0.8)
-	scipy.misc.imsave('outfile.jpg', edges)
 	print('edges')
 	# Perform a Hough Transform
 	# The accuracy corresponds to the bin size of a major axis.
@@ -73,7 +72,7 @@ def circle_detection(rgb_img):
 	image_gray = rgb2gray(image_rgb)
 	print('gray image')
 	edges = canny(image_gray, sigma=2.0, low_threshold=0.55, high_threshold=0.8)
-	edges.save('./canny.png')
+	scipy.misc.imsave('outfile.jpg', edges)
 	print('edges')
 	# Detect two radii
 	hough_radii = numpy.arange(45, 60, 1)
