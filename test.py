@@ -70,8 +70,7 @@ def circle_detection(rgb_img):
 	image_gray = rgb2gray(image_rgb)
 	print('gray image')
 	edges = canny(image_gray, sigma=2.0, low_threshold=0.55, high_threshold=0.8)
-	can = Image.fromarray(edges)
-	can.save('./canny.png')
+	edges.save('./canny.png')
 	print('edges')
 	# Detect two radii
 	hough_radii = numpy.arange(45, 60, 1)
