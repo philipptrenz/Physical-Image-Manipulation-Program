@@ -81,12 +81,14 @@ def circle_detection(rgb_img):
 	centers = []
 	accums = []
 	radii = []
+	count = 0
 
 	for radius, h in zip(hough_radii, hough_res):
 		# For each radius, extract two circles
 		num_peaks = 2
 		peaks = peak_local_max(h, num_peaks=num_peaks)
-		print('peak_local_max finished')
+		count = count + 1
+		print('peak_local_max finished ', count)
 		centers.extend(peaks)
 		print('extend1')
 		accums.extend(h[peaks[:, 0], peaks[:, 1]]) # wie 'gut' ??
@@ -101,7 +103,7 @@ def circle_detection(rgb_img):
 		print('radius: ' + str(radius))
 		cx, cy = circle_perimeter(center_y, center_x, radius)
 		image_rgb[cy, cx] = (220, 20, 20)
-		print('done')
+	print('done')
 	return image_rgb
 
 def capture():
