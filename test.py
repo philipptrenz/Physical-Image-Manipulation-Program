@@ -10,6 +10,7 @@ from time import sleep
 
 import numpy
 import picamera.array
+import matplotlib
 from PIL import Image
 
 from PyQt5.QtWidgets import QApplication
@@ -20,19 +21,22 @@ from skimage.filters import roberts, sobel, scharr, prewitt
 
 global WIDTH, HEIGHT
 
+'''def rgb2gray(rgb_img):
+	r,g,b = rgb_img[:,:,0],rgb_img[:,:,1],rgb_img[:,:,2]
+	return r * 0.2989 + g * 0.5870 + b * 0.1140'''
+
 def capture():
 	with picamera.array.PiRGBArray(camera) as stream:
 		camera.capture(stream, format='rgb')
 		img = stream.array
 		im = Image.fromarray(img)#.convert('LA')
+		grayscale = rgb2gray(img)
 		im.save('./tmp.png')
 
 		result = hough_ellipse(img, min_size=15, max_size=90)
 		print('detected')
 		result.tolist()
 		print(result)
-
-
 
 if __name__ == '__main__':
 	camera = picamera.PiCamera()
