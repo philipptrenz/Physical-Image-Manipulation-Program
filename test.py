@@ -42,9 +42,9 @@ def ellipseDetection(rgb_img):
 	print(result)
 
 	# Estimated parameters for the ellipse
-	best = list(result[-1])
-	yc, xc, a, b = [int(round(x)) for x in best[1:5]]
-	orientation = best[5]
+	#best = list(result[-1])
+	#yc, xc, a, b = [int(round(x)) for x in best[1:5]]
+	#orientation = best[5]
 	"""
 	# Draw the ellipse on the original image
 	cy, cx = ellipse_perimeter(yc, xc, a, b, orientation)
@@ -64,10 +64,10 @@ def capture():
 		#gray_img = rgb2gray(img)
 		ellipseDetection(img)
 
-	result = hough_ellipse(gray_img, min_size=15, max_size=90)
-	print('detected')
-	result.tolist()
-	print(result)
+	#result = hough_ellipse(gray_img, min_size=15, max_size=90)
+	#print('detected')
+	#result.tolist()
+	#print(result)
 
 if __name__ == '__main__':
 	camera = picamera.PiCamera()
