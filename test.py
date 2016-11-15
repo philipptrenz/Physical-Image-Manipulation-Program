@@ -42,7 +42,7 @@ def ellipseDetection(rgb_img):
 	print('new image')
 	image_gray = rgb2gray(image_rgb)
 	print('gray image')
-	edges = canny(image_gray, sigma=2.0, low_threshold=0.55, high_threshold=0.8)
+	edges = canny(image_gray, sigma=2.0, low_threshold=10, high_threshold=50)
 	print('edges')
 	# Perform a Hough Transform
 	# The accuracy corresponds to the bin size of a major axis.
