@@ -69,7 +69,7 @@ def circle_detection(rgb_img):
 	edges = canny(image_gray, sigma=2.0, low_threshold=0.55, high_threshold=0.8)
 	print('edges')
 	# Detect two radii
-	hough_radii = np.arange(15, 30, 2)
+	hough_radii = numpy.arange(15, 30, 2)
 	hough_res = hough_circle(edges, hough_radii)
 	print('done')
 
@@ -84,7 +84,7 @@ def capture():
 		#gray_img = rgb2gray(img)
 		#ellipseDetection(img)
 		circle_detection(img)
-		
+
 	#result = hough_ellipse(gray_img, min_size=15, max_size=90)
 	#print('detected')
 	#result.tolist()
