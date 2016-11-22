@@ -80,7 +80,7 @@ def circle_detection(rgb_img, edgesAlready=False):
 		print('radius: ' + str(radius))
 		cx, cy = circle_perimeter(center_y, center_x, radius)
 		if edgesAlready:
-			image_rgb[cy, cx] = 100
+			image_rgb[cy, cx] = 50
 		else: 
 			image_rgb[cy, cx] = (220, 20, 20)
 	print('done')
