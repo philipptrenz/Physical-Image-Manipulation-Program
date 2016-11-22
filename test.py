@@ -35,14 +35,18 @@ global WIDTH, HEIGHT
 def rgb2gray(rgb_img):
 	return numpy.dot(rgb_img[...,:3],[0.2989,0.5870,0.1140])
 
-def circle_detection(rgb_img):
-	image_rgb = numpy.array(rgb_img, copy=True)
-	print('new image')
-	image_gray = rgb2gray(image_rgb)
-	print('gray image')
-	edges = canny(image_gray, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
-	scipy.misc.imsave('outfile.jpg', edges)
-	print('edges')
+def circle_detection(rgb_img, edgesAlready=False):
+	if not edgesAlready:
+		image_rgb = numpy.array(rgb_img, copy=True)
+		print('new image')
+		image_gray = rgb2gray(image_rgb)
+		print('gray image')
+		edges = canny(image_gray, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
+		scipy.misc.imsave('outfile.jpg', edges)
+		print('edges')
+	else:
+		edges = rgb_img
+		image_rgb = edges
 	# Detect two radii
 	hough_radii = numpy.arange(45, 60, 1) # Ellipsen - Radius
 	hough_res = hough_circle(edges, hough_radii) # gibt für jeden index (radius) koordinaten
@@ -80,13 +84,19 @@ def circle_detection(rgb_img):
 	print('done')
 	return image_rgb
 
-def capture():
-	with picamera.array.PiRGBArray(camera) as stream:
-		camera.capture(stream, format='rgb')
-		img = stream.array
-		img = circle_detection(img)
-		im = Image.fromarray(img) #.convert('LA')
-		im.save('./tmp.png')
+def capture(cam):
+	if cam:
+		with picamera.array.PiRGBArray(camera) as stream:
+			camera.capture(stream, format='rgb')
+			img = circle_detection(img)
+			im = Image.fromarray(img) #.convert('LA')
+			im.save('./tmp.png')
+	else:
+			img = numpy.asarray(Image.open("./outfile.jpg"))
+			img = circle_detection(img, True)
+			im = Image.fromarray(img) #.convert('LA')
+			im.save('./tmp.png')
+		
 
 if __name__ == '__main__':
 	camera = picamera.PiCamera()

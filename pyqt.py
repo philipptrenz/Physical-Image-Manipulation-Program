@@ -11,6 +11,7 @@ import threading
 
 class FreakingQtImageViewer(QWidget):
 
+	cam = 1
 
 	def refresh_thread(self):
 		while self.running:
@@ -28,7 +29,17 @@ class FreakingQtImageViewer(QWidget):
 		self.initUI(function)
 
 
-	def refresh(self):
+	def refreshCam(self):
+	cam = 1
+		if not self.running:
+			self.thread = threading.Thread(name='refresh_image', target=self.refresh_thread)
+			self.running = True
+			self.thread.start()
+		else:
+			self.running = False
+
+	def refreshFile(self):
+		cam = 0
 		if not self.running:
 			self.thread = threading.Thread(name='refresh_image', target=self.refresh_thread)
 			self.running = True
@@ -43,11 +54,16 @@ class FreakingQtImageViewer(QWidget):
 		self.lbl = QLabel(self)
 
 		btn = QPushButton(self)
-		btn.setText('Drück mich')
-		btn.clicked.connect(self.refresh)
+		btn.setText('Kamera')
+		btn.clicked.connect(self.refreshCam)
+		
+		btn2 = QPushButton(self)
+		btn2.setText('Datei')
+		btn2.clicked.connect(self.refreshFile)
 
 		hbox.addWidget(self.lbl)
 		hbox.addWidget(btn)
+		hbox.addWidget(btn2)
 		self.setLayout(hbox)
 
 		self.move(300, 200)
