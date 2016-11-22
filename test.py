@@ -44,7 +44,7 @@ def circle_detection(rgb_img):
 	scipy.misc.imsave('outfile.jpg', edges)
 	print('edges')
 	# Detect two radii
-	hough_radii = numpy.arange(40, 70, 1)
+	hough_radii = numpy.arange(45, 60, 1) # Ellipsen - Radius
 	hough_res = hough_circle(edges, hough_radii)
 	print('hough_circle finished')
 	centers = []
@@ -82,15 +82,6 @@ def capture():
 		img = circle_detection(img)
 		im = Image.fromarray(img)#.convert('LA')
 		im.save('./tmp.png')
-
-		#original_img = numpy.array(img, copy=True)
-		#gray_img = rgb2gray(img)
-		#ellipseDetection(img)
-
-	#result = hough_ellipse(gray_img, min_size=15, max_size=90)
-	#print('detected')
-	#result.tolist()
-	#print(result)
 
 if __name__ == '__main__':
 	camera = picamera.PiCamera()
