@@ -11,11 +11,10 @@ import threading
 
 class FreakingQtImageViewer(QWidget):
 
-	cam = 1
 
 	def refresh_thread(self):
 		while self.running:
-			self.function()
+			self.function(self.cam)
 
 			pixmap = QPixmap("tmp.png")
 			pixmap = pixmap.scaledToWidth(800)
@@ -24,13 +23,14 @@ class FreakingQtImageViewer(QWidget):
 
 	def __init__(self, function):
 		super().__init__()
+		self.cam = 1
 		self.function = function
 		self.running = False
 		self.initUI(function)
 
 
 	def refreshCam(self):
-	cam = 1
+		self.cam = 1
 		if not self.running:
 			self.thread = threading.Thread(name='refresh_image', target=self.refresh_thread)
 			self.running = True
@@ -39,7 +39,7 @@ class FreakingQtImageViewer(QWidget):
 			self.running = False
 
 	def refreshFile(self):
-		cam = 0
+		self.cam = 0
 		if not self.running:
 			self.thread = threading.Thread(name='refresh_image', target=self.refresh_thread)
 			self.running = True
