@@ -3,13 +3,11 @@
 import sys
 import io
 import os
-import picamera
 
 import time
 from time import sleep
 
 import numpy
-import picamera.array
 import matplotlib
 from PIL import Image
 
@@ -88,6 +86,9 @@ def circle_detection(rgb_img, edgesAlready=False):
 
 def capture(cam):
 	if cam:
+		import picamera
+		import picamera.array
+		camera = picamera.PiCamera()
 		with picamera.array.PiRGBArray(camera) as stream:
 			camera.capture(stream, format='rgb')
 			img = stream.array
@@ -102,7 +103,6 @@ def capture(cam):
 		
 
 if __name__ == '__main__':
-	camera = picamera.PiCamera()
 
 	app = QApplication(sys.argv)
 
