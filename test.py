@@ -47,11 +47,13 @@ def circle_detection(rgb_img):
 	hough_radii = numpy.arange(45, 60, 1) # Ellipsen - Radius
 	hough_res = hough_circle(edges, hough_radii) # gibt für jeden index (radius) koordinaten
 	print('hough_circle finished')
+	for radius, coords in hough_res:
+		print('Rad: ', radius, " ->", coords)
 	centers = []
 	accums = []
 	radii = []
 	count = 0
-	num_peaks = 2
+	num_peaks = 8
 
 	for radius, h in zip(hough_radii, hough_res): # iterieren durch circles (h)
 		# For each radius, extract two circles
