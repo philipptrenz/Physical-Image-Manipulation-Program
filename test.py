@@ -95,6 +95,7 @@ def capture(cam):
 			img = circle_detection(img)
 			im = Image.fromarray(img) #.convert('LA')
 			im.save('./tmp.png')
+			camera.close()
 	else:
 			img = numpy.asarray(Image.open("./outfile.jpg"))
 			img = circle_detection(img, True)
