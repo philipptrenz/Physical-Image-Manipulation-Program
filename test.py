@@ -88,6 +88,7 @@ def capture(cam):
 	if cam:
 		with picamera.array.PiRGBArray(camera) as stream:
 			camera.capture(stream, format='rgb')
+			img = stream.array
 			img = circle_detection(img)
 			im = Image.fromarray(img) #.convert('LA')
 			im.save('./tmp.png')
