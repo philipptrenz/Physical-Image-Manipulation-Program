@@ -35,37 +35,6 @@ global WIDTH, HEIGHT
 def rgb2gray(rgb_img):
 	return numpy.dot(rgb_img[...,:3],[0.2989,0.5870,0.1140])
 
-
-def ellipseDetection(rgb_img):
-	# copy picture, convert to grayscale and detect edges
-	image_rgb = numpy.array(rgb_img, copy=True)
-	print('new image')
-	image_gray = rgb2gray(image_rgb)
-	print('gray image')
-	edges = canny(image_gray, sigma=2.0, low_threshold=10, high_threshold=50)
-	print('edges')
-	# Perform a Hough Transform
-	# The accuracy corresponds to the bin size of a major axis.
-	# The value is chosen in order to get a single high accumulator.
-	# The threshold eliminates low accumulators
-	result = hough_ellipse(edges, accuracy=20, threshold=250, min_size=100, max_size=120)
-	print('ellipses')
-	result.sort(order='accumulator')
-	print('sorted')
-	print(result)
-
-	# Estimated parameters for the ellipse
-	#best = list(result[-1])
-	#yc, xc, a, b = [int(round(x)) for x in best[1:5]]
-	#orientation = best[5]
-	"""
-	# Draw the ellipse on the original image
-	cy, cx = ellipse_perimeter(yc, xc, a, b, orientation)
-	image_rgb[cy, cx] = (0, 0, 255)
-	# Draw the edge (white) and the resulting ellipse (red)
-	edges = color.gray2rgb(edges)
-	edges[cy, cx] = (250, 0, 0)"""
-
 def circle_detection(rgb_img):
 	image_rgb = numpy.array(rgb_img, copy=True)
 	print('new image')
@@ -75,17 +44,17 @@ def circle_detection(rgb_img):
 	scipy.misc.imsave('outfile.jpg', edges)
 	print('edges')
 	# Detect two radii
-	hough_radii = numpy.arange(30, 70, 1)
+	hough_radii = numpy.arange(40, 70, 1)
 	hough_res = hough_circle(edges, hough_radii)
 	print('hough_circle finished')
 	centers = []
 	accums = []
 	radii = []
 	count = 0
+    num_peaks = 8
 
-	for radius, h in zip(hough_radii, hough_res):
+	for radius, h in zip(hough_radii, hough_res): # iterieren durch circles (h)
 		# For each radius, extract two circles
-		num_peaks = 8
 		peaks = peak_local_max(h, num_peaks=num_peaks)
 		count = count + 1
 		print('peak_local_max finished ', count)
