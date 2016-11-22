@@ -74,13 +74,15 @@ def circle_detection(rgb_img, edgesAlready=False):
 		radii.extend([radius] * num_peaks)
 		print('extend3')
 	print('loop 1 ',len(accums))
-	print('Len: ',len(image_rgb[0,0]))
 	for idx in numpy.argsort(accums)[::-1][:80]: # nach quali sortieren (beste 10)
 		center_x, center_y = centers[idx]
 		radius = radii[idx]
 		print('radius: ' + str(radius))
 		cx, cy = circle_perimeter(center_y, center_x, radius)
-		image_rgb[cy, cx] = (220, 20, 20)
+		if edgesAlready:
+			image_rgb[cy, cx] = 100
+		else: 
+			image_rgb[cy, cx] = (220, 20, 20)
 	print('done')
 	return image_rgb
 
