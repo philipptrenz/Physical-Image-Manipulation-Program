@@ -50,6 +50,7 @@ def circle_detection(rgb_img):
 	sum = 0
 	while num < 15:
 		sum += len(hough_res[num])
+		num++
 	print("#Circles: ", sum)
 	centers = []
 	accums = []
