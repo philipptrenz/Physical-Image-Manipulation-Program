@@ -12,47 +12,47 @@ import threading
 class FreakingQtImageViewer(QWidget):
 
 
-    def refresh_thread(self):
-        while self.running:
-            self.function()
+	def refresh_thread(self):
+		while self.running:
+			self.function()
 
-            pixmap = QPixmap("tmp.png")
-            pixmap = pixmap.scaledToWidth(800)
-            self.lbl.setPixmap(pixmap)
-            time.sleep(0.5)
+			pixmap = QPixmap("tmp.png")
+			pixmap = pixmap.scaledToWidth(800)
+			self.lbl.setPixmap(pixmap)
+			time.sleep(0.5)
 
-    def __init__(self, function):
-        super().__init__()
-        self.function = function
-        self.running = False
-        self.initUI(function)
+	def __init__(self, function):
+		super().__init__()
+		self.function = function
+		self.running = False
+		self.initUI(function)
 
 
-    def refresh(self):
-        if not self.running:
-            self.thread = threading.Thread(name='refresh_image', target=self.refresh_thread)
-            self.running = True
-            self.thread.start()
-        else:
-            self.running = False
+	def refresh(self):
+		if not self.running:
+			self.thread = threading.Thread(name='refresh_image', target=self.refresh_thread)
+			self.running = True
+			self.thread.start()
+		else:
+			self.running = False
 
-    def initUI(self, function):
+	def initUI(self, function):
 
-        hbox = QVBoxLayout(self)
+		hbox = QVBoxLayout(self)
 
-        self.lbl = QLabel(self)
+		self.lbl = QLabel(self)
 
-        btn = QPushButton(self)
-        btn.setText('Drück mich')
-        btn.clicked.connect(self.refresh)
+		btn = QPushButton(self)
+		btn.setText('Drück mich')
+		btn.clicked.connect(self.refresh)
 
-        hbox.addWidget(self.lbl)
-        hbox.addWidget(btn)
-        self.setLayout(hbox)
+		hbox.addWidget(self.lbl)
+		hbox.addWidget(btn)
+		self.setLayout(hbox)
 
-        self.move(300, 200)
-        self.setWindowTitle('Freaking Qt Image Viewer')
-        self.show()
+		self.move(300, 200)
+		self.setWindowTitle('Freaking Qt Image Viewer')
+		self.show()
 
 
 

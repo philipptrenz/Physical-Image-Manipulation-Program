@@ -51,7 +51,7 @@ def circle_detection(rgb_img):
 	accums = []
 	radii = []
 	count = 0
-    num_peaks = 8
+	num_peaks = 8
 
 	for radius, h in zip(hough_radii, hough_res): # iterieren durch circles (h)
 		# For each radius, extract two circles
