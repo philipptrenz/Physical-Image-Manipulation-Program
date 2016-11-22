@@ -46,7 +46,7 @@ def circle_detection(rgb_img):
 	# Detect two radii
 	hough_radii = numpy.arange(45, 60, 1) # Ellipsen - Radius
 	hough_res = hough_circle(edges, hough_radii) # gibt für jeden index (radius) koordinaten
-	print(hough_res)
+	print(hough_res[0])
 	centers = []
 	accums = []
 	radii = []
@@ -80,7 +80,7 @@ def capture():
 		camera.capture(stream, format='rgb')
 		img = stream.array
 		img = circle_detection(img)
-		im = Image.fromarray(img)#.convert('LA')
+		im = Image.fromarray(img) #.convert('LA')
 		im.save('./tmp.png')
 
 if __name__ == '__main__':
