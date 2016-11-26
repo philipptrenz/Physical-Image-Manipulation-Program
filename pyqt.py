@@ -70,7 +70,3 @@ class FreakingQtImageViewer(QWidget):
 		self.setWindowTitle('Freaking Qt Image Viewer')
 		self.show()
 
-
-
-
-
