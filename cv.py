@@ -32,7 +32,7 @@ import scipy.misc
 def rgb2gray(rgb_img):
 	return numpy.dot(rgb_img[...,:3],[0.2989,0.5870,0.1140])
 
-def circle_detection(rgb_img, edgesAlready=False):
+def circle_detection(rgb_img, edgesAlready=False, radMin, radMax):
 	if not edgesAlready:
 		image_rgb = numpy.array(rgb_img, copy=True)
 		print('new image')
@@ -45,7 +45,7 @@ def circle_detection(rgb_img, edgesAlready=False):
 		edges = rgb_img
 		image_rgb = numpy.array(edges, copy=True)
 	# Detect two radii
-	hough_radii = numpy.arange(45, 60, 1) # Ellipsen - Radius
+	hough_radii = numpy.arange(radMin, radMax, 1) # Ellipsen - Radius
 	hough_res = hough_circle(edges, hough_radii) # gibt für jeden index (radius) koordinaten
 	num = 0
 	sum = 0
