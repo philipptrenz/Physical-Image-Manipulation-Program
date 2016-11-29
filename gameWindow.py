@@ -41,6 +41,7 @@ from cv import circle_detection
 class DraughtsGameWindow(QWidget):
 	def __init__(self):
 		super().__init__()
+		self.corners = []
 		self.CELLS_PER_ROW = 8
 		self.BLACK_COLOR = QColor(0,0,0,255)
 		self.WHITE_COLOR = QColor(255,255,255,255)
@@ -103,11 +104,11 @@ class DraughtsGameWindow(QWidget):
 		
 
 	def checkCoords(self, img, coords):
-		self.newCoords = []
 		self.redC = []
 		self.greenC = []
 		self.blueC = []
 		self.blackC = []
+		empty = [False*4]
 		for index, coord in enumerate(coords):
 			#print(img[coord[0], coord[1]]," - ", )
 			pixel = img[coord[0], coord[1]]
@@ -118,35 +119,22 @@ class DraughtsGameWindow(QWidget):
 			if sum > 300:
 				print("delete ", coord, ' with ', pixel)
 			else:
-				self.newCoords.append(coord)
-		
-		for coord in self.newCoords:	
-			pixel = img[coord[0], coord[1]]
-			
-			if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
-				print(coord, ' could be black with', pixel)
-				self.blackC.append(coord)
-				self.DEFAULT_PEN.setColor(self.BLACK_COLOR)
-				self.painter.setPen(self.DEFAULT_PEN)
-				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
-			elif pixel[0] > 110:
-				print(coord, ' could be red with', pixel)
-				self.redC.append(coord)
-				self.DEFAULT_PEN.setColor(self.RED_COLOR)
-				self.painter.setPen(self.DEFAULT_PEN)
-				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
-			elif pixel[1] > 110:
-				print(coord, ' could be green with', pixel)
-				self.greenC.append(coord)
-				self.DEFAULT_PEN.setColor(self.GREEN_COLOR)
-				self.painter.setPen(self.DEFAULT_PEN)
-				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
-			elif pixel[2] > 110:
-				print(coord, ' could be blue with', pixel)
-				self.blueC.append(coord)
-				self.DEFAULT_PEN.setColor(self.BLUE_COLOR)
-				self.painter.setPen(self.DEFAULT_PEN)
-				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
+				if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
+					print(coord, ' could be black with', pixel)
+					self.blackC.append(coord)
+					empty[0] = True
+				elif pixel[0] > 110:
+					print(coord, ' could be red with', pixel)
+					self.redC.append(coord)
+					empty[1] = True
+				elif pixel[1] > 110:
+					print(coord, ' could be green with', pixel)
+					self.greenC.append(coord)
+					empty[2] = True
+				elif pixel[2] > 110:
+					print(coord, ' could be blue with', pixel)
+					self.blueC.append(coord)
+					empty[3] = True
 		
 		#final_red = (int(numpy.sum(self.redC[0])/len(self.redC)),int(numpy.sum(self.redC[1])/len(self.redC[])))	#(sum(self.redC[0]), sum(self.redC[1]))
 		final_black = numpy.average(self.blackC, axis=0)
@@ -164,6 +152,8 @@ class DraughtsGameWindow(QWidget):
 		finalCoords.append(final_black)
 		finalCoords.append(final_red)
 		finalCoords.append(final_green)
+		if !empty[:]:
+			return -1
 		return finalCoords
 		
 			
@@ -171,14 +161,17 @@ class DraughtsGameWindow(QWidget):
 	def capture(self):
 		camera = picamera.PiCamera()
 		with picamera.array.PiRGBArray(camera) as stream:
-			camera.capture(stream, format='rgb')
-			img = stream.array
-			img, coords = circle_detection(img, 20, 25)
-			im = Image.fromarray(img) #.convert('LA')
-			im.save('./tmp.png')
-			camera.close()
-			coords =  self.checkCoords(img, coords)
-			print(coords)
+			res = -1
+			while res == -1:
+				camera.capture(stream, format='rgb')
+				img = stream.array
+				img, coords = circle_detection(img, 20, 25)
+				im = Image.fromarray(img) #.convert('LA')
+				im.save('./tmp.png')
+				camera.close()
+				res =  self.checkCoords(img, coords)
+			self.corners = res
+			print(self.corners)
 		
 
 
