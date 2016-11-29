@@ -159,6 +159,9 @@ class DraughtsGameWindow(QWidget):
 		print('avg blue ',final_blue)
 		
 		self.lbl.setPixmap(self.pixmap)
+		
+		return [self.blueC, self.blackC, self.redC, self.greenC]
+		
 			
 
 	def capture(self):
@@ -170,7 +173,8 @@ class DraughtsGameWindow(QWidget):
 			im = Image.fromarray(img) #.convert('LA')
 			im.save('./tmp.png')
 			camera.close()
-			self.checkCoords(img, coords)
+			coords =  self.checkCoords(img, coords)
+			print(coords)
 		
 
 
