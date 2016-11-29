@@ -160,10 +160,10 @@ class DraughtsGameWindow(QWidget):
 		
 		self.lbl.setPixmap(self.pixmap)
 		finalCoords = []
-		finalCoords.append(self.blueC)
-		finalCoords.append(self.blackC)
-		finalCoords.append(self.redC)
-		finalCoords.append(self.greenC)
+		finalCoords.append(final_blue)
+		finalCoords.append(final_black)
+		finalCoords.append(final_red)
+		finalCoords.append(final_green)
 		return finalCoords
 		
 			
