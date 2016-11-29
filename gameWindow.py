@@ -93,10 +93,6 @@ class DraughtsGameWindow(QWidget):
 		self.show()
 		
 
-def rgb2gray(rgb_img):
-	return numpy.dot(rgb_img[...,:3],[0.2989,0.5870,0.1140])
-		
-		
 def capture():
 	camera = picamera.PiCamera()
 	with picamera.array.PiRGBArray(camera) as stream:
