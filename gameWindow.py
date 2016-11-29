@@ -104,6 +104,20 @@ class DraughtsGameWindow(QWidget):
 def checkCoords(img, coords):
 	for coord in coords:
 		print(img[coord[0], coord[1]])
+		if (coord[0] + coord[1] + coord[2]) > 450:
+			coords.remove(coord)
+			print("delete ", coord)
+		
+		if coord[0] < 50 && coord[1] < 50 && coord[2] < 50:
+			print(coord, ' could be black')
+		elif coord[0] > 110:
+			print(coord, ' could be red')
+		elif coord[1] > 110:
+			print(coord, ' could be green')
+		elif coord[2] > 110:
+			print(coord, ' could be blue')
+			
+		
 
 def capture():
 	camera = picamera.PiCamera()
