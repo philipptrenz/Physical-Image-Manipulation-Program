@@ -159,8 +159,12 @@ class DraughtsGameWindow(QWidget):
 		print('avg blue ',final_blue)
 		
 		self.lbl.setPixmap(self.pixmap)
-		
-		return [self.blueC, self.blackC, self.redC, self.greenC]
+		finalCoords = []
+		finalCoords.append(self.blueC)
+		finalCoords.append(self.blackC)
+		finalCoords.append(self.redC)
+		finalCoords.append(self.greenC)
+		return finalCoords
 		
 			
 
