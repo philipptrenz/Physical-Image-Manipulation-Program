@@ -32,7 +32,7 @@ import scipy.misc
 def rgb2gray(rgb_img):
 	return numpy.dot(rgb_img[...,:3],[0.2989,0.5870,0.1140])
 
-def circle_detection(rgb_img, edgesAlready=False, radMin, radMax):
+def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	if not edgesAlready:
 		image_rgb = numpy.array(rgb_img, copy=True)
 		print('new image')
