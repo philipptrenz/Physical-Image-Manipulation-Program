@@ -102,6 +102,8 @@ class DraughtsGameWindow(QWidget):
 		
 
 def checkCoords(img, coords):
+	newCoords = []
+	index = 0
 	for index, coord in enumerate(coords):
 		#print(img[coord[0], coord[1]]," - ", )
 		pixel = img[coord[0], coord[1]]
@@ -111,9 +113,11 @@ def checkCoords(img, coords):
 		sum += pixel[2]
 		if sum > 300:
 			print("delete ", coord, ' with ', pixel)
-			del coords[index]
+		else:
+			index += 1
+			newCoords[index] = coord
 	
-	for coord in coords:	
+	for coord in newCoords:	
 		pixel = img[coord[0], coord[1]]
 		
 		if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
