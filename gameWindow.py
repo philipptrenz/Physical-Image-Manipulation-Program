@@ -102,7 +102,7 @@ class DraughtsGameWindow(QWidget):
 		#capture()
 		
 
-	def checkCoords(img, coords):
+	def checkCoords(self, img, coords):
 		self.newCoords = []
 		for index, coord in enumerate(coords):
 			#print(img[coord[0], coord[1]]," - ", )
@@ -138,7 +138,7 @@ class DraughtsGameWindow(QWidget):
 		self.lbl.setPixmap(self.pixmap)
 			
 
-	def capture():
+	def capture(self):
 		camera = picamera.PiCamera()
 		with picamera.array.PiRGBArray(camera) as stream:
 			camera.capture(stream, format='rgb')
