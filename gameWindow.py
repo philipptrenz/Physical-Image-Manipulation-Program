@@ -116,7 +116,7 @@ class DraughtsGameWindow(QWidget):
 			else:
 				self.newCoords.append(coord)
 		
-		for coord in newCoords:	
+		for coord in self.newCoords:	
 			pixel = img[coord[0], coord[1]]
 			
 			if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
