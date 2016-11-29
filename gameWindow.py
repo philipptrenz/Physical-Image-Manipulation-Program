@@ -104,6 +104,10 @@ class DraughtsGameWindow(QWidget):
 
 	def checkCoords(self, img, coords):
 		self.newCoords = []
+		self.redC = []
+		self.greenC = []
+		self.blueC = []
+		self.blackC = []
 		for index, coord in enumerate(coords):
 			#print(img[coord[0], coord[1]]," - ", )
 			pixel = img[coord[0], coord[1]]
@@ -114,27 +118,39 @@ class DraughtsGameWindow(QWidget):
 			if sum > 300:
 				print("delete ", coord, ' with ', pixel)
 			else:
-				self.newCoords.append(coord)
+				self.newCoords[0].append(coord)
 		
 		for coord in self.newCoords:	
 			pixel = img[coord[0], coord[1]]
 			
 			if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
 				print(coord, ' could be black with', pixel)
+				self.blackC.append(coord)
 				self.DEFAULT_PEN.setColor(self.BLACK_COLOR)
+				self.painter.setPen(self.DEFAULT_PEN)
 				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
 			elif pixel[0] > 110:
 				print(coord, ' could be red with', pixel)
+				self.redC.append(coord)
 				self.DEFAULT_PEN.setColor(self.RED_COLOR)
+				self.painter.setPen(self.DEFAULT_PEN)
 				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
 			elif pixel[1] > 110:
 				print(coord, ' could be green with', pixel)
+				self.redC.append(coord)
 				self.DEFAULT_PEN.setColor(self.GREEN_COLOR)
+				self.painter.setPen(self.DEFAULT_PEN)
 				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
 			elif pixel[2] > 110:
 				print(coord, ' could be blue with', pixel)
+				self.blueC.append(coord)
 				self.DEFAULT_PEN.setColor(self.BLUE_COLOR)
+				self.painter.setPen(self.DEFAULT_PEN)
 				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
+		
+		final_red = sum(redC)
+		print(final_red)
+		
 		self.lbl.setPixmap(self.pixmap)
 			
 
