@@ -149,7 +149,7 @@ class DraughtsGameWindow(QWidget):
 				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
 		
 		#final_red = (int(numpy.sum(self.redC[0])/len(self.redC)),int(numpy.sum(self.redC[1])/len(self.redC[])))	#(sum(self.redC[0]), sum(self.redC[1]))
-		final_red = (numpy.average(self.redC, axis=0), numpy.average(self.redC, axis=0))
+		final_red = numpy.average(self.redC)
 		print(final_red)
 		
 		self.lbl.setPixmap(self.pixmap)
