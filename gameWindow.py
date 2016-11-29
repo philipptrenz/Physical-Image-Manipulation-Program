@@ -103,20 +103,20 @@ class DraughtsGameWindow(QWidget):
 
 def checkCoords(img, coords):
 	for coord in coords:
-		print(img[coord[0], coord[1]])
+		#print(img[coord[0], coord[1]]," - ", )
 		pixel = img[coord[0], coord[1]]
-		if (pixel[0] + pixel[1] + pixel[2]) > 300:
+		if Int(pixel[0] + pixel[1] + pixel[2]) > 300:
 			coords.remove(coord)
 			print("delete ", coord)
 		else:
 			if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
-				print(coord, ' could be black')
+				print(coord, ' could be black ', pixel)
 			elif pixel[0] > 110:
-				print(coord, ' could be red')
+				print(coord, ' could be red ', pixel)
 			elif pixel[1] > 110:
-				print(coord, ' could be green')
+				print(coord, ' could be green ', pixel)
 			elif pixel[2] > 110:
-				print(coord, ' could be blue')
+				print(coord, ' could be blue ', pixel)
 			
 		
 
