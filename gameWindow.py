@@ -34,7 +34,7 @@ import scipy.misc
 import picamera
 import picamera.array
 
-from cv.py import circle_detection
+from cv import circle_detection
 
 
 class DraughtsGameWindow(QWidget):
