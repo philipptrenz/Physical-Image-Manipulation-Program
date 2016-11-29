@@ -49,7 +49,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	hough_res = hough_circle(edges, hough_radii) # gibt für jeden index (radius) koordinaten
 	num = 0
 	sum = 0
-	while num < 15:
+	while num < 5:
 		sum += len(hough_res[num])
 		num = num + 1
 	print("#Circles: ", sum)
