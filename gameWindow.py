@@ -168,9 +168,9 @@ class DraughtsGameWindow(QWidget):
 				img, coords = circle_detection(img, 20, 25)
 				im = Image.fromarray(img) #.convert('LA')
 				im.save('./tmp.png')
-				camera.close()
 				res =  self.checkCoords(img, coords)
 			self.corners = res
+			camera.close()
 			print(self.corners)
 		
 
