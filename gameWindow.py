@@ -122,19 +122,19 @@ class DraughtsGameWindow(QWidget):
 				if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
 					print(coord, ' could be black with', pixel)
 					self.blackC.append(coord)
-					empty[0] = True
+					empty.append(True)
 				elif pixel[0] > 110:
 					print(coord, ' could be red with', pixel)
 					self.redC.append(coord)
-					empty[1] = True
+					empty.append(True)
 				elif pixel[1] > 110:
 					print(coord, ' could be green with', pixel)
 					self.greenC.append(coord)
-					empty[2] = True
+					empty.append(True)
 				elif pixel[2] > 110:
 					print(coord, ' could be blue with', pixel)
 					self.blueC.append(coord)
-					empty[3] = True
+					empty.append(True)
 		
 		#final_red = (int(numpy.sum(self.redC[0])/len(self.redC)),int(numpy.sum(self.redC[1])/len(self.redC[])))	#(sum(self.redC[0]), sum(self.redC[1]))
 		final_black = numpy.average(self.blackC, axis=0)
