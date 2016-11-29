@@ -79,7 +79,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	#print('erste loop: ', count2)
 	count2 = 0
 	#print('loop 1 ',len(accums))
-	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste 10)
+	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		count2 = count2 + 1
 		center_x, center_y = centers[idx]
 		radius = radii[idx]
@@ -90,4 +90,4 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		else: 
 			image_rgb[cy, cx] = (220, 20, 20)
 	print('done -> ', count2)
-	return image_rgb
+	return (image_rgb, centers)

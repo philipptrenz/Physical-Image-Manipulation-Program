@@ -101,15 +101,20 @@ class DraughtsGameWindow(QWidget):
 		#capture()
 		
 
+def checkCoords(img, coords):
+	for coord in coords:
+		print(img[coord[0], coord[1]])
+
 def capture():
 	camera = picamera.PiCamera()
 	with picamera.array.PiRGBArray(camera) as stream:
 		camera.capture(stream, format='rgb')
 		img = stream.array
-		img = circle_detection(img, 20, 25)
+		img, coords = circle_detection(img, 20, 25)
 		im = Image.fromarray(img) #.convert('LA')
 		im.save('./tmp.png')
 		camera.close()
+		checkCoords(img, coords)
 		
 
 
