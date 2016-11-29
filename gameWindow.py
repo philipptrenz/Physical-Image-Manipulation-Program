@@ -152,7 +152,7 @@ class DraughtsGameWindow(QWidget):
 		finalCoords.append(final_black)
 		finalCoords.append(final_red)
 		finalCoords.append(final_green)
-		if !empty[:]:
+		if not empty[0] or not empty[1] or not empty[2] or not empty[3] :
 			return -1
 		return finalCoords
 		
