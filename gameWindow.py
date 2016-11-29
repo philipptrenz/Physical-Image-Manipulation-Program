@@ -31,6 +31,12 @@ from skimage.util import img_as_ubyte
 import scipy.misc
 
 
+import picamera
+import picamera.array
+
+import cv
+
+
 class DraughtsGameWindow(QWidget):
 	def __init__(self):
 		super().__init__()
@@ -89,10 +95,25 @@ class DraughtsGameWindow(QWidget):
 		
 		
 		
+def capture():
+	camera = picamera.PiCamera()
+	with picamera.array.PiRGBArray(camera) as stream:
+		camera.capture(stream, format='rgb')
+		img = stream.array
+		img = circle_detection(img)
+		im = Image.fromarray(img) #.convert('LA')
+		im.save('./tmp.png')
+		camera.close()
+		
+
+
+
 if __name__ == '__main__':
 
 	app = QApplication(sys.argv)
 
 	screen_rect = app.desktop().screenGeometry()
-	viewer = DraughtsGameWindow()
+	viewer = DraughtsGameWindow() # init ui
+	# capture
+	capture()
 	sys.exit(app.exec_())
