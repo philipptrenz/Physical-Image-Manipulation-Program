@@ -160,9 +160,11 @@ class DraughtsGameWindow(QWidget):
 			with picamera.array.PiRGBArray(camera) as stream:
 				camera.capture(stream, format='rgb')
 				img = stream.array
-				img, coords = circle_detection(img, 20, 25)
+				img, coords, circleDebug = circle_detection(img, 20, 25)
 				im = Image.fromarray(img) #.convert('LA')
+				imDeb = Image.fromarray(circleDebug) #.convert('LA')
 				im.save('./tmp.png')
+				imDeb.save('./deb.png')
 				res =  self.checkCoords(img, coords)
 		self.corners = res
 		camera.close()
