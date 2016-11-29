@@ -50,6 +50,7 @@ class DraughtsGameWindow(QWidget):
 		self.DEFAULT_PEN = QPen(self.BLUE_COLOR)
 		self.DEFAULT_PEN.setWidth(20)
 		self.PIX_PADDING = 75
+		self.BORDER_RADIUS = 10
 
 		self.initUI()
 		
@@ -101,44 +102,52 @@ class DraughtsGameWindow(QWidget):
 		#capture()
 		
 
-def checkCoords(img, coords):
-	newCoords = []
-	for index, coord in enumerate(coords):
-		#print(img[coord[0], coord[1]]," - ", )
-		pixel = img[coord[0], coord[1]]
-		sum = 0
-		sum += pixel[0]
-		sum += pixel[1]
-		sum += pixel[2]
-		if sum > 300:
-			print("delete ", coord, ' with ', pixel)
-		else:
-			newCoords.append(coord)
-	
-	for coord in newCoords:	
-		pixel = img[coord[0], coord[1]]
+	def checkCoords(img, coords):
+		self.newCoords = []
+		for index, coord in enumerate(coords):
+			#print(img[coord[0], coord[1]]," - ", )
+			pixel = img[coord[0], coord[1]]
+			sum = 0
+			sum += pixel[0]
+			sum += pixel[1]
+			sum += pixel[2]
+			if sum > 300:
+				print("delete ", coord, ' with ', pixel)
+			else:
+				newCoords.append(coord)
 		
-		if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
-			print(coord, ' could be black with', pixel)
-		elif pixel[0] > 110:
-			print(coord, ' could be red with', pixel)
-		elif pixel[1] > 110:
-			print(coord, ' could be green with', pixel)
-		elif pixel[2] > 110:
-			print(coord, ' could be blue with', pixel)
+		for coord in newCoords:	
+			pixel = img[coord[0], coord[1]]
 			
-		
+			if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
+				print(coord, ' could be black with', pixel)
+				self.DEFAULT_PEN.setColor(self.BLACK_COLOR)
+				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
+			elif pixel[0] > 110:
+				print(coord, ' could be red with', pixel)
+				self.DEFAULT_PEN.setColor(self.RED_COLOR)
+				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
+			elif pixel[1] > 110:
+				print(coord, ' could be green with', pixel)
+				self.DEFAULT_PEN.setColor(self.GREEN_COLOR)
+				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
+			elif pixel[2] > 110:
+				print(coord, ' could be blue with', pixel)
+				self.DEFAULT_PEN.setColor(self.BLUE_COLOR)
+				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
+		self.lbl.setPixmap(self.pixmap)
+			
 
-def capture():
-	camera = picamera.PiCamera()
-	with picamera.array.PiRGBArray(camera) as stream:
-		camera.capture(stream, format='rgb')
-		img = stream.array
-		img, coords = circle_detection(img, 20, 25)
-		im = Image.fromarray(img) #.convert('LA')
-		im.save('./tmp.png')
-		camera.close()
-		checkCoords(img, coords)
+	def capture():
+		camera = picamera.PiCamera()
+		with picamera.array.PiRGBArray(camera) as stream:
+			camera.capture(stream, format='rgb')
+			img = stream.array
+			img, coords = circle_detection(img, 20, 25)
+			im = Image.fromarray(img) #.convert('LA')
+			im.save('./tmp.png')
+			camera.close()
+			checkCoords(img, coords)
 		
 
 
