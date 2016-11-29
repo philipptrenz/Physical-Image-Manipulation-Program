@@ -91,6 +91,7 @@ class DraughtsGameWindow(QWidget):
 		self.showFullScreen()
 		self.setWindowTitle('DraughtsCV')
 		self.show()
+		capture()
 		
 
 def capture():
@@ -113,5 +114,4 @@ if __name__ == '__main__':
 	screen_rect = app.desktop().screenGeometry()
 	viewer = DraughtsGameWindow() # init ui
 	# capture
-	capture()
 	sys.exit(app.exec_())
