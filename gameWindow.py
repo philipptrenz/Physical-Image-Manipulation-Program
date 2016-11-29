@@ -137,7 +137,7 @@ class DraughtsGameWindow(QWidget):
 				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
 			elif pixel[1] > 110:
 				print(coord, ' could be green with', pixel)
-				self.redC.append(coord)
+				self.greenC.append(coord)
 				self.DEFAULT_PEN.setColor(self.GREEN_COLOR)
 				self.painter.setPen(self.DEFAULT_PEN)
 				self.painter.drawEllipse(coord[1], coord[0], self.BORDER_RADIUS,self.BORDER_RADIUS)
