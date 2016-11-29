@@ -108,7 +108,6 @@ class DraughtsGameWindow(QWidget):
 		self.greenC = []
 		self.blueC = []
 		self.blackC = []
-		empty = [False*4]
 		for index, coord in enumerate(coords):
 			#print(img[coord[0], coord[1]]," - ", )
 			pixel = img[coord[0], coord[1]]
@@ -152,7 +151,7 @@ class DraughtsGameWindow(QWidget):
 		finalCoords.append(final_black)
 		finalCoords.append(final_red)
 		finalCoords.append(final_green)
-		if not empty[0] or not empty[1] or not empty[2] or not empty[3] :
+		if len(self.blackC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
 			return -1
 		return finalCoords
 		
