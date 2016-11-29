@@ -108,7 +108,7 @@ def checkCoords(img, coords):
 			coords.remove(coord)
 			print("delete ", coord)
 		
-		if coord[0] < 50 && coord[1] < 50 && coord[2] < 50:
+		if coord[0] < 50 and coord[1] < 50 and coord[2] < 50:
 			print(coord, ' could be black')
 		elif coord[0] > 110:
 			print(coord, ' could be red')
