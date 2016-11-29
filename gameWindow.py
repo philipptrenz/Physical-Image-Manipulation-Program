@@ -92,7 +92,9 @@ class DraughtsGameWindow(QWidget):
 		self.setWindowTitle('DraughtsCV')
 		self.show()
 		
-		
+
+def rgb2gray(rgb_img):
+	return numpy.dot(rgb_img[...,:3],[0.2989,0.5870,0.1140])
 		
 		
 def capture():
