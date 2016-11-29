@@ -147,7 +147,7 @@ class DraughtsGameWindow(QWidget):
 			im = Image.fromarray(img) #.convert('LA')
 			im.save('./tmp.png')
 			camera.close()
-			checkCoords(img, coords)
+			self.checkCoords(img, coords)
 		
 
 
