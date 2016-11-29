@@ -49,7 +49,7 @@ class DraughtsGameWindow(QWidget):
 		self.GREEN_COLOR = QColor(0,255,0,255)
 		self.DEFAULT_PEN = QPen(self.BLUE_COLOR)
 		self.DEFAULT_PEN.setWidth(20)
-		self.PIX_PADDING = 100
+		self.PIX_PADDING = 75
 
 		self.initUI()
 		
