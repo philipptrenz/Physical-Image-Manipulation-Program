@@ -58,7 +58,7 @@ class DraughtsGameWindow(QWidget):
 		if event.key() == Qt.Key_Escape: 
 			self.close()
 		elif event.key() == Qt.Key_C:
-			capture()
+			self.capture()
 		
 	def initUI(self):
 		
