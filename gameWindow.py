@@ -112,15 +112,18 @@ def checkCoords(img, coords):
 		if sum > 300:
 			print("delete ", coord, ' with ', pixel)
 			del coords[index]
-		else:
-			if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
-				print(coord, ' could be black with', pixel)
-			elif pixel[0] > 110:
-				print(coord, ' could be red with', pixel)
-			elif pixel[1] > 110:
-				print(coord, ' could be green with', pixel)
-			elif pixel[2] > 110:
-				print(coord, ' could be blue with', pixel)
+	
+	for coord in coords:	
+		pixel = img[coord[0], coord[1]]
+		
+		if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
+			print(coord, ' could be black with', pixel)
+		elif pixel[0] > 110:
+			print(coord, ' could be red with', pixel)
+		elif pixel[1] > 110:
+			print(coord, ' could be green with', pixel)
+		elif pixel[2] > 110:
+			print(coord, ' could be blue with', pixel)
 			
 		
 
