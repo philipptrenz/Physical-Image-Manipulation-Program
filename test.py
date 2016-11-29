@@ -24,6 +24,7 @@ from skimage.transform import hough_circle
 from skimage.feature import peak_local_max
 from skimage.draw import circle_perimeter
 from skimage.util import img_as_ubyte
+from skimage import transform as tf
 
 import scipy.misc
 
