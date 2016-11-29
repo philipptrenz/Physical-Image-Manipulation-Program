@@ -114,7 +114,7 @@ class DraughtsGameWindow(QWidget):
 			if sum > 300:
 				print("delete ", coord, ' with ', pixel)
 			else:
-				newCoords.append(coord)
+				self.newCoords.append(coord)
 		
 		for coord in newCoords:	
 			pixel = img[coord[0], coord[1]]
