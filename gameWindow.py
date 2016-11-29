@@ -52,6 +52,10 @@ class DraughtsGameWindow(QWidget):
 
 		self.initUI()
 		
+	def keyPressEvent(self, event):
+		if event.key() == QtCore.Qt.Key_Escape: 
+			self.close()
+		
 	def initUI(self):
 		
 		self.WIDTH, self.HEIGHT, self.CELL_SIZE = screen_rect.width(), screen_rect.height(), screen_rect.width() / self.CELLS_PER_ROW
@@ -91,7 +95,7 @@ class DraughtsGameWindow(QWidget):
 		self.showFullScreen()
 		self.setWindowTitle('DraughtsCV')
 		self.show()
-		capture()
+		#capture()
 		
 
 def capture():
