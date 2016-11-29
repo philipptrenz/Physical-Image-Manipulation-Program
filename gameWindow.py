@@ -105,7 +105,11 @@ def checkCoords(img, coords):
 	for coord in coords:
 		#print(img[coord[0], coord[1]]," - ", )
 		pixel = img[coord[0], coord[1]]
-		if Int(pixel[0] + pixel[1] + pixel[2]) > 300:
+		sum = 0
+		sum += pixel[0]
+		sum += pixel[1]
+		sum += pixel[2]
+		if sum > 300:
 			coords.remove(coord)
 			print("delete ", coord)
 		else:
