@@ -182,10 +182,10 @@ class DraughtsGameWindow(QWidget):
 					(1280, 0) #uright
 				))
 				if calibrationCoords != -1:
-					dst = calibrationCoords
+					res = calibrationCoords
 					
 					transformer = tf.ProjectiveTransform()
-					transformer.estimate(src, dst)
+					transformer.estimate(src, res)
 					transformed_image = tf.warp(input_img, transformer, output_shape=(800, 800)).astype(int)
 					
 					print(transformed_image)
