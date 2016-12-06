@@ -174,7 +174,7 @@ class DraughtsGameWindow(QWidget):
 				
 				res = self.checkCoords(img, coords)
 				
-				if type(res) is not 'numpy.ndarray':
+				if type(res) is 'numpy.ndarray':
 					src = numpy.array((
 						(0, 0), #upper left
 						(0, 1024), #lower left

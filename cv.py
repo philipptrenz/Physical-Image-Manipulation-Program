@@ -87,7 +87,6 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		cx, cy = circle_perimeter(center_y, center_x, radius)
 		circles_rgb = numpy.copy(image_rgb)
 		shape = circles_rgb.shape
-		print('ashape: ', shape)
 		
 		'''cx = [x for x in cx if x > 0]
 		cx = [x for x in cx if x < 1280]
