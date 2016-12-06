@@ -179,7 +179,7 @@ class DraughtsGameWindow(QWidget):
 					(1280, 1024), #lright
 					(1280, 0) #uright
 				))
-				if calibrationCoords != -1:
+				if type(calibrationCoords) is not 'numpy.ndarray':
 					res = calibrationCoords
 					
 					transformer = tf.ProjectiveTransform()
