@@ -162,35 +162,35 @@ class DraughtsGameWindow(QWidget):
 	def capture(self):
 		camera = picamera.PiCamera()
 		res = -1
-		while True:
-			with picamera.array.PiRGBArray(camera) as stream:
-				camera.capture(stream, format='rgb')
-				img = stream.array
-				img, coords, circleDebug = circle_detection(img, 20, 25)
-				im = Image.fromarray(img) #.convert('LA')
-				input_img = im
-				imDeb = Image.fromarray(circleDebug) #.convert('LA')
-				im.save('./tmp.png')
-				imDeb.save('./deb.png')
+		#while True:
+		with picamera.array.PiRGBArray(camera) as stream:
+			camera.capture(stream, format='rgb')
+			img = stream.array
+			img, coords, circleDebug = circle_detection(img, 20, 25)
+			im = Image.fromarray(img) #.convert('LA')
+			input_img = im
+			imDeb = Image.fromarray(circleDebug) #.convert('LA')
+			im.save('./tmp.png')
+			imDeb.save('./deb.png')
+			
+			res = self.checkCoords(img, coords)
+			if isinstance(res, (numpy.ndarray, numpy.generic) ):
+				src = numpy.array((
+					(0, 0), #upper left
+					(0, 1024), #lower left
+					(1280, 1024), #lright
+					(1280, 0) #uright
+				))
+			
+				transformer = tf.ProjectiveTransform()
+				transformer.estimate(src, res)
+				transformed_image = tf.warp(input_img, transformer)
 				
-				res = self.checkCoords(img, coords)
-				if isinstance(res, (numpy.ndarray, numpy.generic) ):
-					src = numpy.array((
-						(0, 0), #upper left
-						(0, 1024), #lower left
-						(1280, 1024), #lright
-						(1280, 0) #uright
-					))
+				#print("Transformed Image: ",transformed_image)
 				
-					transformer = tf.ProjectiveTransform()
-					transformer.estimate(src, res)
-					transformed_image = tf.warp(input_img, transformer)
-					
-					#print("Transformed Image: ",transformed_image)
-					
-					scipy.misc.imsave('./transformed.png', transformed_image)
-					break
-				else: print('fuckshitsuck')
+				scipy.misc.imsave('./transformed.png', transformed_image)
+				break
+			else: print('fuckshitsuck')
 		camera.close()
 		print(self.corners)
 		
