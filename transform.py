@@ -76,7 +76,7 @@ class Transform():
 
 		transformed_image = tf.warp(image, transformer, output_shape=(self.output_width, self.output_height))
 
-		return transformed_image
+		return transformed_image.astype(int)
 
 if __name__ == '__main__':
 	
