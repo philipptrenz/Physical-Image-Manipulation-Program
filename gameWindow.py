@@ -165,7 +165,7 @@ class DraughtsGameWindow(QWidget):
 				imDeb.save('./deb.png')
 				
 				dst =  self.checkCoords(img, coords)
-				src = np.array((
+				src = numpy.array((
 					(0, 0), #upper left
 					(0, 1024), #lower left
 					(1280, 1024), #lright
