@@ -86,7 +86,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		print('radius: ' + str(radius))
 		cx, cy = circle_perimeter(center_y, center_x, radius)
 		circles_rgb = numpy.copy(image_rgb)
-		if cy > 0 and cy < len(circles_rgb) and cx > 0 and cx < len(circles_rgb[0])
+		if cy > 0 and cy < len(circles_rgb) and cx > 0 and cx < len(circles_rgb[0]):
 			if edgesAlready:
 				circles_rgb[cy, cx] = 50
 			else: 
