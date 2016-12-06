@@ -175,8 +175,8 @@ class DraughtsGameWindow(QWidget):
 				
 				transformer = tf.ProjectiveTransform()
 				transformer.estimate(src, dst)
-				transformed_image = tf.warp(input_img, transformer)
-				transformed_image.save('./transformed.png')
+				transformed_image = tf.warp(input_img, transformer, output_shape=(800, 800))
+				Image.fromarray(transformed_image).save('./transformed.png')
 				
 		camera.close()
 		print(self.corners)
