@@ -119,19 +119,15 @@ class DraughtsGameWindow(QWidget):
 			sum += pixel[1]
 			sum += pixel[2]
 			if sum > 300:
-				print("delete ", coord, ' with ', pixel)
+				#print("delete ", coord, ' with ', pixel)
 			else:
 				if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
-					print(coord, ' could be black with', pixel)
 					self.blackC.append(coord)
 				elif pixel[0] > 110:
-					print(coord, ' could be red with', pixel)
 					self.redC.append(coord)
 				elif pixel[1] > 110:
-					print(coord, ' could be green with', pixel)
 					self.greenC.append(coord)
 				elif pixel[2] > 110:
-					print(coord, ' could be blue with', pixel)
 					self.blueC.append(coord)
 		
 		#final_red = (int(numpy.sum(self.redC[0])/len(self.redC)),int(numpy.sum(self.redC[1])/len(self.redC[])))	#(sum(self.redC[0]), sum(self.redC[1]))
@@ -144,6 +140,7 @@ class DraughtsGameWindow(QWidget):
 		
 		self.lbl.setPixmap(self.pixmap)
 		if len(self.blackC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
+			print('less than 4 corners for calibration detected, returning -1')
 			return -1
 		
 		final_black = (int(final_black[0]),int(final_black[1]))
