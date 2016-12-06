@@ -138,6 +138,11 @@ class DraughtsGameWindow(QWidget):
 		final_red = numpy.average(self.redC, axis=0)
 		final_green = numpy.average(self.greenC, axis=0)
 		final_blue = numpy.average(self.blueC, axis=0)
+		
+		final_black = (int(final_black[0]),int(final_black[1]))
+		final_red = (int(final_red[0]),int(final_red[1]))
+		final_green = (int(final_green[0]),int(final_green[1]))
+		final_blue = (int(final_blue[0]),int(final_blue[1]))
 		print('avg black ',final_black)
 		print('avg red ',final_red)
 		print('avg green',final_green)
@@ -146,8 +151,9 @@ class DraughtsGameWindow(QWidget):
 		self.lbl.setPixmap(self.pixmap)
 		if len(self.blackC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
 			return -1
-		return -1
-		#finalCoords = numpy.array(final_blue, final_green, final_red, final_black)
+		#return -1
+		
+		return numpy.array((final_black, final_green, final_red, final_blue))
 		#return finalCoords
 		
 			
@@ -166,8 +172,14 @@ class DraughtsGameWindow(QWidget):
 				im.save('./tmp.png')
 				imDeb.save('./deb.png')
 				
-				dst =  self.checkCoords(img, coords)
+				calibrationCoords = self.checkCoords(img, coords)
 				src = numpy.array((
+					(0, 0), #upper left
+					(0, 1024), #lower left
+					(1280, 1024), #lright
+					(1280, 0) #uright
+				))
+				dst = numpy.array((
 					(0, 0), #upper left
 					(0, 1024), #lower left
 					(1280, 1024), #lright
