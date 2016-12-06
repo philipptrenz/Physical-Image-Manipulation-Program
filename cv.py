@@ -92,6 +92,10 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		b = cy < shape[0]
 		c = cx > 0
 		d = cx < shape[1]
+		print(a)
+		print(b)
+		print(c)
+		print(d)
 		if a:
 			if b:
 				if c:
