@@ -145,7 +145,7 @@ class DraughtsGameWindow(QWidget):
 		
 		self.lbl.setPixmap(self.pixmap)
 		if len(self.blackC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
-			#return -1
+			return -1
 		return -1
 		#finalCoords = numpy.array(final_blue, final_green, final_red, final_black)
 		#return finalCoords
