@@ -119,6 +119,7 @@ class DraughtsGameWindow(QWidget):
 			sum += pixel[1]
 			sum += pixel[2]
 			if sum > 300:
+				print()
 				#print("delete ", coord, ' with ', pixel)
 			else:
 				if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
