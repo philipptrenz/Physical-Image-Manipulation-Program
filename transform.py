@@ -12,10 +12,10 @@ margins = dict(hspace=0.01, wspace=0.01, top=1, bottom=0, left=0, right=1)
 text = data.text()
 
 src = np.array((
-    (0, 0),
-    (0, 50),
-    (300, 50),
-    (300, 0)
+	(0, 0), #upper left
+	(0, 1024), #lower left
+	(1280, 1024), #lright
+	(1280, 0) #uright
 ))
 dst = np.array((
     (155, 15),

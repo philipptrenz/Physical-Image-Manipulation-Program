@@ -60,7 +60,8 @@ class DraughtsGameWindow(QWidget):
 			self.close()
 		elif event.key() == Qt.Key_C:
 			self.capture()
-		
+			
+
 	def initUI(self):
 		
 		self.WIDTH, self.HEIGHT, self.CELL_SIZE = screen_rect.width(), screen_rect.height(), screen_rect.width() / self.CELLS_PER_ROW
@@ -142,11 +143,7 @@ class DraughtsGameWindow(QWidget):
 		print('avg blue ',final_blue)
 		
 		self.lbl.setPixmap(self.pixmap)
-		finalCoords = []
-		finalCoords.append(final_blue)
-		finalCoords.append(final_black)
-		finalCoords.append(final_red)
-		finalCoords.append(final_green)
+		finalCoords = numpy.array((final_blue, final_green, final_red, final_black))
 		if len(self.blackC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
 			return -1
 		return finalCoords
@@ -156,18 +153,33 @@ class DraughtsGameWindow(QWidget):
 	def capture(self):
 		camera = picamera.PiCamera()
 		res = -1
+		input_img = numpy.array()
 		while res == -1:
 			with picamera.array.PiRGBArray(camera) as stream:
 				camera.capture(stream, format='rgb')
 				img = stream.array
 				img, coords, circleDebug = circle_detection(img, 20, 25)
 				im = Image.fromarray(img) #.convert('LA')
+				input_img = im
 				imDeb = Image.fromarray(circleDebug) #.convert('LA')
 				im.save('./tmp.png')
 				imDeb.save('./deb.png')
 				res =  self.checkCoords(img, coords)
+				
 		self.corners = res
 		camera.close()
+		src = np.array((
+			(0, 0), #upper left
+			(0, 1024), #lower left
+			(1280, 1024), #lright
+			(1280, 0) #uright
+		))
+		dst = self.corners
+
+		transformer = tf.ProjectiveTransform()
+		transformer.estimate(src, dst)
+		transformed_image = tf.warp(input_img, transformer)
+		Image.fromarray(transformed_image).save('./transformed.png')
 		print(self.corners)
 		
 
