@@ -190,7 +190,7 @@ class DraughtsGameWindow(QWidget):
 					
 					scipy.misc.imsave('./transformed.png', transformed_image)
 					break
-				
+				else: print('fuckshitsuck')
 		camera.close()
 		print(self.corners)
 		
