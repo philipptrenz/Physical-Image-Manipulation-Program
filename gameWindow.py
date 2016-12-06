@@ -144,16 +144,17 @@ class DraughtsGameWindow(QWidget):
 			print('less than 4 corners for calibration detected, returning -1')
 			return -1
 		
-		final_black = (int(final_black[0]),int(final_black[1]))
-		final_red = (int(final_red[0]),int(final_red[1]))
-		final_green = (int(final_green[0]),int(final_green[1]))
-		final_blue = (int(final_blue[0]),int(final_blue[1]))
-		print('avg black ',final_black)
-		print('avg red ',final_red)
-		print('avg green',final_green)
-		print('avg blue ',final_blue)
+		final_black = (int(final_black[1]),int(final_black[0]))
+		final_red = (int(final_red[1]),int(final_red[0]))
+		final_green = (int(final_green[1]),int(final_green[0]))
+		final_blue = (int(final_blue[1]),int(final_blue[0]))
 		
-		return numpy.array((final_black, final_green, final_red, final_blue))
+		print('avg blue ',final_blue)
+		print('avg green',final_green)
+		print('avg red ',final_red)
+		print('avg black ',final_black)
+		
+		return numpy.array((final_blue, final_green, final_red, final_black))
 		#return finalCoords
 		
 			
@@ -173,7 +174,6 @@ class DraughtsGameWindow(QWidget):
 				imDeb.save('./deb.png')
 				
 				res = self.checkCoords(img, coords)
-				print("Typeof res: ", type(res))
 				if isinstance(res, (numpy.ndarray, numpy.generic) ):
 					src = numpy.array((
 						(0, 0), #upper left
@@ -186,7 +186,7 @@ class DraughtsGameWindow(QWidget):
 					transformer.estimate(src, res)
 					transformed_image = tf.warp(input_img, transformer, output_shape=(800, 800))
 					
-					print("Transformed Image: ",transformed_image)
+					#print("Transformed Image: ",transformed_image)
 					
 					scipy.misc.imsave('./transformed.png', transformed_image)
 					break
