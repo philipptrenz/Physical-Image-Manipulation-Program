@@ -153,7 +153,6 @@ class DraughtsGameWindow(QWidget):
 	def capture(self):
 		camera = picamera.PiCamera()
 		res = -1
-		input_img = numpy.array()
 		while res == -1:
 			with picamera.array.PiRGBArray(camera) as stream:
 				camera.capture(stream, format='rgb')
