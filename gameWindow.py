@@ -19,6 +19,7 @@ from PyQt5.QtWidgets import *
 from pyqt import FreakingQtImageViewer
 
 from skimage import color
+from skimage import transform as tf
 #from skimage import data
 from skimage.feature import canny
 from skimage.transform import hough_ellipse
