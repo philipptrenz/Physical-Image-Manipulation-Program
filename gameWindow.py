@@ -164,22 +164,21 @@ class DraughtsGameWindow(QWidget):
 				imDeb = Image.fromarray(circleDebug) #.convert('LA')
 				im.save('./tmp.png')
 				imDeb.save('./deb.png')
-				res =  self.checkCoords(img, coords)
 				
-		self.corners = res
+				dst =  self.checkCoords(img, coords)
+				src = np.array((
+					(0, 0), #upper left
+					(0, 1024), #lower left
+					(1280, 1024), #lright
+					(1280, 0) #uright
+				))
+				
+				transformer = tf.ProjectiveTransform()
+				transformer.estimate(src, dst)
+				transformed_image = tf.warp(input_img, transformer)
+				Image.fromarray(transformed_image).save('./transformed.png')
+				
 		camera.close()
-		src = np.array((
-			(0, 0), #upper left
-			(0, 1024), #lower left
-			(1280, 1024), #lright
-			(1280, 0) #uright
-		))
-		dst = self.corners
-
-		transformer = tf.ProjectiveTransform()
-		transformer.estimate(src, dst)
-		transformed_image = tf.warp(input_img, transformer)
-		Image.fromarray(transformed_image).save('./transformed.png')
 		print(self.corners)
 		
 
