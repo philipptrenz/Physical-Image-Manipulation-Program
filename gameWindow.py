@@ -139,6 +139,12 @@ class DraughtsGameWindow(QWidget):
 		final_green = numpy.average(self.greenC, axis=0)
 		final_blue = numpy.average(self.blueC, axis=0)
 		
+		
+		
+		self.lbl.setPixmap(self.pixmap)
+		if len(self.blackC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
+			return -1
+		
 		final_black = (int(final_black[0]),int(final_black[1]))
 		final_red = (int(final_red[0]),int(final_red[1]))
 		final_green = (int(final_green[0]),int(final_green[1]))
@@ -147,11 +153,6 @@ class DraughtsGameWindow(QWidget):
 		print('avg red ',final_red)
 		print('avg green',final_green)
 		print('avg blue ',final_blue)
-		
-		self.lbl.setPixmap(self.pixmap)
-		if len(self.blackC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
-			return -1
-		#return -1
 		
 		return numpy.array((final_black, final_green, final_red, final_blue))
 		#return finalCoords
