@@ -17,6 +17,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from pyqt import FreakingQtImageViewer
+import scipy.misc
 
 from skimage import color
 from skimage import transform as tf
@@ -194,7 +195,8 @@ class DraughtsGameWindow(QWidget):
 				print(transformed_image)
 				print(type(transformed_image))
 				
-				Image.fromarray(transformed_image).save('./transformed.png')
+				#Image.fromarray(transformed_image).save('./transformed.png')
+				scipy.misc.imsave('./transformed.png', transformed_image)
 		camera.close()
 		print(self.corners)
 		
