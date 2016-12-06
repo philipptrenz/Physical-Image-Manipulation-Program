@@ -161,7 +161,7 @@ class DraughtsGameWindow(QWidget):
 	def capture(self):
 		camera = picamera.PiCamera()
 		res = -1
-		while type(res) is not 'numpy.ndarray':
+		while True:
 			with picamera.array.PiRGBArray(camera) as stream:
 				camera.capture(stream, format='rgb')
 				img = stream.array
@@ -186,9 +186,10 @@ class DraughtsGameWindow(QWidget):
 					transformer.estimate(src, res)
 					transformed_image = tf.warp(input_img, transformer, output_shape=(800, 800))
 					
-					print(transformed_image)
+					print("Transformed Image: ",transformed_image)
 					
 					scipy.misc.imsave('./transformed.png', transformed_image)
+					break
 				
 		camera.close()
 		print(self.corners)
