@@ -173,7 +173,7 @@ class DraughtsGameWindow(QWidget):
 				imDeb.save('./deb.png')
 				
 				res = self.checkCoords(img, coords)
-				
+				print("Typeof res: ", type(res))
 				if type(res) is 'numpy.ndarray':
 					src = numpy.array((
 						(0, 0), #upper left
