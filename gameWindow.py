@@ -181,22 +181,19 @@ class DraughtsGameWindow(QWidget):
 					(1280, 1024), #lright
 					(1280, 0) #uright
 				))
-				dst = numpy.array((
-					(0, 0), #upper left
-					(0, 1024), #lower left
-					(1280, 1024), #lright
-					(1280, 0) #uright
-				))
-				
-				transformer = tf.ProjectiveTransform()
-				transformer.estimate(src, dst)
-				transformed_image = tf.warp(input_img, transformer, output_shape=(800, 800)).astype(int)
-				
-				print(transformed_image)
-				print(type(transformed_image))
+				if calibrationCoords != -1:
+					dst = calibrationCoords
+					
+					transformer = tf.ProjectiveTransform()
+					transformer.estimate(src, dst)
+					transformed_image = tf.warp(input_img, transformer, output_shape=(800, 800)).astype(int)
+					
+					print(transformed_image)
+					print(type(transformed_image))
+					scipy.misc.imsave('./transformed.png', transformed_image)
 				
 				#Image.fromarray(transformed_image).save('./transformed.png')
-				scipy.misc.imsave('./transformed.png', transformed_image)
+				
 		camera.close()
 		print(self.corners)
 		
