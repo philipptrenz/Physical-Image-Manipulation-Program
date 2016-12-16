@@ -180,14 +180,14 @@ class DraughtsGameWindow(QWidget):
 			if isinstance(res, (numpy.ndarray, numpy.generic) ):
 				src = numpy.array((
 					(0, 0), #upper left
-					(0, 800), #lower left
-					(800, 800), #lright
-					(800, 0) #uright
+					(0, 1024), #lower left
+					(1280, 1024), #lright
+					(1280, 0) #uright
 				))
 			
 				transformer = tf.ProjectiveTransform()
 				transformer.estimate(src, res)
-				transformed_image = tf.warp(input_img, transformer)
+				transformed_image = tf.warp(input_img, transformer, output_shape=(800,800))
 				
 				#print("Transformed Image: ",transformed_image)
 				
