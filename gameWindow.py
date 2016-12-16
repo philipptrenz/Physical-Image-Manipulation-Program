@@ -94,7 +94,7 @@ class DraughtsGameWindow(QWidget):
 		self.painter.drawEllipse(self.lower_left[0]-10,self.lower_left[1]-10,20,20)
 		
 		self.vbox = QVBoxLayout(self)
-		
+		self.vbox.setContentsMargins(240,112,240,112)
 		self.lbl = QLabel(self)
 		self.lbl.setPixmap(self.pixmap)
 		self.vbox.addWidget(self.lbl)
