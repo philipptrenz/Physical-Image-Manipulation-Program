@@ -38,6 +38,7 @@ import picamera
 import picamera.array
 
 from cv import circle_detection
+from thread import start_new_thread
 
 
 class DraughtsGameWindow(QWidget):
@@ -61,7 +62,7 @@ class DraughtsGameWindow(QWidget):
 		if event.key() == Qt.Key_Escape: 
 			self.close()
 		elif event.key() == Qt.Key_C:
-			self.capture()
+			start_new_thread(self.capture);
 			
 
 	def initUI(self):
@@ -172,6 +173,8 @@ class DraughtsGameWindow(QWidget):
 			imDeb = Image.fromarray(circleDebug) #.convert('LA')
 			im.save('./tmp.png')
 			imDeb.save('./deb.png')
+			
+			
 			
 			res = self.checkCoords(img, coords)
 			if isinstance(res, (numpy.ndarray, numpy.generic) ):
