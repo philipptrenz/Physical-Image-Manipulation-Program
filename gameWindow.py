@@ -194,6 +194,12 @@ class DraughtsGameWindow(QWidget):
 
 	def calibrate(self, ignore1, ignore2): # pythonmaster
 		camera = picamera.PiCamera()
+
+		# test manual white balance
+			camera.awb_mode = 'off'
+			rg, bg = (2, 2)
+			camera.awb_gains = (rg, bg)
+			# end
 		
 		self.calibrationPoints = -1
 		#while True:
