@@ -113,11 +113,11 @@ class DraughtsGameWindow(QWidget):
 
 			rg_bg = (2, 3)
 
-			for rg in range(0,8):
-				for bg in range(0,8):
+			for rg in range(0,20):
+				for bg in range(0,20):
 
-					rg_x=rg
-					bg_x=bg
+					rg_x=rg/10
+					bg_x=bg/10
 
 					camera.awb_gains = (rg_x,bg_x)
 					with picamera.array.PiRGBArray(camera) as stream:
