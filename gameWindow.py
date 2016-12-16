@@ -65,7 +65,7 @@ class DraughtsGameWindow(QWidget):
 			start_new_thread(self.capture, (0, 0,))
 		elif event.key() == Qt.Key_V:
 
-			self.vbox.setContentsMargins(self.upper_left[0],self.PIX_PADDING,240,112)
+			self.vbox.setContentsMargins(self.upper_left[0] + 10,self.PIX_PADDING + 10,240,112)
 			self.pixmap = QPixmap("checkers_randlos.jpg")
 			self.pixmap = self.pixmap.scaledToWidth( self.upper_right[0]-self.upper_left[0] )
 			'''
