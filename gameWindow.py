@@ -57,7 +57,7 @@ class DraughtsGameWindow(QWidget):
 		self.PIX_PADDING = 25
 		self.BORDER_RADIUS = 10
 
-		self.rg_bg = (0.2, 0.2)
+		self.rg_bg = (10, 10)
 
 		self.initUI()
 		
