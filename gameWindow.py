@@ -98,6 +98,8 @@ class DraughtsGameWindow(QWidget):
 		self.lbl.setPixmap(self.pixmap)
 		self.vbox.addWidget(self.lbl)
 		
+		self.setStyleSheet("background-color:black;")
+		
 		self.setLayout(self.vbox)
 		self.vbox.setAlignment(Qt.AlignHCenter)
 		self.showFullScreen()
@@ -195,7 +197,7 @@ class DraughtsGameWindow(QWidget):
 				self.pixmap.scaledToWidth( 800 );
 				self.lbl.setPixmap(self.pixmap)
 				self.vbox.setContentsMargins(240,112,240,112)
-				self.vbox.repaint()
+				self.lbl.repaint()
 				#break
 			else: print('fuckshitsuck')
 		camera.close()
