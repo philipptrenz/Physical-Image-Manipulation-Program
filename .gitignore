@@ -10,8 +10,6 @@ __pycache__/
 allTheThings.bat
 
 # Images
-*.jpg
-*.jpeg
 *.png
 
 # Distribution / packaging

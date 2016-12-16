@@ -192,6 +192,8 @@ class DraughtsGameWindow(QWidget):
 				#print("Transformed Image: ",transformed_image)
 				
 				scipy.misc.imsave('./transformed.png', transformed_image)
+				self.pixmap = QPixmap("checkers_randlos.jpg");
+				self.lbl.setPixmap(self.pixmap)
 				#break
 			else: print('fuckshitsuck')
 		camera.close()
