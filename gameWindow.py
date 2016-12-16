@@ -237,6 +237,12 @@ class DraughtsGameWindow(QWidget):
 
 			camera = picamera.PiCamera()
 
+			# test manual white balance
+			camera.awb_mode = 'off'
+		    rg, bg = (2, 2)
+		    camera.awb_gains = (rg, bg)
+		    # end
+
 			with picamera.array.PiRGBArray(camera) as stream:
 				camera.capture(stream, format='rgb')
 				img = stream.array
