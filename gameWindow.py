@@ -62,7 +62,7 @@ class DraughtsGameWindow(QWidget):
 		if event.key() == Qt.Key_Escape: 
 			self.close()
 		elif event.key() == Qt.Key_C:
-			start_new_thread(self.capture, (self, ))
+			start_new_thread(self.capture, (0, 0,))
 			
 
 	def initUI(self):
@@ -160,7 +160,7 @@ class DraughtsGameWindow(QWidget):
 		
 			
 
-	def capture(self):
+	def capture(self, ignore1, ignore2): # pythonmaster
 		camera = picamera.PiCamera()
 		res = -1
 		#while True:
