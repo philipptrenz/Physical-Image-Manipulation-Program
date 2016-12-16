@@ -81,9 +81,9 @@ class DraughtsGameWindow(QWidget):
 		self.painter = QPainter(self.pixmap)
 		self.painter.setPen(self.DEFAULT_PEN)
 
-		self.painter.fillRect(0, 0,self.WIDTH, self.HEIGHT, self.WHITE_COLOR)
+		self.painter.fillRect(0, 0,self.WIDTH, self.HEIGHT, self.BLACK_COLOR)
 		self.painter.drawEllipse(self.upper_left[0]-10,self.upper_left[1]-10,20,20)
-		self.DEFAULT_PEN.setColor(self.BLACK_COLOR)
+		self.DEFAULT_PEN.setColor(self.WHITE_COLOR)
 		self.painter.setPen(self.DEFAULT_PEN)
 		self.painter.drawEllipse(self.upper_right[0]-10,self.upper_right[1]-10,20,20)
 		self.DEFAULT_PEN.setColor(self.RED_COLOR)
@@ -111,7 +111,7 @@ class DraughtsGameWindow(QWidget):
 		self.redC = []
 		self.greenC = []
 		self.blueC = []
-		self.blackC = []
+		self.whiteC = []
 		for index, coord in enumerate(coords):
 			#print(img[coord[0], coord[1]]," - ", )
 			pixel = img[coord[0], coord[1]]
@@ -119,34 +119,32 @@ class DraughtsGameWindow(QWidget):
 			sum += pixel[0]
 			sum += pixel[1]
 			sum += pixel[2]
-			if sum > 300:
+			'''if sum > 300:
 				print()
 				#print("delete ", coord, ' with ', pixel)
-			else:
-				print("pixel: ", pixel)
-				if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
-					self.blackC.append(coord)
-				elif pixel[0] > 110:
-					self.redC.append(coord)
-				elif pixel[1] > 110:
-					self.greenC.append(coord)
-				elif pixel[2] > 110:
-					self.blueC.append(coord)
+			else:'''
+			print("pixel: ", pixel)
+			if pixel[0] < 150 and pixel[1] < 150 and pixel[2] < 150:
+				self.whiteC.append(coord)
+			elif pixel[0] > 110:
+				self.redC.append(coord)
+			elif pixel[1] > 110:
+				self.greenC.append(coord)
+			elif pixel[2] > 110:
+				self.blueC.append(coord)
 		
 		#final_red = (int(numpy.sum(self.redC[0])/len(self.redC)),int(numpy.sum(self.redC[1])/len(self.redC[])))	#(sum(self.redC[0]), sum(self.redC[1]))
-		final_black = numpy.average(self.blackC, axis=0)
+		final_white = numpy.average(self.whiteC, axis=0)
 		final_red = numpy.average(self.redC, axis=0)
 		final_green = numpy.average(self.greenC, axis=0)
 		final_blue = numpy.average(self.blueC, axis=0)
 		
-		
-		
 		self.lbl.setPixmap(self.pixmap)
-		if len(self.blackC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
+		if len(self.whiteC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
 			print('less than 4 corners for calibration detected, returning -1')
 			return -1
 		
-		final_black = (int(final_black[1]),int(final_black[0]))
+		final_white = (int(final_white[1]),int(final_white[0]))
 		final_red = (int(final_red[1]),int(final_red[0]))
 		final_green = (int(final_green[1]),int(final_green[0]))
 		final_blue = (int(final_blue[1]),int(final_blue[0]))
@@ -154,9 +152,9 @@ class DraughtsGameWindow(QWidget):
 		print('avg blue ',final_blue)
 		print('avg green',final_green)
 		print('avg red ',final_red)
-		print('avg black ',final_black)
+		print('avg white ',final_white)
 		
-		return numpy.array((final_blue, final_green, final_red, final_black))
+		return numpy.array((final_blue, final_green, final_red, final_white))
 		#return finalCoords
 		
 			
