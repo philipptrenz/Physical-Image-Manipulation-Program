@@ -239,9 +239,9 @@ class DraughtsGameWindow(QWidget):
 
 			# test manual white balance
 			camera.awb_mode = 'off'
-		    rg_gb = (2, 2)
-		    camera.awb_gains = rg_gb
-		    # end
+			rg, bg = (2, 2)
+			camera.awb_gains = (rg, bg)
+			# end
 
 			with picamera.array.PiRGBArray(camera) as stream:
 				camera.capture(stream, format='rgb')
