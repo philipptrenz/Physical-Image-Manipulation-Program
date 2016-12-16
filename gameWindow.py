@@ -192,6 +192,7 @@ class DraughtsGameWindow(QWidget):
 				
 				scipy.misc.imsave('./transformed.png', transformed_image)
 				self.pixmap = QPixmap("checkers_randlos.jpg");
+				self.pixmap.scaledToWidth( 800 );
 				self.lbl.setPixmap(self.pixmap)
 				self.vbox.setContentsMargins(240,112,240,112)
 				self.vbox.repaint()
