@@ -123,6 +123,7 @@ class DraughtsGameWindow(QWidget):
 				print()
 				#print("delete ", coord, ' with ', pixel)
 			else:
+				print("pixel: ", pixel)
 				if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
 					self.blackC.append(coord)
 				elif pixel[0] > 110:
