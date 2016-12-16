@@ -213,6 +213,7 @@ class DraughtsGameWindow(QWidget):
 		with picamera.array.PiRGBArray(camera) as stream:
 			camera.capture(stream, format='rgb')
 			img = stream.array
+			camera.close()
 
 			img, coords, circleDebug = circle_detection(img, 20, 25)
 			im = Image.fromarray(img) #.convert('LA')
@@ -220,9 +221,7 @@ class DraughtsGameWindow(QWidget):
 			imDeb = Image.fromarray(circleDebug) #.convert('LA')
 			im.save('./tmp.png')
 			imDeb.save('./deb.png')
-			
-			camera.close()
-			
+				
 			
 			self.calibrationPoints = self.checkCoords(img, coords)
 			if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
