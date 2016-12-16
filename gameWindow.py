@@ -202,7 +202,7 @@ class DraughtsGameWindow(QWidget):
 				print("p3")
 				self.vbox.setContentsMargins(240,112,240,112)
 				print("p4")
-				self.lbl.repaint()
+				#self.lbl.repaint()
 				#break
 			else: print('fuckshitsuck')
 		camera.close()
