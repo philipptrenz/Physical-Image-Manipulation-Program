@@ -88,7 +88,7 @@ class DraughtsGameWindow(QWidget):
 	def initUI(self):
 		
 		self.WIDTH, self.HEIGHT, self.CELL_SIZE = screen_rect.width(), screen_rect.height(), screen_rect.width() / self.CELLS_PER_ROW
-		self.pixmap = QPixmap(self.WIDTH,self.HEIGHT)
+		self.pixmap = QPixmap(self.WIDTH-20,self.HEIGHT-20)
 		
 		self.upper_left = (self.PIX_PADDING + self.WIDTH / 2 - self.pixmap.height() / 2, self.PIX_PADDING)
 		self.upper_right = (- self.PIX_PADDING + self.WIDTH / 2 + self.pixmap.height() / 2, self.PIX_PADDING + 0)
