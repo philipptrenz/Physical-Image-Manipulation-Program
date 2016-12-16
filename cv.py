@@ -89,9 +89,9 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		shape = circles_rgb.shape
 		
 		cx = [x for x in cx if x > 0]
-		cx = [x for x in cx if x < 1280]
+		cx = [x for x in cx if x < 1024]
 		cy = [y for y in cy if y > 0]
-		cy = [y for y in cy if y < 1024]
+		cy = [y for y in cy if y < 1280]
 		
 		if edgesAlready:
 			circles_rgb[cy, cx] = 50
