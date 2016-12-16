@@ -95,7 +95,7 @@ class DraughtsGameWindow(QWidget):
 			camera.awb_mode = 'off'
 			camera.awb_gains = self.rg_bg
 			# end
-			
+
 			with picamera.array.PiRGBArray(camera) as stream:
 				camera.capture(stream, format='rgb')
 				im = Image.fromarray(stream.array)
@@ -201,7 +201,7 @@ class DraughtsGameWindow(QWidget):
 	def calibrate(self, ignore1, ignore2): # pythonmaster
 		camera = picamera.PiCamera()
 
-		self.rg_bg = (5, 5)
+		self.rg_bg = (0.2, 0.2)
 
 		# test manual white balance
 		camera.awb_mode = 'off'
