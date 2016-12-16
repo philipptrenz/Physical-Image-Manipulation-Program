@@ -116,11 +116,14 @@ class DraughtsGameWindow(QWidget):
 			for rg in range(0,80):
 				for bg in range(0,80):
 
-					camera.awb_gains = (rg/10,bg/10)
+					rg=rg/10
+					bg=bg/10
+
+					camera.awb_gains = (rg,bg)
 					with picamera.array.PiRGBArray(camera) as stream:
 						camera.capture(stream, format='rgb')
 						im = Image.fromarray(stream.array)
-						im.save('./preview_'+rg+'_'+bg+'.png')				
+						im.save('./preview_'+str(rg)+'_'+str(bg)+'.png')				
 						
 						#os.system('xdg-open ./preview.png')
 
