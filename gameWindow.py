@@ -63,7 +63,17 @@ class DraughtsGameWindow(QWidget):
 			self.close()
 		elif event.key() == Qt.Key_C:
 			start_new_thread(self.capture, (0, 0,))
-			
+		elif event.key() == Qt.Key_X:
+				print("p0")
+				self.pixmap = QPixmap("checkers_randlos.jpg");
+				print("p1")
+				self.pixmap.scaledToWidth( 800 );
+				print("p2")
+				self.lbl.setPixmap(self.pixmap)
+				print("p3")
+				self.vbox.setContentsMargins(240,112,240,112)
+				print("p4")
+				self.lbl.repaint()
 
 	def initUI(self):
 		
@@ -193,16 +203,6 @@ class DraughtsGameWindow(QWidget):
 				#print("Transformed Image: ",transformed_image)
 				
 				scipy.misc.imsave('./transformed.png', transformed_image)
-				print("p0")
-				self.pixmap = QPixmap("checkers_randlos.jpg");
-				print("p1")
-				self.pixmap.scaledToWidth( 800 );
-				print("p2")
-				self.lbl.setPixmap(self.pixmap)
-				print("p3")
-				self.vbox.setContentsMargins(240,112,240,112)
-				print("p4")
-				#self.lbl.repaint()
 				#break
 			else: print('fuckshitsuck')
 		camera.close()
