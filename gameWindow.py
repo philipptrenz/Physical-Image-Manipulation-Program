@@ -42,6 +42,9 @@ from _thread import start_new_thread
 
 
 class DraughtsGameWindow(QWidget):
+
+	self.rg_bg = (0.2, 0.2)
+	
 	def __init__(self):
 		super().__init__()
 		self.corners = []
@@ -200,8 +203,6 @@ class DraughtsGameWindow(QWidget):
 
 	def calibrate(self, ignore1, ignore2): # pythonmaster
 		camera = picamera.PiCamera()
-
-		self.rg_bg = (0.2, 0.2)
 
 		# test manual white balance
 		camera.awb_mode = 'off'
