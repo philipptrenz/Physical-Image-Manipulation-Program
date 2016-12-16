@@ -43,8 +43,6 @@ from _thread import start_new_thread
 
 class DraughtsGameWindow(QWidget):
 
-	self.rg_bg = (0.2, 0.2)
-	
 	def __init__(self):
 		super().__init__()
 		self.corners = []
@@ -58,6 +56,8 @@ class DraughtsGameWindow(QWidget):
 		self.DEFAULT_PEN.setWidth(20)
 		self.PIX_PADDING = 25
 		self.BORDER_RADIUS = 10
+
+		self.rg_bg = (0.2, 0.2)
 
 		self.initUI()
 		
