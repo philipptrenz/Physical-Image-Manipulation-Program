@@ -88,14 +88,11 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		circles_rgb = numpy.copy(image_rgb)
 		shape = circles_rgb.shape
 		
-		cx = [x for x in cx if x > 0]
-		cx = [x for x in cx if x < 1024]
-		cy = [y for y in cy if y > 0]
-		cy = [y for y in cy if y < 1280]
+		circles_rgb[center_y + radius, center_x + radius] = (255, 255, 0)
 		
-		if edgesAlready:
-			circles_rgb[cy, cx] = 50
-		else: 
-			circles_rgb[cy, cx] = (220, 20, 20)
+		#if edgesAlready:
+		#	circles_rgb[cy, cx] = 50
+		#else: 
+	#		circles_rgb[cy, cx] = (220, 20, 20)
 	print('done -> ', count2)
 	return (image_rgb, centers, circles_rgb)
