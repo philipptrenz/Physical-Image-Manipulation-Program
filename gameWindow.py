@@ -177,6 +177,7 @@ class DraughtsGameWindow(QWidget):
 			
 			
 			res = self.checkCoords(img, coords)
+			print("res ", res)
 			if isinstance(res, (numpy.ndarray, numpy.generic) ):
 				src = numpy.array((
 					(0, 0), #upper left
