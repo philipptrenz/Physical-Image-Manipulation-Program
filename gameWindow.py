@@ -104,6 +104,7 @@ class DraughtsGameWindow(QWidget):
 				im = Image.fromarray(stream.array)
 				im.save('./preview.png')				
 				camera.close()
+				os.system('xdg-open ./preview.png')
 
 
 	def initUI(self):
