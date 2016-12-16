@@ -86,7 +86,16 @@ class DraughtsGameWindow(QWidget):
 			self.lbl.repaint()
 
 		elif event.key() == Qt.Key_S:
-			start_new_thread(self.findTiles, (0, 0,))			
+			start_new_thread(self.findTiles, (0, 0,))
+
+		elif event.key() == Qt.Key_P:
+			camera = picamera.PiCamera()
+			with picamera.array.PiRGBArray(camera) as stream:
+				camera.capture(stream, format='rgb')
+				im = Image.fromarray(stream.array)
+				im.save('./preview.png')				
+				camera.close()
+
 
 	def initUI(self):
 		
@@ -191,6 +200,7 @@ class DraughtsGameWindow(QWidget):
 		with picamera.array.PiRGBArray(camera) as stream:
 			camera.capture(stream, format='rgb')
 			img = stream.array
+
 			img, coords, circleDebug = circle_detection(img, 20, 25)
 			im = Image.fromarray(img) #.convert('LA')
 			input_img = im
