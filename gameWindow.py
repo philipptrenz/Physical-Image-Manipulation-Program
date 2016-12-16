@@ -106,6 +106,30 @@ class DraughtsGameWindow(QWidget):
 				camera.close()
 				os.system('xdg-open ./preview.png')
 
+		elif event.key() == Qt.Key_T:
+			camera = picamera.PiCamera()
+			camera.awb_mode = 'off'
+
+
+			rg_bg = (2, 3)
+
+			for rg in range(0,80):
+				for bg in range(0,80):
+					
+					rg = rg/10
+					bg=bg/10
+
+					camera.awb_gains = (rg,bg)
+					with picamera.array.PiRGBArray(camera) as stream:
+						camera.capture(stream, format='rgb')
+						im = Image.fromarray(stream.array)
+						im.save('./preview_'+rg+'_'+bg+'.png')				
+						
+						#os.system('xdg-open ./preview.png')
+
+
+			camera.close()
+
 
 	def initUI(self):
 		
