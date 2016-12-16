@@ -62,7 +62,7 @@ class DraughtsGameWindow(QWidget):
 		if event.key() == Qt.Key_Escape: 
 			self.close()
 		elif event.key() == Qt.Key_C:
-			start_new_thread(self.capture, (0, 0,))
+			start_new_thread(self.calibrate, (0, 0,))
 		elif event.key() == Qt.Key_V:
 
 			self.vbox.setContentsMargins(self.upper_left[0] + 10,self.PIX_PADDING + 10,240,112)
@@ -84,6 +84,9 @@ class DraughtsGameWindow(QWidget):
 			
 			self.lbl.setPixmap(self.pixmap)
 			self.lbl.repaint()
+
+		elif event.key() == Qt.Key_S:
+			start_new_thread(self.findTiles, (0, 0,))			
 
 	def initUI(self):
 		
@@ -125,7 +128,7 @@ class DraughtsGameWindow(QWidget):
 		self.showFullScreen()
 		self.setWindowTitle('DraughtsCV')
 		self.show()
-		#capture()
+		#calibrate()
 		
 
 	def checkCoords(self, img, coords):
@@ -180,9 +183,10 @@ class DraughtsGameWindow(QWidget):
 		
 			
 
-	def capture(self, ignore1, ignore2): # pythonmaster
+	def calibrate(self, ignore1, ignore2): # pythonmaster
 		camera = picamera.PiCamera()
-		res = -1
+		
+		self.calibrationPoints = -1
 		#while True:
 		with picamera.array.PiRGBArray(camera) as stream:
 			camera.capture(stream, format='rgb')
@@ -194,11 +198,11 @@ class DraughtsGameWindow(QWidget):
 			im.save('./tmp.png')
 			imDeb.save('./deb.png')
 			
+			camera.close()
 			
 			
-			res = self.checkCoords(img, coords)
-			print("res ", res)
-			if isinstance(res, (numpy.ndarray, numpy.generic) ):
+			self.calibrationPoints = self.checkCoords(img, coords)
+			if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
 				src = numpy.array((
 					(0, 0), #upper left
 					(0, 800), #lower left
@@ -207,16 +211,44 @@ class DraughtsGameWindow(QWidget):
 				))
 			
 				transformer = tf.ProjectiveTransform()
-				transformer.estimate(src, res)
+				transformer.estimate(src, self.calibrationPoints)
 				transformed_image = tf.warp(input_img, transformer, output_shape = (800,800))
 				
 				#print("Transformed Image: ",transformed_image)
 				
 				scipy.misc.imsave('./transformed.png', transformed_image)
 				#break
-			else: print('fuckshitsuck')
-		camera.close()
+			else: print('ups')
 		print(self.corners)
+
+	def findTiles(self, ignore1, ignore2): # pythonmaster
+
+		if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
+
+			camera = picamera.PiCamera()
+
+			with picamera.array.PiRGBArray(camera) as stream:
+				camera.capture(stream, format='rgb')
+				img = stream.array
+				camera.close()
+
+				src = numpy.array((
+					(0, 0), #upper left
+					(0, 800), #lower left
+					(800, 800), #lright
+					(800, 0) #uright
+				))
+				
+				transformer = tf.ProjectiveTransform()
+				transformer.estimate(src, self.calibrationPoints)
+				board_image = tf.warp(img, transformer, output_shape = (800,800))
+
+				scipy.misc.imsave('./board.png', board_image)
+			
+			print('board image captured')
+
+		else:
+			print('calibrationPoints not yet set')
 		
 
 
@@ -227,5 +259,4 @@ if __name__ == '__main__':
 
 	screen_rect = app.desktop().screenGeometry()
 	viewer = DraughtsGameWindow() # init ui
-	# capture
 	sys.exit(app.exec_())
