@@ -53,7 +53,7 @@ class DraughtsGameWindow(QWidget):
 		self.GREEN_COLOR = QColor(0,255,0,255)
 		self.DEFAULT_PEN = QPen(self.BLUE_COLOR)
 		self.DEFAULT_PEN.setWidth(20)
-		self.PIX_PADDING = 75
+		self.PIX_PADDING = 25
 		self.BORDER_RADIUS = 10
 
 		self.initUI()
@@ -64,11 +64,24 @@ class DraughtsGameWindow(QWidget):
 		elif event.key() == Qt.Key_C:
 			start_new_thread(self.capture, (0, 0,))
 		elif event.key() == Qt.Key_X:
-				print("p0")
+		
+				self.vbox.setContentsMargins(self.upper_left[0],self.PIX_PADDING,240,112)
 				self.pixmap = QPixmap("checkers_randlos.jpg")
-				self.pixmap = self.pixmap.scaledToWidth( 800 )
+				self.pixmap = self.pixmap.scaledToWidth( self.upper_right[0]-self.upper_left[0] )
+				
+				self.painter.drawEllipse(self.upper_left[0]-10,self.upper_left[1]-10,20,20)
+				self.painter = QPainter(self.pixmap)
+				self.DEFAULT_PEN.setColor(self.WHITE_COLOR)
+				self.painter.setPen(self.DEFAULT_PEN)
+				self.painter.drawEllipse(self.upper_right[0]-10,self.upper_right[1]-10,20,20)
+				self.DEFAULT_PEN.setColor(self.RED_COLOR)
+				self.painter.setPen(self.DEFAULT_PEN)
+				self.painter.drawEllipse(self.lower_right[0]-10,self.lower_right[1]-10,20,20)
+				self.DEFAULT_PEN.setColor(self.GREEN_COLOR)
+				self.painter.setPen(self.DEFAULT_PEN)
+				self.painter.drawEllipse(self.lower_left[0]-10,self.lower_left[1]-10,20,20)
+				
 				self.lbl.setPixmap(self.pixmap)
-				self.vbox.setContentsMargins(240,112,240,112)
 				self.lbl.repaint()
 
 	def initUI(self):
