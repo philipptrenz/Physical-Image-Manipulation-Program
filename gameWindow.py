@@ -193,10 +193,15 @@ class DraughtsGameWindow(QWidget):
 				#print("Transformed Image: ",transformed_image)
 				
 				scipy.misc.imsave('./transformed.png', transformed_image)
+				print("p0")
 				self.pixmap = QPixmap("checkers_randlos.jpg");
+				print("p1")
 				self.pixmap.scaledToWidth( 800 );
+				print("p2")
 				self.lbl.setPixmap(self.pixmap)
+				print("p3")
 				self.vbox.setContentsMargins(240,112,240,112)
+				print("p4")
 				self.lbl.repaint()
 				#break
 			else: print('fuckshitsuck')
