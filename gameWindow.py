@@ -63,13 +63,13 @@ class DraughtsGameWindow(QWidget):
 			self.close()
 		elif event.key() == Qt.Key_C:
 			start_new_thread(self.capture, (0, 0,))
-		elif event.key() == Qt.Key_X:
+		elif event.key() == Qt.Key_V:
 		
 				self.vbox.setContentsMargins(self.upper_left[0],self.PIX_PADDING,240,112)
 				self.pixmap = QPixmap("checkers_randlos.jpg")
 				self.pixmap = self.pixmap.scaledToWidth( self.upper_right[0]-self.upper_left[0] )
 				
-				self.painter.drawEllipse(self.upper_left[0]-10,self.upper_left[1]-10,20,20)
+			'''	self.painter.drawEllipse(self.upper_left[0]-10,self.upper_left[1]-10,20,20)
 				self.painter = QPainter(self.pixmap)
 				self.DEFAULT_PEN.setColor(self.WHITE_COLOR)
 				self.painter.setPen(self.DEFAULT_PEN)
@@ -79,7 +79,7 @@ class DraughtsGameWindow(QWidget):
 				self.painter.drawEllipse(self.lower_right[0]-10,self.lower_right[1]-10,20,20)
 				self.DEFAULT_PEN.setColor(self.GREEN_COLOR)
 				self.painter.setPen(self.DEFAULT_PEN)
-				self.painter.drawEllipse(self.lower_left[0]-10,self.lower_left[1]-10,20,20)
+				self.painter.drawEllipse(self.lower_left[0]-10,self.lower_left[1]-10,20,20)'''
 				
 				self.lbl.setPixmap(self.pixmap)
 				self.lbl.repaint()
