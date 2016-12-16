@@ -77,34 +77,38 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		#print('extend3')
 		count2 = count2 + 1
 	#print('erste loop: ', count2)
+	
 	count2 = 0
 	#print('loop 1 ',len(accums))
+	accepted_centers = []
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		count2 = count2 + 1
 		center_x, center_y = centers[idx]
-		radius = radii[idx]
-		print('radius: ' + str(radius))
-		cx, cy = circle_perimeter(center_y, center_x, radius)
-		circles_rgb = numpy.copy(image_rgb)
-		shape = circles_rgb.shape
-		
-		'''cx = [x for x in cx if x > 0]
-		cx = [x for x in cx if x < 1280]
-		cy = [y for y in cy if y > 0]
-		cy = [y for y in cy if y < 1024]'''
-		
-		circles_rgb[center_y, center_x] = (255, 255, 0)
-		circles_rgb[center_y, center_x+1] = (255, 255, 0)
-		circles_rgb[center_y, center_x-1] = (255, 255, 0)
-		circles_rgb[center_y+1, center_x] = (255, 255, 0)
-		circles_rgb[center_y+1, center_x+1] = (255, 255, 0)
-		circles_rgb[center_y+1, center_x-1] = (255, 255, 0)
-		circles_rgb[center_y-1, center_x] = (255, 255, 0)
-		circles_rgb[center_y-1, center_x+1] = (255, 255, 0)
-		circles_rgb[center_y-1, center_x-1] = (255, 255, 0)
-		'''if edgesAlready:
-			circles_rgb[cy, cx] = 50
-		else: 
-			circles_rgb[cy, cx] = (220, 20, 20)'''
+		if(not(center_x > 1280 or center_y > 1024 or center_x < 0 or center_y < 0)):
+			radius = radii[idx]
+			accepted_centers.append(centers[idx])
+			print('radius: ' + str(radius))
+			cx, cy = circle_perimeter(center_y, center_x, radius)
+			circles_rgb = numpy.copy(image_rgb)
+			shape = circles_rgb.shape
+			
+			'''cx = [x for x in cx if x > 0]
+			cx = [x for x in cx if x < 1280]
+			cy = [y for y in cy if y > 0]
+			cy = [y for y in cy if y < 1024]'''
+			
+			circles_rgb[center_y, center_x] = (255, 255, 0)
+			circles_rgb[center_y, center_x+1] = (255, 255, 0)
+			circles_rgb[center_y, center_x-1] = (255, 255, 0)
+			circles_rgb[center_y+1, center_x] = (255, 255, 0)
+			circles_rgb[center_y+1, center_x+1] = (255, 255, 0)
+			circles_rgb[center_y+1, center_x-1] = (255, 255, 0)
+			circles_rgb[center_y-1, center_x] = (255, 255, 0)
+			circles_rgb[center_y-1, center_x+1] = (255, 255, 0)
+			circles_rgb[center_y-1, center_x-1] = (255, 255, 0)
+			'''if edgesAlready:
+				circles_rgb[cy, cx] = 50
+			else: 
+				circles_rgb[cy, cx] = (220, 20, 20)'''
 	print('done -> ', count2)
-	return (image_rgb, centers, circles_rgb)
+	return (image_rgb, accepted_centers, circles_rgb)
