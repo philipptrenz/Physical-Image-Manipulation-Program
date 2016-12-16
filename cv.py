@@ -84,7 +84,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		count2 = count2 + 1
 		center_x, center_y = centers[idx]
-		if(not(center_x > 1280 or center_y > 1024 or center_x < 0 or center_y < 0)):
+		if(not(center_x >= 1280 or center_y >= 1024 or center_x < 0 or center_y < 0)):
 			radius = radii[idx]
 			accepted_centers.append(centers[idx])
 			print('radius: ' + str(radius))
