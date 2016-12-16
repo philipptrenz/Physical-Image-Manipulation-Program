@@ -38,7 +38,7 @@ import picamera
 import picamera.array
 
 from cv import circle_detection
-from thread import start_new_thread
+from _thread import start_new_thread
 
 
 class DraughtsGameWindow(QWidget):
