@@ -79,6 +79,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	#print('erste loop: ', count2)
 	
 	count2 = 0
+	circles_rgb = -1
 	#print('loop 1 ',len(accums))
 	accepted_centers = []
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
@@ -113,4 +114,9 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 					else: 
 						circles_rgb[cy, cx] = (220, 20, 20)'''
 	print('done -> ', count2)
+
+	if (circles_rgb == -1):
+		print('kein einziger Kreis gefunden, irgendwas ging schief ...')
+		return
+
 	return (image_rgb, accepted_centers, circles_rgb)
