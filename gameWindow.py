@@ -127,6 +127,12 @@ class DraughtsGameWindow(QWidget):
 
 			camera.close()
 
+			self.vbox.setContentsMargins(self.upper_left[0] + 10,self.PIX_PADDING + 10,240,112)
+			self.pixmap = QPixmap("checkers_randlos.jpg")
+			self.pixmap = self.pixmap.scaledToWidth( self.upper_right[0]-self.upper_left[0] )			
+			self.lbl.setPixmap(self.pixmap)
+			self.lbl.repaint()
+
 
 	def initUI(self):
 		
