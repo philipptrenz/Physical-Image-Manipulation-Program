@@ -100,7 +100,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 
 					# debug -->
 					# paramters: y, x, radius; returns y, x
-					cy, cx = circle_perimeter(center_x+offset, center_y+offset, 23, method='bresenham', shape=image_shape)
+					cy, cx = circle_perimeter(center_x+offset, center_y+offset, 23, method='bresenham', shape=None)
 					pixel_color = image_rgb[center_y, center_x]
 					debug_img[cy, cx] = pixel_color
 					#print('  accepted circle drawn', center_x, center_y)
@@ -110,7 +110,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		# draw also all unaccepted circles
 		if not is_accepted_circle:
 			# paramters: y, x, radius; returns x, y
-			cx, cy = circle_perimeter(center_y+offset, center_x+offset, 23, method='bresenham', shape=image_shape)
+			cx, cy = circle_perimeter(center_y+offset, center_x+offset, 23, method='bresenham', shape=None)
 			debug_img[cx, cy] = (150,150,150)
 			print('unaccepted circle drawn', center_x, center_y)
 		# <-- debug end
