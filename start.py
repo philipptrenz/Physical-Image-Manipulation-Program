@@ -198,8 +198,8 @@ class DraughtsGameWindow(QWidget):
 		camera = picamera.PiCamera()
 
 		# test manual white balance
-		camera.awb_mode = 'off'
-		camera.awb_gains = self.rg_bg
+		#camera.awb_mode = 'off'
+		#camera.awb_gains = self.rg_bg
 		# end
 		
 		self.calibrationPoints = -1
