@@ -265,9 +265,8 @@ class DraughtsGameWindow(QWidget):
 
 			# debug -->
 			# paramters: y, x, radius; returns x, y
-			cx, cy = circle_perimeter(coord[0], coord[1], 23, method='bresenham', shape=(1280,1024))
-			# coordinates: y, x
-			debug_img[cy, cx] = (pixel[0], pixel[1], pixel[2])
+			cx, cy = circle_perimeter(coord[0], coord[1], 23, method='bresenham', shape=(1024,1280))
+			debug_img[cx, cy] = (pixel[0], pixel[1], pixel[2])
 			# <-- debug end
 
 
