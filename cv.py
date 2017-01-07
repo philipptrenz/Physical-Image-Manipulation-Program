@@ -57,7 +57,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	accums = []
 	#radii = []
 	count = 0
-	num_peaks = 8
+	num_peaks = 16
 	# Alle Kreise unterschiedlicher Radii in ein Array
 	# Menge der Kreise reduzieren vor peak_local_max:
 	# 	Schmeisse alle heraus, die weniger als 5 mal auftreten
