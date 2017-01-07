@@ -286,107 +286,12 @@ class DraughtsGameWindow(QWidget):
 		print('avg white ',final_white)
 		
 		return numpy.array((final_blue, final_green, final_red, final_white))
-		#return finalCoords
-			
-
-	def calibrateGrayscale(self, ignore1, ignore2): # pythonmaster
-		camera = picamera.PiCamera()
-
-		# test manual white balance
-		camera.awb_mode = 'off'
-		camera.awb_gains = self.rg_bg
-		# end
-		
-		self.calibrationPoints = -1
-		#while True:
-		with picamera.array.PiRGBArray(camera) as stream:
-			camera.capture(stream, format='rgb')
-			img = stream.array
-			camera.close()
-
-			img, coords, circleDebug = circle_detection(img, 20, 25)
-			im = Image.fromarray(img) #.convert('LA')
-			input_img = im
-			imDeb = Image.fromarray(circleDebug) #.convert('LA')
-			im.save('./tmp.png')
-			imDeb.save('./deb.png')
-
-			# convert to grayscale
-			img_gray = rgb2gray(img)
-				
-			
-			self.calibrationPoints = self.checkCoordsGrayscale(img_gray, coords)
-			if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
-				src = numpy.array((
-					(0, 0), #upper left
-					(0, 800), #lower left
-					(800, 800), #lright
-					(800, 0) #uright
-				))
-			
-				transformer = tf.ProjectiveTransform()
-				transformer.estimate(src, self.calibrationPoints)
-				transformed_image = tf.warp(input_img, transformer, output_shape = (800,800))
-				
-				#print("Transformed Image: ",transformed_image)
-				
-				scipy.misc.imsave('./transformed.png', transformed_image)
-				#break
-			else: print('ups')
-		print(self.corners)
 
 
-	def checkCoordsGrayscale(self, img, coords):
-		self.redC = []
-		self.greenC = []
-		self.blueC = []
-		self.whiteC = []
-		for index, coord in enumerate(coords):
-			#print(img[coord[0], coord[1]]," - ", )
-			pixel = img[coord[0], coord[1]]
-			sum = 0
-			sum += pixel[0]
-			sum += pixel[1]
-			sum += pixel[2]
-			'''if sum > 300:
-				print()
-				#print("delete ", coord, ' with ', pixel)
-			else:'''
-			print("pixel: ", pixel, "@",coord)
-			if pixel[0] > 150 and pixel[1] > 150 and pixel[2] > 150:
-				self.whiteC.append(coord)
-			elif pixel[0] > 110:
-				self.redC.append(coord)
-			elif pixel[1] > 110:
-				self.greenC.append(coord)
-			elif pixel[2] > 110:
-				self.blueC.append(coord)
-		
-		#final_red = (int(numpy.sum(self.redC[0])/len(self.redC)),int(numpy.sum(self.redC[1])/len(self.redC[])))	#(sum(self.redC[0]), sum(self.redC[1]))
-		final_white = numpy.average(self.whiteC, axis=0)
-		final_red = numpy.average(self.redC, axis=0)
-		final_green = numpy.average(self.greenC, axis=0)
-		final_blue = numpy.average(self.blueC, axis=0)
-		
-		self.lbl.setPixmap(self.pixmap)
-		if len(self.whiteC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
-			print('less than 4 corners for calibration detected, returning -1')
-			return -1
-		
-		final_white = (int(final_white[1]),int(final_white[0]))
-		final_red = (int(final_red[1]),int(final_red[0]))
-		final_green = (int(final_green[1]),int(final_green[0]))
-		final_blue = (int(final_blue[1]),int(final_blue[0]))
-		
-		print('avg blue ',final_blue)
-		print('avg green',final_green)
-		print('avg red ',final_red)
-		print('avg white ',final_white)
-		
-		return numpy.array((final_blue, final_green, final_red, final_white))
-		#return finalCoords
 
-
+	# 
+	# Detect draughts tiles (german: Spielstein) at the field
+	#
 	def findTiles(self, ignore1, ignore2): # pythonmaster
 
 		if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
