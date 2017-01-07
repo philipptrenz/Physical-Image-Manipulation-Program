@@ -100,7 +100,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 
 					# debug -->
 					# paramters: y, x, radius; returns y, x
-					cy, cx = circle_perimeter(center_x+offset, center_y+offset, 23, method='bresenham', shape=None)
+					cy, cx = circle_perimeter(center_y+offset, center_x+offset, 23, method='bresenham', shape=None)
 					pixel_color = image_rgb[center_y, center_x]
 					debug_img[cy, cx] = pixel_color
 					#print('  accepted circle drawn', center_x, center_y)
@@ -121,7 +121,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	# <-- debug end
 
 	if (len(accepted_centers) == 0):
-		print('kein einziger Kreis gefunden, irgendwas ging schief ...')
+		print('no f***ing circle, damn ...')
 		return
 
 	return (image_rgb, accepted_centers)
