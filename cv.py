@@ -87,6 +87,14 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	### worked @ commit: bb7b4ee4e1c8249f449ffcdcee95d05fd5523d00
 	###
 
+	###
+	# Definitions for color detection
+	#
+
+
+
+	###
+
 	accepted_centers = []
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		is_accepted_circle = False
@@ -104,6 +112,12 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 					debug_img[cy, cx] = pixel_color
 					#print('  accepted circle drawn', center_x, center_y)
 					# <-- debug end
+
+					# HSV color test
+
+					print('hsv color: ',color.rgb2hsv([0,0,pixel_color]))
+
+					# end
 
 		# debug -->
 		# draw also all unaccepted circles
