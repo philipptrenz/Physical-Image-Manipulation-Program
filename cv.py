@@ -115,7 +115,10 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 
 					# HSV color test
 
-					print('hsv color: ',color.rgb2hsv([0,0,pixel_color]))
+					x = np.zeros((1,1,3)) # Make a 10 by 20 by 30 array
+					x[0,0] = pixel_color
+					hsv = color.rgb2hsv(x)
+					print('hsv color: ',x[0,0])
 
 					# end
 
