@@ -87,20 +87,21 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	accepted_centers = []
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		is_accepted_circle = False
-		center_x, center_y = centers[idx]
+		center_y, center_x = centers[idx]
 		if(not(center_x > 400 and center_x < 880)): # ignore mid-centers (x)
 			if(not(center_y > 304 and center_y < 720)): # ignore mid-centers (y)
 				if(not(center_x >= 1275 or center_y >= 1019 or center_x < 5 or center_y < 5)):
 					is_accepted_circle = True
 					radius = radii[idx]
 					accepted_centers.append(centers[idx])
-					print('radius: ' + str(radius))
+					#print('radius: ' + str(radius))
 
 					# debug -->
-					pixel_color = image_rgb[center_x, center_y]
 					# paramters: y, x, radius; returns x, y
 					cx, cy = circle_perimeter(center_x+50, center_y+50, 23, method='bresenham', shape=(1124, 1380))
+					pixel_color = image_rgb[center_x, center_y]
 					debug_img[cx, cy] = pixel_color
+					print('  accepted circle drawn', center_x, center_y)
 					# <-- debug end
 
 		# debug -->
