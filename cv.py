@@ -118,7 +118,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 					x = numpy.zeros((1,1,3)) # Make a 10 by 20 by 30 array
 					x[0,0] = pixel_color
 					hsv = color.rgb2hsv(x)
-					print('hsv color: ',x[0,0],' on position ',center_x,center_y,' (x,y)')
+					print('hsv color: ',x[0,0],' @ ',center_x,center_y,' (x,y)')
 
 					# end
 
