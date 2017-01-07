@@ -109,6 +109,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 			# paramters: y, x, radius; returns x, y
 			cx, cy = circle_perimeter(center_y, center_x, 23, method='bresenham', shape=(1024,1280))
 			debug_img[cx, cy] = (150,150,150)
+			print('unaccepted circle drawn')
 		# <-- debug end
 					
 	print("#Circles: ", len(accepted_centers))
