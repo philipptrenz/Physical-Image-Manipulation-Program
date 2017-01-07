@@ -239,12 +239,20 @@ class DraughtsGameWindow(QWidget):
 
 
 	def checkCoords(self, img, coords):
-		self.redC = []
-		self.greenC = []
-		self.blueC = []
-		self.whiteC = []
+		self.upper_left_coords = []
+		self.lower_left_coords = []
+		self.lower_right_coords = []
+		self.upper_right_coords = []
+
+		# debug -->
+		# for debug: draw all circles as shapes to image
+		# 1. new image
+		debug_img = np.zeros((1280, 1024, 3), dtype=np.uint8)
+		# debug -->
+
 		for index, coord in enumerate(coords):
 			#print(img[coord[0], coord[1]]," - ", )
+
 			pixel = img[coord[0], coord[1]]
 			sum = 0
 			sum += pixel[0]
@@ -254,24 +262,37 @@ class DraughtsGameWindow(QWidget):
 				print()
 				#print("delete ", coord, ' with ', pixel)
 			else:'''
+
+			# debug -->
+			# paramters: y, x, radius; returns x, y
+			cx, cy = circle_perimeter(coord[0], coord[1], 23, method='bresenham', shape=(1280,1024))
+			# coordinates: y, x
+			debug_img[cy, cx] = (pixel[0], pixel[1], pixel[2])
+			# <-- debug end
+
+
 			print("pixel: ", pixel, "@",coord)
 			if pixel[0] > 150 and pixel[1] > 150 and pixel[2] > 150:
-				self.whiteC.append(coord)
+				self.upper_right_coords.append(coord)
 			elif pixel[0] > 110:
-				self.redC.append(coord)
+				self.lower_right_coords.append(coord)
 			elif pixel[1] > 110:
-				self.greenC.append(coord)
+				self.lower_left_coords.append(coord)
 			elif pixel[2] > 110:
-				self.blueC.append(coord)
+				self.upper_left_coords.append(coord)
 		
-		#final_red = (int(numpy.sum(self.redC[0])/len(self.redC)),int(numpy.sum(self.redC[1])/len(self.redC[])))	#(sum(self.redC[0]), sum(self.redC[1]))
-		final_white = numpy.average(self.whiteC, axis=0)
-		final_red = numpy.average(self.redC, axis=0)
-		final_green = numpy.average(self.greenC, axis=0)
-		final_blue = numpy.average(self.blueC, axis=0)
+		# debug -->
+		scipy.misc.imsave('./circles_detected_debug.png', debug_img)
+		# <-- debug end
+
+		#final_red = (int(numpy.sum(self.lower_right_coords[0])/len(self.lower_right_coords)),int(numpy.sum(self.lower_right_coords[1])/len(self.lower_right_coords[])))	#(sum(self.lower_right_coords[0]), sum(self.lower_right_coords[1]))
+		final_white = numpy.average(self.upper_right_coords, axis=0)
+		final_red = numpy.average(self.lower_right_coords, axis=0)
+		final_green = numpy.average(self.lower_left_coords, axis=0)
+		final_blue = numpy.average(self.upper_left_coords, axis=0)
 		
 		self.lbl.setPixmap(self.pixmap)
-		if len(self.whiteC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
+		if len(self.upper_right_coords) == 0 or len(self.upper_left_coords) == 0 or len(self.lower_left_coords) == 0 or len(self.lower_right_coords) == 0 :
 			print('less than 4 corners for calibration detected, returning -1')
 			return -1
 		
