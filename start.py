@@ -241,14 +241,6 @@ class DraughtsGameWindow(QWidget):
 		self.lower_right_coords = []
 		self.upper_right_coords = []
 
-		"""
-		# debug -->
-		# for debug: draw all circles as shapes to image
-		# 1. new image
-		debug_img = numpy.zeros((1024, 1280, 3), dtype=numpy.uint8)
-		# debug -->
-		"""
-
 		for index, coord in enumerate(coords):
 			#print(img[coord[0], coord[1]]," - ", )
 
@@ -262,16 +254,7 @@ class DraughtsGameWindow(QWidget):
 				#print("delete ", coord, ' with ', pixel)
 			else:'''
 
-			"""
-			# debug -->
-			# paramters: y, x, radius; returns x, y
-			cx, cy = circle_perimeter(coord[0], coord[1], 23, method='bresenham', shape=(1024,1280))
-			debug_img[cx, cy] = (pixel[0], pixel[1], pixel[2])
-			# <-- debug end
-			"""
-
-
-			print("pixel: ", pixel, "@ y:",coord[0],', x:',coord[1])
+			#print("pixel: ", pixel, "@ y:",coord[0],', x:',coord[1])
 			if pixel[0] > 150 and pixel[1] > 150 and pixel[2] > 150:
 				self.upper_right_coords.append(coord)
 			elif pixel[0] > 110:
@@ -280,12 +263,6 @@ class DraughtsGameWindow(QWidget):
 				self.lower_left_coords.append(coord)
 			elif pixel[2] > 110:
 				self.upper_left_coords.append(coord)
-		
-		"""
-		# debug -->
-		scipy.misc.imsave('./circles_detected_debug.png', debug_img)
-		# <-- debug end
-		"""
 
 		#final_red = (int(numpy.sum(self.lower_right_coords[0])/len(self.lower_right_coords)),int(numpy.sum(self.lower_right_coords[1])/len(self.lower_right_coords[])))	#(sum(self.lower_right_coords[0]), sum(self.lower_right_coords[1]))
 		final_white = numpy.average(self.upper_right_coords, axis=0)
