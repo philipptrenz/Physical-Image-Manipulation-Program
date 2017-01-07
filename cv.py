@@ -80,6 +80,14 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	
 	count2 = 0
 	#print('loop 1 ',len(accums))
+
+
+	# debug -->
+	# for debug: draw all circles as shapes to image
+	# 1. new image
+	debug_img = numpy.zeros((1024, 1280, 3), dtype=numpy.uint8)
+	# debug -->
+
 	accepted_centers = []
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		center_x, center_y = centers[idx]
@@ -90,6 +98,13 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 					radius = radii[idx]
 					accepted_centers.append(centers[idx])
 					print('radius: ' + str(radius))
+
+					# debug -->
+					pixel_color = img_rgb[center_x, center_y]
+					# paramters: y, x, radius; returns x, y
+					cx, cy = circle_perimeter(center_y, center_x, 23, method='bresenham', shape=(1024,1280))
+					debug_img[cx, cy] = pixel_color
+					# <-- debug end
 					
 	print('done -> ', count2)
 
