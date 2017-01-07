@@ -35,12 +35,11 @@ def rgb2gray(rgb_img):
 def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	if not edgesAlready:
 		image_rgb = numpy.array(rgb_img, copy=True)
-		print('new image')
 		image_gray = rgb2gray(image_rgb)
-		print('gray image')
+		print('to gray image converted')
 		edges = canny(image_gray, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
 		scipy.misc.imsave('outfile.jpg', edges)
-		print('edges')
+		print('to edges image converted')
 	else:
 		edges = rgb_img
 		image_rgb = numpy.array(edges, copy=True)
@@ -53,12 +52,12 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		sum += len(hough_res[num])
 		num = num + 1
 	print("#Circles: ", sum)
+	print('now sorting out with peak_local_max ...')
 	centers = []
 	accums = []
 	radii = []
 	count = 0
 	num_peaks = 8
-	count2 = 0
 	# Alle Kreise unterschiedlicher Radii in ein Array
 	# Menge der Kreise reduzieren vor peak_local_max:
 	# 	Schmeisse alle heraus, die weniger als 5 mal auftreten
@@ -67,7 +66,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	for radius, h in zip(hough_radii, hough_res): # iterieren durch circles (h)
 		# For each radius, extract 8 circles
 		peaks = peak_local_max(h, num_peaks=num_peaks) # beste 8 kreise fuer radius
-		count = count + 1
+		count += 1
 		#print('peak_local_max finished ', count)
 		centers.extend(peaks)
 		#print('extend1')
@@ -75,13 +74,10 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		#print('extend2')
 		radii.extend([radius] * num_peaks)
 		#print('extend3')
-		count2 = count2 + 1
-	#print('erste loop: ', count2)
 	
-	count2 = 0
-	#print('loop 1 ',len(accums))
-
-
+	print("#Circles: ", len(accums))
+	print('now sorting out by ignoring special areas in the image ...')
+	
 	# debug -->
 	# for debug: draw all circles as shapes to image
 	# 1. new image
@@ -96,7 +92,6 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 			if(not(center_y > 304 and center_y < 720)): # ignore mid-centers (y)
 				if(not(center_x >= 1275 or center_y >= 1019 or center_x < 5 or center_y < 5)):
 					is_accepted_circle = True
-					count2 = count2 + 1
 					radius = radii[idx]
 					accepted_centers.append(centers[idx])
 					print('radius: ' + str(radius))
@@ -116,7 +111,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 			debug_img[cx, cy] = (150,150,150)
 		# <-- debug end
 					
-	print('done -> ', count2)
+	print("#Circles: ", len(accepted_centers))
 	# debug -->
 	scipy.misc.imsave('./circles_detected_debug.png', debug_img)
 	# <-- debug end
