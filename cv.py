@@ -81,7 +81,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	# debug -->
 	# for debug: draw all circles as shapes to image
 	# 1. new image
-	offset = 50
+	offset = 0
 	debug_img = numpy.zeros((1024+2*offset, 1280+2*offset, 3), dtype=numpy.uint8)
 	image_shape=(1024+2*offset, 1280+2*offset)
 	# debug -->
