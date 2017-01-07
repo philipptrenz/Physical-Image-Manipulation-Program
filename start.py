@@ -247,7 +247,7 @@ class DraughtsGameWindow(QWidget):
 		# debug -->
 		# for debug: draw all circles as shapes to image
 		# 1. new image
-		debug_img = np.zeros((1280, 1024, 3), dtype=numpy.uint8)
+		debug_img = numpy.zeros((1280, 1024, 3), dtype=numpy.uint8)
 		# debug -->
 
 		for index, coord in enumerate(coords):
