@@ -107,6 +107,9 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 					# <-- debug end
 					
 	print('done -> ', count2)
+	# debug -->
+	scipy.misc.imsave('./circles_detected_debug.png', debug_img)
+	# <-- debug end
 
 	if (len(accepted_centers) == 0):
 		print('kein einziger Kreis gefunden, irgendwas ging schief ...')
