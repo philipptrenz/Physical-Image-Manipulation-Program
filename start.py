@@ -33,11 +33,10 @@ from skimage.util import img_as_ubyte
 
 import scipy.misc
 
-
 import picamera
 import picamera.array
 
-from cv import circle_detection
+from cv import circle_detection, rgb2gray
 from _thread import start_new_thread
 
 
@@ -89,9 +88,23 @@ class DraughtsGameWindow(QWidget):
 			self.lbl.repaint()
 
 		elif event.key() == Qt.Key_S:
+
+			##############################################
+			# find 
+			# 
+			# 
+			##############################################
+
 			start_new_thread(self.findTiles, (0, 0,))
 
 		elif event.key() == Qt.Key_P:
+
+			##############################################
+			# shoot with defined white balance mode
+			# 
+			# capture image with defined self.rg_bg and show
+			##############################################
+
 			camera = picamera.PiCamera()
 
 			# test manual white balance
@@ -107,9 +120,15 @@ class DraughtsGameWindow(QWidget):
 				os.system('xdg-open ./preview.png')
 
 		elif event.key() == Qt.Key_T:
+
+			##############################################
+			# test white balance modi 
+			# 
+			# iterate through various combinations of wb
+			##############################################
+
 			camera = picamera.PiCamera()
 			camera.awb_mode = 'off'
-
 
 			rg_bg = (2, 3)
 
@@ -124,9 +143,6 @@ class DraughtsGameWindow(QWidget):
 						camera.capture(stream, format='rgb')
 						im = Image.fromarray(stream.array)
 						im.save('./preview_'+str(rg_x)+'_'+str(bg_x)+'.png')				
-						
-						#os.system('xdg-open ./preview.png')
-
 
 			camera.close()
 
@@ -177,8 +193,50 @@ class DraughtsGameWindow(QWidget):
 		self.showFullScreen()
 		self.setWindowTitle('DraughtsCV')
 		self.show()
-		#calibrate()
 		
+	def calibrate(self, ignore1, ignore2): # pythonmaster
+		camera = picamera.PiCamera()
+
+		# test manual white balance
+		camera.awb_mode = 'off'
+		camera.awb_gains = self.rg_bg
+		# end
+		
+		self.calibrationPoints = -1
+		#while True:
+		with picamera.array.PiRGBArray(camera) as stream:
+			camera.capture(stream, format='rgb')
+			img = stream.array
+			camera.close()
+
+			img, coords, circleDebug = circle_detection(img, 20, 25)
+			im = Image.fromarray(img) #.convert('LA')
+			input_img = im
+			imDeb = Image.fromarray(circleDebug) #.convert('LA')
+			im.save('./tmp.png')
+			imDeb.save('./deb.png')
+				
+			
+			self.calibrationPoints = self.checkCoords(img, coords)
+			if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
+				src = numpy.array((
+					(0, 0), #upper left
+					(0, 800), #lower left
+					(800, 800), #lright
+					(800, 0) #uright
+				))
+			
+				transformer = tf.ProjectiveTransform()
+				transformer.estimate(src, self.calibrationPoints)
+				transformed_image = tf.warp(input_img, transformer, output_shape = (800,800))
+				
+				#print("Transformed Image: ",transformed_image)
+				
+				scipy.misc.imsave('./transformed.png', transformed_image)
+				#break
+			else: print('ups')
+		print(self.corners)
+
 
 	def checkCoords(self, img, coords):
 		self.redC = []
@@ -229,10 +287,9 @@ class DraughtsGameWindow(QWidget):
 		
 		return numpy.array((final_blue, final_green, final_red, final_white))
 		#return finalCoords
-		
 			
 
-	def calibrate(self, ignore1, ignore2): # pythonmaster
+	def calibrateGrayscale(self, ignore1, ignore2): # pythonmaster
 		camera = picamera.PiCamera()
 
 		# test manual white balance
@@ -253,9 +310,12 @@ class DraughtsGameWindow(QWidget):
 			imDeb = Image.fromarray(circleDebug) #.convert('LA')
 			im.save('./tmp.png')
 			imDeb.save('./deb.png')
+
+			# convert to grayscale
+			img_gray = rgb2gray(img)
 				
 			
-			self.calibrationPoints = self.checkCoords(img, coords)
+			self.calibrationPoints = self.checkCoordsGrayscale(img_gray, coords)
 			if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
 				src = numpy.array((
 					(0, 0), #upper left
@@ -275,6 +335,58 @@ class DraughtsGameWindow(QWidget):
 			else: print('ups')
 		print(self.corners)
 
+
+	def checkCoordsGrayscale(self, img, coords):
+		self.redC = []
+		self.greenC = []
+		self.blueC = []
+		self.whiteC = []
+		for index, coord in enumerate(coords):
+			#print(img[coord[0], coord[1]]," - ", )
+			pixel = img[coord[0], coord[1]]
+			sum = 0
+			sum += pixel[0]
+			sum += pixel[1]
+			sum += pixel[2]
+			'''if sum > 300:
+				print()
+				#print("delete ", coord, ' with ', pixel)
+			else:'''
+			print("pixel: ", pixel, "@",coord)
+			if pixel[0] > 150 and pixel[1] > 150 and pixel[2] > 150:
+				self.whiteC.append(coord)
+			elif pixel[0] > 110:
+				self.redC.append(coord)
+			elif pixel[1] > 110:
+				self.greenC.append(coord)
+			elif pixel[2] > 110:
+				self.blueC.append(coord)
+		
+		#final_red = (int(numpy.sum(self.redC[0])/len(self.redC)),int(numpy.sum(self.redC[1])/len(self.redC[])))	#(sum(self.redC[0]), sum(self.redC[1]))
+		final_white = numpy.average(self.whiteC, axis=0)
+		final_red = numpy.average(self.redC, axis=0)
+		final_green = numpy.average(self.greenC, axis=0)
+		final_blue = numpy.average(self.blueC, axis=0)
+		
+		self.lbl.setPixmap(self.pixmap)
+		if len(self.whiteC) == 0 or len(self.blueC) == 0 or len(self.greenC) == 0 or len(self.redC) == 0 :
+			print('less than 4 corners for calibration detected, returning -1')
+			return -1
+		
+		final_white = (int(final_white[1]),int(final_white[0]))
+		final_red = (int(final_red[1]),int(final_red[0]))
+		final_green = (int(final_green[1]),int(final_green[0]))
+		final_blue = (int(final_blue[1]),int(final_blue[0]))
+		
+		print('avg blue ',final_blue)
+		print('avg green',final_green)
+		print('avg red ',final_red)
+		print('avg white ',final_white)
+		
+		return numpy.array((final_blue, final_green, final_red, final_white))
+		#return finalCoords
+
+
 	def findTiles(self, ignore1, ignore2): # pythonmaster
 
 		if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
@@ -282,8 +394,8 @@ class DraughtsGameWindow(QWidget):
 			camera = picamera.PiCamera()
 
 			# test manual white balance
-			camera.awb_mode = 'off'
-			camera.awb_gains = self.rg_bg
+			#camera.awb_mode = 'off'
+			#camera.awb_gains = self.rg_bg
 			# end
 
 			with picamera.array.PiRGBArray(camera) as stream:
@@ -308,9 +420,6 @@ class DraughtsGameWindow(QWidget):
 
 		else:
 			print('calibrationPoints not yet set')
-		
-
-
 
 if __name__ == '__main__':
 
