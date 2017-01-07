@@ -100,7 +100,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 					print('radius: ' + str(radius))
 
 					# debug -->
-					pixel_color = img_rgb[center_x, center_y]
+					pixel_color = image_rgb[center_x, center_y]
 					# paramters: y, x, radius; returns x, y
 					cx, cy = circle_perimeter(center_y, center_x, 23, method='bresenham', shape=(1024,1280))
 					debug_img[cx, cy] = pixel_color
