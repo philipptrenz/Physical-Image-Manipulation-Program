@@ -55,7 +55,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	print('now sorting out with peak_local_max ...')
 	centers = []
 	accums = []
-	radii = []
+	#radii = []
 	count = 0
 	num_peaks = 8
 	# Alle Kreise unterschiedlicher Radii in ein Array
@@ -72,7 +72,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		#print('extend1')
 		accums.extend(h[peaks[:, 0], peaks[:, 1]]) # wie 'gut' ??
 		#print('extend2')
-		radii.extend([radius] * num_peaks)
+		#radii.extend([radius] * num_peaks)
 		#print('extend3')
 	
 	print("#Circles: ", len(accums))
@@ -98,7 +98,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 			if(not(center_y > 304 and center_y < 720)): # ignore mid-centers (y)
 				if(not(center_x >= 1275 or center_y >= 1019 or center_x < 5 or center_y < 5)):
 					is_accepted_circle = True
-					radius = radii[idx]
+					#radius = radii[idx]
 					accepted_centers.append(centers[idx])
 					#print('radius: ' + str(radius))
 
