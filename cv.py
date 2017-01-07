@@ -55,7 +55,6 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	print('now sorting out with peak_local_max ...')
 	centers = []
 	accums = []
-	#radii = []
 	count = 0
 	num_peaks = 16
 	# Alle Kreise unterschiedlicher Radii in ein Array
@@ -64,7 +63,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	# 	DANACH schmeisse alle "doppelten" heraus (Abstand < 0.8 * radius)
 	
 	for radius, h in zip(hough_radii, hough_res): # iterieren durch circles (h)
-		# For each radius, extract 8 circles
+		# For each radius, extract num_peaks circles
 		peaks = peak_local_max(h, num_peaks=num_peaks) # beste 8 kreise fuer radius
 		count += 1
 		#print('peak_local_max finished ', count)
@@ -72,8 +71,6 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 		#print('extend1')
 		accums.extend(h[peaks[:, 0], peaks[:, 1]]) # wie 'gut' ??
 		#print('extend2')
-		#radii.extend([radius] * num_peaks)
-		#print('extend3')
 	
 	print("#Circles: ", len(accums))
 	print('now sorting out by ignoring special areas in the image ...')
@@ -98,9 +95,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 			if(not(center_y > 304 and center_y < 720)): # ignore mid-centers (y)
 				if(not(center_x >= 1275 or center_y >= 1019 or center_x < 5 or center_y < 5)):
 					is_accepted_circle = True
-					#radius = radii[idx]
 					accepted_centers.append(centers[idx])
-					#print('radius: ' + str(radius))
 
 					# debug -->
 					# paramters: y, x, radius; returns y, x
