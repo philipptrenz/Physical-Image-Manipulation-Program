@@ -209,12 +209,9 @@ class DraughtsGameWindow(QWidget):
 			img = stream.array
 			camera.close()
 
-			img, coords, circleDebug = circle_detection(img, 20, 25)
-			im = Image.fromarray(img) #.convert('LA')
-			input_img = im
-			imDeb = Image.fromarray(circleDebug) #.convert('LA')
+			img, coords = circle_detection(img, 20, 25)
+			im = Image.fromarray(img)
 			im.save('./tmp.png')
-			imDeb.save('./deb.png')
 				
 			
 			self.calibrationPoints = self.checkCoords(img, coords)
@@ -228,7 +225,7 @@ class DraughtsGameWindow(QWidget):
 			
 				transformer = tf.ProjectiveTransform()
 				transformer.estimate(src, self.calibrationPoints)
-				transformed_image = tf.warp(input_img, transformer, output_shape = (800,800))
+				transformed_image = tf.warp(im, transformer, output_shape = (800,800))
 				
 				#print("Transformed Image: ",transformed_image)
 				
