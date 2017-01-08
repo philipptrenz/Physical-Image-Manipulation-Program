@@ -212,13 +212,13 @@ class DraughtsGameWindow(QWidget):
 			im.save('./tmp.png')
 
 
-			img, coords = circle_detection(img, 20, 25)
-			self.calibrationPoints = self.checkCoords(img, coords)
+			#img, coords = circle_detection(img, 20, 25)
+			#self.calibrationPoints = self.checkCoords(img, coords)
 
 			# TODO: remove above and delete "checkCoords"
-			"""
+			
 			self.calibrationPoints = calibration_points_detection(img, 20, 25)
-			"""
+			
 
 			if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
 				src = numpy.array((
