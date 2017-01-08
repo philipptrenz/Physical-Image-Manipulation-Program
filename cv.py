@@ -181,11 +181,12 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 				is_accepted_circle = True
 				pixel_color = rgb_img[center_y, center_x]
 
+
 				debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, 23, pixel_color)
 				#print('  accepted circle drawn', center_x, center_y)
 
 				# if valid color was found, add it to coords list to specific color key
-				found_color = find_colors(pixel_color)
+				found_color = find_colors(pixel_color)	# string of color, 'blue', 'green', 'red' or 'white'
 				if found_color is not None: coords[found_color].append(centers[idx])
 
 		# draw also all unaccepted circles in dark gray
@@ -194,7 +195,7 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 			#print('unaccepted circle drawn', center_x, center_y)
 					
 	# save debug image to file
-	scipy.misc.imsave('./circles_detected_debug.png', debug_img)
+	scipy.misc.imsave('./2_detected_circles.png', debug_img)
 
 
 	if len(coords["blue"]) == 0 or len(coords["green"]) == 0 or len(coords["red"]) == 0 or len(coords["white"]) == 0:
@@ -226,7 +227,7 @@ def circle_detection_for_calibration_points(rgb_img, radMin, radMax, edgesAlread
 		image_gray = rgb2gray(image_rgb)
 		print('to gray image converted')
 		edges = canny(image_gray, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
-		scipy.misc.imsave('outfile.jpg', edges)
+		scipy.misc.imsave('1_edges.jpg', edges)
 		print('to edges image converted')
 	else:
 		edges = rgb_img
@@ -274,7 +275,7 @@ def add_circle_outlines_to_image(image, center_y, center_x, radius, color):
 	return image # needed?
 
 
-def find_colors(pixel_color):
+def find_colors(pixel_color, debug=False):
 	"""
 	This method compares colors to red, green, blue and white
 	using the HSV color model to be able to detect colors more or
@@ -284,14 +285,7 @@ def find_colors(pixel_color):
 	returns: string of color ('blue', 'green', 'red', 'white') or None
 	"""
 
-	# convert RGB to HSV
-	# rgb2hsv just accepts image arrays, so we make an array with one pixel
-	x = numpy.zeros((1,1,3))
-	x[0,0] = pixel_color
-	hsv = color.rgb2hsv(x)[0][0]
-	#print('hsv color: ',x[0,0])
-
-	# TODO: Check code
+	hsv = rgb2hsv(pixel_color)
 
 	# HSV color range based on experiments
 	# be aware that the bigger value of each channel has to be right!!!
@@ -317,16 +311,20 @@ def find_colors(pixel_color):
 			possible_colors.append(key)
 
 	if len(possible_colors) == 0:
-		print(pixel_color, ' (rgb) / ',hsv,'(hsv)\t\t not in range of any valid color')
+		if debug: print(pixel_color, ' (rgb)\t\t not in range of any valid color')
 		return None
 
 	elif len(possible_colors) == 1:
-		print(pixel_color, ' (rgb) / ',hsv,'(hsv)\t\t should be', possible_colors)
+		if debug: print(pixel_color, ' (rgb)\t\t should be', possible_colors)
 		return possible_colors[0]
 
 	elif len(possible_colors) > 1:
-		print('COLOR CONFLICT: ',pixel_color, ' (rgb) / ',hsv,'(hsv)\t\t matches more than one color: ', possible_colors)
+		print('COLOR CONFLICT: ',pixel_color, ' (rgb)\t\t matches more than one color: ', possible_colors)
 		return None
 
-
-
+def rgb2hsv(rgb):
+	# convert RGB to HSV
+	# rgb2hsv just accepts image arrays, so we make an array with one pixel
+	x = numpy.zeros((1,1,3))
+	x[0,0] = pixel_color
+	return color.rgb2hsv(x)[0][0]

@@ -196,26 +196,19 @@ class DraughtsGameWindow(QWidget):
 		
 	def calibrate(self, ignore1, ignore2): # pythonmaster
 		camera = picamera.PiCamera()
-
-		# test manual white balance
-		#camera.awb_mode = 'off'
-		#camera.awb_gains = self.rg_bg
-		# end
-		
 		self.calibrationPoints = -1
+
 		#while True:
 		with picamera.array.PiRGBArray(camera) as stream:
 			camera.capture(stream, format='rgb')
 			img = stream.array
 			camera.close()
 			im = Image.fromarray(img)
-			im.save('./tmp.png')
+			im.save('./0_photo.png')
 
 
 			#img, coords = circle_detection(img, 20, 25)
 			#self.calibrationPoints = self.checkCoords(img, coords)
-
-			# TODO: remove above and delete "checkCoords"
 			
 			self.calibrationPoints = calibration_points_detection(img, 20, 25)
 			
@@ -234,12 +227,12 @@ class DraughtsGameWindow(QWidget):
 				
 				#print("Transformed Image: ",transformed_image)
 				
-				scipy.misc.imsave('./transformed.png', transformed_image)
+				scipy.misc.imsave('./3_transformed.png', transformed_image)
 				#break
 			else: print('ups')
 		print(self.corners)
 
-
+	"""
 	def checkCoords(self, img, coords):
 		self.upper_left_coords = []
 		self.lower_left_coords = []
@@ -291,7 +284,7 @@ class DraughtsGameWindow(QWidget):
 		print('avg white ',final_white)
 		
 		return numpy.array((final_blue, final_green, final_red, final_white))
-
+	"""
 
 
 	# 
