@@ -342,10 +342,10 @@ def debug_points(centers, accums, image):
 	# don't move camera or monitor when set!
 	# ((x_min, y_min)(x_max, y_max))
 	searched_range = {	
-		'upper_left': ((170, 40), (270, 140)), 
-		'lower_left': ((190, 930),  (270, 1030)), 
-		'lower_right': ((1070, 900), (1170, 980)), 
-		'upper_right': ((1030, 20),  (1130, 120))
+		'upper_left': ((160, 60), (250, 130)), 
+		'lower_left': ((190, 930),  (290, 1020)), 
+		'lower_right': ((1060, 900), (1160, 980)), 
+		'upper_right': ((1050, 30),  (1140, 110))
 	}
 	correct_coords = {'upper_left': [], 'lower_left': [], 'lower_right': [], 'upper_right': []}
 
@@ -356,7 +356,9 @@ def debug_points(centers, accums, image):
 	# iterate over all circles, then look for all 4 positions if coord is in range
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		for key, value in searched_range.items():
-			if in_range(centers[idx],key): correct_coords[key].append(centers[idx])
+			if in_range(centers[idx],key): 
+				print('Yep')
+				correct_coords[key].append(centers[idx])
 
 	for key, coords in correct_coords.items():
 		print('\n\n', key, ' hsv colors:')
