@@ -170,6 +170,10 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	# for debug: draw all circles as shapes to new black image
 	debug_img = numpy.zeros((1024, 1280, 3), dtype=numpy.uint8)	# start with black image
 
+
+	# hsv color debug
+	debug_points(centers, acuums, rgb_img):
+
 	coords = { "blue": [], "green": [], "red": [], "white": [] }
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		is_accepted_circle = False
@@ -216,8 +220,9 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	temp = numpy.average(coords[calibration_points["upper_right"]], axis=0) 
 	upper_right = (int(temp[1]), int(temp[0]))
 	
-	# return 
-	return numpy.array((upper_left, lower_left, lower_right, upper_right))
+	calibration_points_coords = numpy.array((upper_left, lower_left, lower_right, upper_right))
+	print('calibration point coords: ',calibration_points_coords)
+	return calibration_points_coords
 
 
 def circle_detection_for_calibration_points(rgb_img, radMin, radMax, edgesAlready):
@@ -328,3 +333,36 @@ def rgb2hsv(rgb):
 	x = numpy.zeros((1,1,3))
 	x[0,0] = rgb
 	return color.rgb2hsv(x)[0][0]
+
+def debug_points(centers, acuums, image):
+
+	# define areas to search for, there are just temporary correct!
+	# don't move camera or monitor when set!
+	# ((x_min, y_min)(x_max, y_max))
+	searched_range = {	
+		'upper_left': ((170, 60), (250, 120)), 
+		'lower_left': ((200, 930),  (270, 1020)), 
+		'lower_right': ((1080, 910), (1160, 980)), 
+		'upper_right': ((1040, 20),  (1130, 100))
+	}
+	correct_coords = {'upper_left': [], 'lower_left': [], 'lower_right': [], 'upper_right': []}
+
+	# coords is (y,x)
+	def in_range(coords, key):
+		return searched_range[key][0][0] <= coords[1] <= searched_range[key][1][0] and searched_range[key][0][1] <= coords[0] <= searched_range[key][1][1]
+
+	# iterate over all circles, then look for all 4 positions if coord is in range
+	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
+		for key, value in searched_range.items():
+			if in_range(centers[idx],key): correct_coords[key].append(centers[idx])
+
+	# print
+	for key, coords in correct_coords.items():
+		print('\n\n', key, ' hsv colors:')
+		for i in range(len(value)):
+			print(rgb2hsv(image[coords[i]]))
+
+
+
+
+					
