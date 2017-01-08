@@ -342,10 +342,10 @@ def debug_points(centers, accums, image):
 	# don't move camera or monitor when set!
 	# ((x_min, y_min)(x_max, y_max))
 	searched_range = {	
-		'upper_left': ((170, 60), (250, 120)), 
-		'lower_left': ((200, 930),  (270, 1020)), 
-		'lower_right': ((1080, 910), (1160, 980)), 
-		'upper_right': ((1040, 20),  (1130, 100))
+		'upper_left': ((170, 40), (270, 140)), 
+		'lower_left': ((190, 930),  (270, 1030)), 
+		'lower_right': ((1070, 900), (1170, 980)), 
+		'upper_right': ((1030, 20),  (1130, 120))
 	}
 	correct_coords = {'upper_left': [], 'lower_left': [], 'lower_right': [], 'upper_right': []}
 
@@ -357,16 +357,13 @@ def debug_points(centers, accums, image):
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		for key, value in searched_range.items():
 			if in_range(centers[idx],key): correct_coords[key].append(centers[idx])
-
-	# print
+			
 	for key, coords in correct_coords.items():
 		print('\n\n', key, ' hsv colors:')
 		for i in range(len(value)):
 			coord = coords[i]
-			print(coord)
 			if 0 <= coord[1] <= len(image) and 0 <= coord[0] <= len(image[0]):
-				rgb = image[coord[0], coord[1]]
-				print(rgb2hsv(rgb))
+				print(rgb2hsv(image[coord[0], coord[1]]))	# print hsv color of coord in image
 
 
 
