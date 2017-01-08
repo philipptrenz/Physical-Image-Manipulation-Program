@@ -357,13 +357,14 @@ def debug_points(centers, accums, image):
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		for key, value in searched_range.items():
 			if in_range(centers[idx],key): correct_coords[key].append(centers[idx])
-			
+
 	for key, coords in correct_coords.items():
 		print('\n\n', key, ' hsv colors:')
 		for i in range(len(value)):
 			coord = coords[i]
 			if 0 <= coord[1] <= len(image) and 0 <= coord[0] <= len(image[0]):
 				print(rgb2hsv(image[coord[0], coord[1]]))	# print hsv color of coord in image
+	print('\n\n')
 
 
 
