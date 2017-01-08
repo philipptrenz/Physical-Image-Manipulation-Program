@@ -304,10 +304,14 @@ def find_colors(pixel_color):
 
 	# check for every channel of the color if the color is in the range of blue, green, ...
 	for i in range(0,2):
-		if range_blue[0,i] <= hsv[i] <= range_blue[1,i]: couldbe["blue"] += 1
-		if range_green[0,i] <= hsv[i] <= range_green[1,i]: couldbe["green"] += 1
-		if range_red[0,i] <= hsv[i] <= range_red[1,i]: couldbe["red"] += 1
-		if range_white[0,i] <= hsv[i] <= range_white[1,i]: couldbe["white"] += 1
+		print('hsv ',hsv)
+		print('range blue', range_blue)
+		print('range_blue[0]', range_blue[0])
+		print('range_blue[0][i]', range_blue[0][i])
+		if range_blue[0][i] <= hsv[i] <= range_blue[1][i]: couldbe["blue"] += 1
+		if range_green[0][i] <= hsv[i] <= range_green[1][i]: couldbe["green"] += 1
+		if range_red[0][i] <= hsv[i] <= range_red[1][i]: couldbe["red"] += 1
+		if range_white[0][i] <= hsv[i] <= range_white[1][i]: couldbe["white"] += 1
 
 	# save all colors where score in couldbe is 3, so all channels have matched
 	# should not happen, but this is good for debugging the hsv color ranges
