@@ -274,7 +274,7 @@ def add_circle_outlines_to_image(image, center_y, center_x, radius, color):
 	return image # needed?
 
 
-def find_colors(color):
+def find_colors(pixel_color):
 	"""
 	This method compares colors to red, green, blue and white
 	using the HSV color model to be able to detect colors more or
