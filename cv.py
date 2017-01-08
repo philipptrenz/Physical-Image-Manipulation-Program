@@ -316,7 +316,7 @@ def find_colors(pixel_color, debug=False):
 			possible_colors.append(key)
 
 	if len(possible_colors) == 0:
-		if debug: print(pixel_color, ' (rgb)\t\t not in range of any valid color')
+		if debug: print(pixel_color, ' (rgb)\t\t',hsv,'(hsv)\t\t not in range of any valid color')
 		return None
 
 	elif len(possible_colors) == 1:
@@ -324,7 +324,7 @@ def find_colors(pixel_color, debug=False):
 		return possible_colors[0]
 
 	elif len(possible_colors) > 1:
-		print('COLOR CONFLICT: ',pixel_color, ' (rgb)\t\t matches more than one color: ', possible_colors)
+		print('COLOR CONFLICT: ',pixel_color, ' (rgb)\t\t',hsv,'(hsv)\t\t matches more than one color: ', possible_colors)
 		return None
 
 def rgb2hsv(rgb):
