@@ -179,7 +179,6 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 				#if(not(center_x >= 1275 or center_y >= 1019 or center_x < 5 or center_y < 5)): # should not longer be needed
 
 				is_accepted_circle = True
-				accepted_centers.append(centers[idx])
 				pixel_color = image_rgb[center_y, center_x]
 
 				debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, 23, pixel_color)
