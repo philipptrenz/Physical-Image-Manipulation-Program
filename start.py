@@ -36,7 +36,7 @@ import scipy.misc
 import picamera
 import picamera.array
 
-from cv import circle_detection, rgb2gray
+from cv import circle_detection, rgb2gray, calibration_points_detection
 from _thread import start_new_thread
 
 
