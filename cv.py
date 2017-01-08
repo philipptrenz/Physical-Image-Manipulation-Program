@@ -288,7 +288,7 @@ def find_colors(pixel_color):
 	# rgb2hsv just accepts image arrays, so we make an array with one pixel
 	x = numpy.zeros((1,1,3))
 	x[0,0] = pixel_color
-	hsv = color.rgb2hsv(x)
+	hsv = color.rgb2hsv(x)[0][0]
 	#print('hsv color: ',x[0,0])
 
 	# TODO: Check code
@@ -304,10 +304,6 @@ def find_colors(pixel_color):
 
 	# check for every channel of the color if the color is in the range of blue, green, ...
 	for i in range(0,2):
-		print('hsv ',hsv)
-		print('range blue', range_blue)
-		print('range_blue[0]', range_blue[0])
-		print('range_blue[0][i]', range_blue[0][i])
 		if range_blue[0][i] <= hsv[i] <= range_blue[1][i]: couldbe["blue"] += 1
 		if range_green[0][i] <= hsv[i] <= range_green[1][i]: couldbe["green"] += 1
 		if range_red[0][i] <= hsv[i] <= range_red[1][i]: couldbe["red"] += 1
