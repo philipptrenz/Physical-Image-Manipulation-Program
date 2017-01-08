@@ -163,7 +163,7 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	calibration_points = {"upper_left":"blue", "lower_left":"green", "lower_right":"red", "upper_right":"white"}
 	
 	# detect circles on the given rgb_img in the range of radius (from radMin to radMax)
-	centers, accums = circle_detection_for_calibration_points(rgb_img, radMin, radMax, edgesAlready):
+	centers, accums = circle_detection_for_calibration_points(rgb_img, radMin, radMax, edgesAlready)
 
 	print('now sorting out by ignoring special areas in the image and collection after colors')
 
