@@ -335,7 +335,9 @@ def rgb2hsv(rgb):
 	return color.rgb2hsv(x)[0][0]
 
 def debug_points(centers, accums, image):
-
+	"""
+	This function lists hsv color values of all detected circle centers, sorted by given coord ranges
+	"""
 	# define areas to search for, there are just temporary correct!
 	# don't move camera or monitor when set!
 	# ((x_min, y_min)(x_max, y_max))
@@ -362,7 +364,7 @@ def debug_points(centers, accums, image):
 		for i in range(len(value)):
 			coord = coords[i]
 			print(coord)
-			if 0 <= coord[0] <= len(image) and 0 <= coord[1] <= len(image[0]): print(image[coords[i]])
+			if 0 <= coord[1] <= len(image) and 0 <= coord[0] <= len(image[0]): print(image[coords[i]])
 				#print(rgb2hsv())
 
 
