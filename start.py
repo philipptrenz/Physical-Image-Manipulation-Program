@@ -218,7 +218,6 @@ class DraughtsGameWindow(QWidget):
 			# TODO: remove above and delete "checkCoords"
 			"""
 			self.calibrationPoints = calibration_points_detection(img, 20, 25)
-
 			"""
 
 			if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
