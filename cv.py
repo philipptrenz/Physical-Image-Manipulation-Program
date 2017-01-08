@@ -351,7 +351,7 @@ def debug_points(centers, accums, image):
 
 	# coords is (y,x)
 	def in_range(coords, key):
-		in_picture = 0 <= coords[1] <= len(image) and 0 <= coords[0] <= len(image[0]):
+		in_picture = 0 <= coords[1] <= len(image) and 0 <= coords[0] <= len(image[0])
 		print('y',len(image),'???')
 		x_okay = searched_range[key][0][0] <= coords[1] <= searched_range[key][1][0]
 		y_okay = searched_range[key][0][1] <= coords[0] <= searched_range[key][1][1]
