@@ -221,7 +221,7 @@ class DraughtsGameWindow(QWidget):
 			
 				transformer = tf.ProjectiveTransform()
 				transformer.estimate(src, self.calibrationPoints)
-				transformed_image = tf.warp(im, transformer, output_shape = (800,800))
+				transformed_image = tf.warp(Image.fromarray(img), transformer, output_shape = (800,800))
 				
 				#print("Transformed Image: ",transformed_image)
 				
@@ -229,61 +229,6 @@ class DraughtsGameWindow(QWidget):
 				#break
 			else: print('ups')
 		print(self.corners)
-
-	"""
-	def checkCoords(self, img, coords):
-		self.upper_left_coords = []
-		self.lower_left_coords = []
-		self.lower_right_coords = []
-		self.upper_right_coords = []
-
-		for index, coord in enumerate(coords):
-			#print(img[coord[0], coord[1]]," - ", )
-
-			pixel = img[coord[0], coord[1]]
-			sum = 0
-			sum += pixel[0]
-			sum += pixel[1]
-			sum += pixel[2]
-			'''if sum > 300:
-				print()
-				#print("delete ", coord, ' with ', pixel)
-			else:'''
-
-			print("pixel: ", pixel, "@ y:",coord[0],', x:',coord[1])
-			if pixel[0] > 150 and pixel[1] > 150 and pixel[2] > 150:
-				self.upper_right_coords.append(coord)
-			elif pixel[0] > 110:
-				self.lower_right_coords.append(coord)
-			elif pixel[1] > 110:
-				self.lower_left_coords.append(coord)
-			elif pixel[2] > 110:
-				self.upper_left_coords.append(coord)
-
-		#final_red = (int(numpy.sum(self.lower_right_coords[0])/len(self.lower_right_coords)),int(numpy.sum(self.lower_right_coords[1])/len(self.lower_right_coords[])))	#(sum(self.lower_right_coords[0]), sum(self.lower_right_coords[1]))
-		final_white = numpy.average(self.upper_right_coords, axis=0)
-		final_red = numpy.average(self.lower_right_coords, axis=0)
-		final_green = numpy.average(self.lower_left_coords, axis=0)
-		final_blue = numpy.average(self.upper_left_coords, axis=0)
-		
-		self.lbl.setPixmap(self.pixmap)
-		if len(self.upper_right_coords) == 0 or len(self.upper_left_coords) == 0 or len(self.lower_left_coords) == 0 or len(self.lower_right_coords) == 0 :
-			print('less than 4 corners for calibration detected, returning -1')
-			return -1
-		
-		final_white = (int(final_white[1]),int(final_white[0]))
-		final_red = (int(final_red[1]),int(final_red[0]))
-		final_green = (int(final_green[1]),int(final_green[0]))
-		final_blue = (int(final_blue[1]),int(final_blue[0]))
-		
-		print('avg blue ',final_blue)
-		print('avg green',final_green)
-		print('avg red ',final_red)
-		print('avg white ',final_white)
-		
-		return numpy.array((final_blue, final_green, final_red, final_white))
-	"""
-
 
 	# 
 	# Detect draughts tiles (german: Spielstein) at the field

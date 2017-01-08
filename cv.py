@@ -172,7 +172,7 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 
 
 	# hsv color debug
-	debug_points(centers, accums, rgb_img)
+	#debug_points(centers, accums, rgb_img)
 
 	coords = { "blue": [], "green": [], "red": [], "white": [] }
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
