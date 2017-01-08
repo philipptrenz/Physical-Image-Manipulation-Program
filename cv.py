@@ -360,9 +360,10 @@ def debug_points(centers, accums, image):
 	for key, coords in correct_coords.items():
 		print('\n\n', key, ' hsv colors:')
 		for i in range(len(value)):
-			#print(rgb2hsv())
-			print(image[coords[i]])
-
+			coord = coords[i]
+			print(coord)
+			if 0 <= coord[0] <= len(image) and 0 <= coord[1] <= len(image[0]): print(image[coords[i]])
+				#print(rgb2hsv())
 
 
 
