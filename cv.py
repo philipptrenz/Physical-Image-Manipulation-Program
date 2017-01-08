@@ -317,15 +317,15 @@ def find_colors(pixel_color):
 			possible_colors.append(key)
 
 	if len(possible_colors) == 0:
-		print(color, ' (rgb) seems not to be one of the colors')
+		print(pixel_color, ' (rgb) seems not to be one of the colors')
 		return None
 
 	elif len(possible_colors) == 1:
-		print(color, ' (rgb) should be', possible_colors)
+		print(pixel_color, ' (rgb) should be', possible_colors)
 		return possible_colors[0]
 
 	elif len(possible_colors) > 1:
-		print('COLOR CONFLICT: ',color, ' (rgb) matches more than one color: ', possible_colors)
+		print('COLOR CONFLICT: ',pixel_color, ' (rgb) matches more than one color: ', possible_colors)
 		return None
 
 
