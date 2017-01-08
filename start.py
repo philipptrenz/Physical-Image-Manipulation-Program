@@ -68,7 +68,7 @@ class DraughtsGameWindow(QWidget):
 		elif event.key() == Qt.Key_V:
 
 			self.vbox.setContentsMargins(self.upper_left[0] + 10,self.PIX_PADDING + 10,240,112)
-			self.pixmap = QPixmap("checkers_randlos.jpg")
+			self.pixmap = QPixmap("./src/board.jpg")
 			self.pixmap = self.pixmap.scaledToWidth( self.upper_right[0]-self.upper_left[0] )
 			'''
 			self.painter.drawEllipse(self.upper_left[0]-10,self.upper_left[1]-10,20,20)
@@ -147,7 +147,7 @@ class DraughtsGameWindow(QWidget):
 			camera.close()
 
 			self.vbox.setContentsMargins(self.upper_left[0] + 10,self.PIX_PADDING + 10,240,112)
-			self.pixmap = QPixmap("checkers_randlos.jpg")
+			self.pixmap = QPixmap("./src/board.jpg")
 			self.pixmap = self.pixmap.scaledToWidth( self.upper_right[0]-self.upper_left[0] )			
 			self.lbl.setPixmap(self.pixmap)
 			self.lbl.repaint()
