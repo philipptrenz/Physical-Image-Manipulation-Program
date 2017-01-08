@@ -201,7 +201,7 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 	# save debug image to file
 	scipy.misc.imsave('./2_detected_circles.jpg', debug_img)
 
-	print('#Circles: \n\tblue: 'len(coords["blue"]),'\n\tgreen: ',len(coords["green"]),'\n\tred: ', len(coords["red"]),'\n\twhite: ', len(coords["white"]))
+	print('#Circles: \n\tblue: ',len(coords["blue"]),'\n\tgreen: ',len(coords["green"]),'\n\tred: ', len(coords["red"]),'\n\twhite: ', len(coords["white"]))
 
 	if len(coords["blue"]) == 0 or len(coords["green"]) == 0 or len(coords["red"]) == 0 or len(coords["white"]) == 0:
 		print('less than 4 corners for calibration detected, returning -1')
