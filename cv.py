@@ -351,7 +351,7 @@ def debug_points(centers, accums, image):
 
 	# coords is (y,x)
 	def in_range(coords, key):
-		in_picture = 0 <= coords[1] <= len(image) and 0 <= coords[0] <= len(image[0])
+		in_picture = 0 <= coords[0] <= len(image) and 0 <= coords[1] <= len(image[0])
 		x_okay = searched_range[key][0][0] <= coords[1] <= searched_range[key][1][0]
 		y_okay = searched_range[key][0][1] <= coords[0] <= searched_range[key][1][1]
 		return in_picture and x_okay and y_okay
@@ -363,9 +363,9 @@ def debug_points(centers, accums, image):
 
 	for key, coords in correct_coords.items():
 		print('\n\n', key, ' hsv colors:')
-		for i in range(len(value)):
+		for i in range(len(coords)):
 			coord = coords[i]
-			print(rgb2hsv(image[coord[1], coord[0]]))	# print hsv color of coord in image
+			print(rgb2hsv(image[coord[0], coord[1]]))	# print hsv color of coord in image
 	print('\n\n')
 
 
