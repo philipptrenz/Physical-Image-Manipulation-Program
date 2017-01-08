@@ -294,10 +294,10 @@ def find_colors(pixel_color, debug=False):
 
 	# HSV color range based on experiments
 	# be aware that the bigger value of each channel has to be right!!!
-	range_blue = ((0.59,0.95,188.),(0.62,1.2,242.))
-	range_green = ((0,225,0),(4,245,95))
-	range_red = ((210,0,0),(250,30,50.))
-	range_white = ((170,210,135),(250,235,250))
+	range_blue = ((0.59,0.95,188.),(0.62,1.1,242.))
+	range_green = ((0.32,0.98,0),(0.4,1.1,95))
+	range_red = ((0.0,0.84,210),(1.0,1.1,250))
+	range_white = ((0.12,0.2,225),(0.6,0.45,245))
 
 	couldbe = { "blue":0, "green":0, "red":0, "white":0 }
 
