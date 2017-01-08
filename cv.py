@@ -359,15 +359,13 @@ def debug_points(centers, accums, image):
 	# iterate over all circles, then look for all 4 positions if coord is in range
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		for key, value in searched_range.items():
-			if in_range(centers[idx],key): 
-				print('Yep')
-				correct_coords[key].append(centers[idx])
+			if in_range(centers[idx],key): correct_coords[key].append(centers[idx])
 
 	for key, coords in correct_coords.items():
 		print('\n\n', key, ' hsv colors:')
 		for i in range(len(value)):
 			coord = coords[i]
-			print(rgb2hsv(image[coord[0], coord[1]]))	# print hsv color of coord in image
+			print(rgb2hsv(image[coord[1], coord[0]]))	# print hsv color of coord in image
 	print('\n\n')
 
 
