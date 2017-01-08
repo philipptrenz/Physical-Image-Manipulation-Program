@@ -366,7 +366,7 @@ def debug_points(centers, accums, image):
 			print(coord)
 			if 0 <= coord[1] <= len(image) and 0 <= coord[0] <= len(image[0]):
 				rgb = image[coord[0], coord[1]]
-				print(gb2hsv(rgb))
+				print(rgb2hsv(rgb))
 
 
 
