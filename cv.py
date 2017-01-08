@@ -172,7 +172,7 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 
 
 	# hsv color debug
-	debug_points(centers, acuums, rgb_img)
+	debug_points(centers, accums, rgb_img)
 
 	coords = { "blue": [], "green": [], "red": [], "white": [] }
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
@@ -334,7 +334,7 @@ def rgb2hsv(rgb):
 	x[0,0] = rgb
 	return color.rgb2hsv(x)[0][0]
 
-def debug_points(centers, acuums, image):
+def debug_points(centers, accums, image):
 
 	# define areas to search for, there are just temporary correct!
 	# don't move camera or monitor when set!
