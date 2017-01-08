@@ -190,7 +190,7 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 				#print('  accepted circle drawn', center_x, center_y)
 
 				# if valid color was found, add it to coords list to specific color key
-				found_color = find_colors(pixel_color)	# string of color, 'blue', 'green', 'red' or 'white'
+				found_color = find_colors(pixel_color, True)	# string of color, 'blue', 'green', 'red' or 'white'
 				if found_color is not None: coords[found_color].append(centers[idx])
 
 		# draw also all unaccepted circles in dark gray
