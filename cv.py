@@ -190,7 +190,7 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 				#print('  accepted circle drawn', center_x, center_y)
 
 				# if valid color was found, add it to coords list to specific color key
-				found_color = find_colors(pixel_color, True)	# string of color, 'blue', 'green', 'red' or 'white'
+				found_color = find_colors(pixel_color, False)	# string of color, 'blue', 'green', 'red' or 'white'
 				if found_color is not None: coords[found_color].append(centers[idx])
 
 		# draw also all unaccepted circles in dark gray
@@ -295,7 +295,7 @@ def find_colors(pixel_color, debug=False):
 	# HSV color range based on experiments
 	# be aware that the bigger value of each channel has to be right!!!
 	range_blue = ((0.59,0.95,188.),(0.62,1.1,242.))
-	range_green = ((0.32,0.98,0.),(0.4,1.1,95.))
+	range_green = ((0.32,0.98,225.),(0.4,1.1,240.))
 	range_red = ((0.97,0.84,210.),(1.0,1.1,250.))
 	range_white = ((0.12,0.2,225.),(0.6,0.45,245.))
 
@@ -317,15 +317,15 @@ def find_colors(pixel_color, debug=False):
 			possible_colors.append(key)
 
 	if len(possible_colors) == 0:
-		#if debug: print(pixel_color, ' (rgb)\t\t',hsv,'(hsv)\t\t not in range of any valid color')
+		if debug: print('COLOR: matches no color\t\t',pixel_color, ' (rgb)\t\t',hsv,'(hsv)')
 		return None
 
 	elif len(possible_colors) == 1:
-		if debug: print(pixel_color, ' (rgb)\t\t should be', possible_colors)
+		print('COLOR: should be', possible_colors[0], '\t\t',pixel_color, ' (rgb)')
 		return possible_colors[0]
 
 	elif len(possible_colors) > 1:
-		print('COLOR CONFLICT: ',pixel_color, ' (rgb)\t\t',hsv,'(hsv)\t\t matches more than one color: ', possible_colors)
+		print('COLOR: CONFLICT! matches multiple colors (',possible_colors,')\t\t',pixel_color,' (rgb)\t',hsv,'(hsv)')
 		return None
 
 def rgb2hsv(rgb):
