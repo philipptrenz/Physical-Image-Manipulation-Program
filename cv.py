@@ -326,5 +326,5 @@ def rgb2hsv(rgb):
 	# convert RGB to HSV
 	# rgb2hsv just accepts image arrays, so we make an array with one pixel
 	x = numpy.zeros((1,1,3))
-	x[0,0] = pixel_color
+	x[0,0] = rgb
 	return color.rgb2hsv(x)[0][0]
