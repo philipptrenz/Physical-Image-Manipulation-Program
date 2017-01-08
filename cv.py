@@ -302,7 +302,7 @@ def find_colors(pixel_color, debug=False):
 	couldbe = { "blue":0, "green":0, "red":0, "white":0 }
 
 	# check for every channel of the color if the color is in the range of blue, green, ...
-	for i in range(0,2):
+	for i in range(0,3):
 		if range_blue[0][i] <= hsv[i] <= range_blue[1][i]: couldbe["blue"] += 1
 		if range_green[0][i] <= hsv[i] <= range_green[1][i]: couldbe["green"] += 1
 		if range_red[0][i] <= hsv[i] <= range_red[1][i]: couldbe["red"] += 1
