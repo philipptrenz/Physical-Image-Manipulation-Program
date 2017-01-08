@@ -115,9 +115,9 @@ class DraughtsGameWindow(QWidget):
 			with picamera.array.PiRGBArray(camera) as stream:
 				camera.capture(stream, format='rgb')
 				im = Image.fromarray(stream.array)
-				im.save('./preview.png')				
+				scipy.misc.imsave('./0_photo.jpg', im)				
 				camera.close()
-				os.system('xdg-open ./preview.png')
+				os.system('xdg-open ./0_photo.jpg')
 
 		elif event.key() == Qt.Key_T:
 
@@ -203,9 +203,7 @@ class DraughtsGameWindow(QWidget):
 			camera.capture(stream, format='rgb')
 			img = stream.array
 			camera.close()
-			im = Image.fromarray(img)
-			im.save('./0_photo.png')
-
+			scipy.misc.imsave('./0_photo.jpg', img)
 
 			#img, coords = circle_detection(img, 20, 25)
 			#self.calibrationPoints = self.checkCoords(img, coords)
@@ -227,7 +225,7 @@ class DraughtsGameWindow(QWidget):
 				
 				#print("Transformed Image: ",transformed_image)
 				
-				scipy.misc.imsave('./3_transformed.png', transformed_image)
+				scipy.misc.imsave('./3_transformed.jpg', transformed_image)
 				#break
 			else: print('ups')
 		print(self.corners)
@@ -317,7 +315,7 @@ class DraughtsGameWindow(QWidget):
 				transformer.estimate(src, self.calibrationPoints)
 				board_image = tf.warp(img, transformer, output_shape = (800,800))
 
-				scipy.misc.imsave('./board.png', board_image)
+				scipy.misc.imsave('./board.jpg', board_image)
 			
 			print('board image captured')
 

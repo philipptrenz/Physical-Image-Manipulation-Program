@@ -133,7 +133,7 @@ def circle_detection(rgb_img, radMin, radMax, edgesAlready=False):
 					
 	print("#Circles: ", len(accepted_centers))
 	# debug -->
-	scipy.misc.imsave('./circles_detected_debug.png', debug_img)
+	scipy.misc.imsave('./circles_detected_debug.jpg', debug_img)
 	# <-- debug end
 
 	if (len(accepted_centers) == 0):
@@ -195,7 +195,7 @@ def calibration_points_detection(rgb_img, radMin, radMax, edgesAlready=False):
 			#print('unaccepted circle drawn', center_x, center_y)
 					
 	# save debug image to file
-	scipy.misc.imsave('./2_detected_circles.png', debug_img)
+	scipy.misc.imsave('./2_detected_circles.jpg', debug_img)
 
 
 	if len(coords["blue"]) == 0 or len(coords["green"]) == 0 or len(coords["red"]) == 0 or len(coords["white"]) == 0:
