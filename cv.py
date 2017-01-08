@@ -289,7 +289,7 @@ def find_colors(pixel_color):
 	x = numpy.zeros((1,1,3))
 	x[0,0] = pixel_color
 	hsv = color.rgb2hsv(x)
-	print('hsv color: ',x[0,0],' @ ',center_x,center_y,' (x,y)')
+	#print('hsv color: ',x[0,0])
 
 	# TODO: Check code
 
