@@ -231,10 +231,10 @@ def debug_points(centers, accums, image):
 	# don't move camera or monitor when set!
 	# ((x_min, y_min)(x_max, y_max))
 	searched_range = {	
-		'upper_left': ((160, 60), (250, 130)), 
-		'lower_left': ((190, 930),  (290, 1020)), 
-		'lower_right': ((1060, 900), (1160, 980)), 
-		'upper_right': ((1050, 30),  (1140, 110))
+		'upper_left': ((300, 400), (370, 470)), 
+		'lower_left': ((440, 580),  (520, 660)), 
+		'lower_right': ((820, 560), (900, 630)), 
+		'upper_right': ((650, 240),  (730, 320))
 	}
 	correct_coords = {'upper_left': [], 'lower_left': [], 'lower_right': [], 'upper_right': []}
 
@@ -305,7 +305,7 @@ if __name__ == '__main__':
 	print('Import the main function via \'from cv import detect_colored_circles\'')
 	path = './img/0_photo.jpg'
 
-	radius_range = (40,50) # radius of circles in pixels
+	radius_range = (42,48) # radius of circles in pixels
 
 	# ((h_min, s_min, v_min),(h_max, s_max, v_max))
 	hsv_color_ranges = {
