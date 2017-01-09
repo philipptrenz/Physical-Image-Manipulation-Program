@@ -3,7 +3,6 @@
 import sys, io, os, time, threading
 
 import numpy
-import matplotlib
 import scipy.misc
 from skimage import color
 from skimage.io import imread
