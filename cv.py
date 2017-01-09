@@ -296,7 +296,7 @@ def save_image(name, image):
 
 if __name__ == '__main__':
 	print('NOTE: THIS IS JUST FOR TESTING PURPOSES')
-	print('Import the main function via \'from cv import calibration_points_detection\'')
+	print('Import the main function via \'from cv import detect_colored_circles\'')
 	path = './img/0_photo.jpg'
 
 	radius_range = (20,25) # radius of circles in pixels
