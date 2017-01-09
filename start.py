@@ -196,7 +196,8 @@ class DraughtsGameWindow(QWidget):
 			camera.close()
 
 
-			radius_range = (80,100) # radius of circles in pixels, from min to max
+			#radius_range = (20,25) # radius of circles in pixels, from min to max
+			radius_range = (80,200)
 			# ((h_min, s_min, v_min),(h_max, s_max, v_max))
 
 			hsv_color_ranges = {
