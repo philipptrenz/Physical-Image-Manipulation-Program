@@ -187,6 +187,8 @@ class DraughtsGameWindow(QWidget):
 		self.setWindowTitle('DraughtsCV')
 		self.show()
 		
+
+
 	def calibrate(self, ignore1, ignore2): # pythonmaster
 		camera = picamera.PiCamera()
 
@@ -216,12 +218,12 @@ class DraughtsGameWindow(QWidget):
 
 				src = numpy.array((
 					(0, 0), #upper left
-					(0, 1604), #lower left
-					(1604, 1604), #lright
-					(1604, 0) #uright
+					(0, 3840), #lower left
+					(2400, 3840), #lright
+					(2400, 0) #uright
 				))
 
-				test_image = imread('./src/board.jpg')
+				test_image = imread('./stuff/test_image.jpg')
 			
 				transformer = tf.ProjectiveTransform()
 				transformer.estimate(src, self.calibrationPoints)
@@ -232,9 +234,12 @@ class DraughtsGameWindow(QWidget):
 			else: print('try it again ...')
 		print(self.corners)
 
+
+
 	# 
 	# Detect draughts tiles (german: Spielstein) at the field
 	#
+	"""
 	def findTiles(self, ignore1, ignore2): # pythonmaster
 
 		if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
@@ -268,7 +273,8 @@ class DraughtsGameWindow(QWidget):
 
 		else:
 			print('calibrationPoints not yet set')
-
+	"""
+	
 if __name__ == '__main__':
 
 	app = QApplication(sys.argv)
