@@ -208,7 +208,7 @@ class DraughtsGameWindow(QWidget):
 				'black': ((0.05,0.19,20.),(0.15,0.30,60.))		# upper right circle
 			}
 
-			circle_coords = detect_colored_circles(img, radius_range, hsv_color_ranges, debug=True)
+			circle_coords = detect_colored_circles(img, radius_range, hsv_color_ranges, debug=False)
 
 			if circle_coords is not None:
 
@@ -216,9 +216,9 @@ class DraughtsGameWindow(QWidget):
 
 				src = numpy.array((
 					(0, 0), #upper left
-					(0, 800), #lower left
-					(800, 800), #lright
-					(800, 0) #uright
+					(0, 1604), #lower left
+					(1604, 1604), #lright
+					(1604, 0) #uright
 				))
 
 				test_image = imread('./src/board.jpg')
