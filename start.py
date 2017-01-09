@@ -10,34 +10,28 @@ from time import sleep
 import numpy
 import matplotlib
 from PIL import Image
+
 from PyQt5.QtCore import *
 import PyQt5.QtCore
 from PyQt5.QtGui import *
-
 from PyQt5.QtWidgets import *
+import gtk
 
-from pyqt import FreakingQtImageViewer
 import scipy.misc
-
 from skimage import color
 from skimage import transform as tf
-#from skimage import data
-from skimage.feature import canny
-from skimage.transform import hough_ellipse
-from skimage.draw import ellipse_perimeter
-
-from skimage.transform import hough_circle
-from skimage.feature import peak_local_max
-from skimage.draw import circle_perimeter
 from skimage.util import img_as_ubyte
+from skimage.feature import canny, peak_local_max
+from skimage.transform import hough_ellipse, hough_circle
+from skimage.draw import ellipse_perimeter, circle_perimeter
 
-import scipy.misc
+from _thread import start_new_thread
 
 import picamera
 import picamera.array
 
 from cv import detect_colored_circles
-from _thread import start_new_thread
+
 
 
 class DraughtsGameWindow(QWidget):
