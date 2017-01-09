@@ -216,21 +216,33 @@ class DraughtsGameWindow(QWidget):
 
 				self.calibrationPoints = numpy.array((circle_coords['blue'], circle_coords['green'], circle_coords['red'], circle_coords['black']))
 
-				src = numpy.array((
-					(0, 0), #upper left
-					(0, 3840), #lower left
-					(2400, 3840), #lright
-					(2400, 0) #uright
-				))
+				camera_resolution = (1024,1280)
 
 				test_image = imread('./stuff/test_image.jpg')
-			
+				test_image_size = (len(test_image), len(test_image[0]))
+
+				src = numpy.array((
+					(0, 0), #upper left
+					(0, test_image_size[1]), #lower left
+					(test_image_size[0], test_image_size[1]), #lright
+					(test_image_size[0], 0) #uright
+				))
+
+				x_ratio = test_image_size[1]/camera_resolution[1]
+				y_ratio = test_image_size[0]/camera_resolution[0]
+				for i in range(len(self.calibrationPoints)):
+					coord = self.calibrationPoints[i]
+					self.calibrationPoints[i] = (int(coord[0]*y_ratio), int(coord[1]*x_ratio))
+
+					
 				transformer = tf.ProjectiveTransform()
 				transformer.estimate(src, self.calibrationPoints)
-				transformed_image = tf.warp(test_image, transformer, output_shape = (1024,1280))
+				transformed_image = tf.warp(test_image, transformer, output_shape = camera_resolution)
 								
 				scipy.misc.imsave('./img/3_transformed.jpg', transformed_image)
 				#break
+
+				os.system('xdg-open ./img/3_transformed.jpg')
 			else: print('try it again ...')
 		print(self.corners)
 
