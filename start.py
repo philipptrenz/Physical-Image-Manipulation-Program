@@ -201,10 +201,10 @@ class DraughtsGameWindow(QWidget):
 			# ((h_min, s_min, v_min),(h_max, s_max, v_max))
 
 			hsv_color_ranges = {
-				'blue': ((0.59,0.95,188.),(0.62,1.1,242.)),		# upper left circle
-				'green': ((0.32,0.98,225.),(0.41,1.1,240.)),	# lower left circle
-				'red': ((0.97,0.84,210.),(1.0,1.1,250.)),		# lower right circle
-				'white': ((0.12,0.2,225.),(0.6,0.45,245.))		# upper right circle
+				'blue': ((0.52,0.85,120.),(0.56,0.95,130.)),		# upper left circle
+				'green': ((0.25,0.55,125.),(0.29,0.63,132.)),	# lower left circle
+				'red': ((0.96,0.72,140.),(1.,0.79,154.)),		# lower right circle
+				'black': ((0.05,0.19,40.),(0.15,0.30,50.))		# upper right circle
 			}
 
 			circle_coords = detect_colored_circles(img, radius_range, hsv_color_ranges, debug=True)

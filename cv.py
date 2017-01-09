@@ -175,7 +175,6 @@ def add_circle_outlines_to_image(image, center_y, center_x, radius, color):
 	# paramters: y, x, radius; returns y, x
 	cy, cx = circle_perimeter(center_y, center_x, radius, method='bresenham', shape=(len(image), len(image[0])))
 	image[cy, cx] = color
-	print('radius',radius)
 	return image # needed?
 
 def find_colors(pixel_color, hsv_color_ranges, debug=False):
@@ -317,4 +316,4 @@ if __name__ == '__main__':
 
 	rgb_img = imread(path)
 	print('points detection from file',path,'with circle radii from',radius_range[0],'to',radius_range[1],'\n') 	
-	detect_colored_circles(rgb_img, radius_range, hsv_color_ranges)
+	detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, True)
