@@ -145,7 +145,7 @@ def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, deb
 		else:
 			if debug:
 				# draw also all circles not matching the specific colors, but in dark gray
-				#debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], (255,255,255))
+				debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], (255,255,255))
 
 	return (coords, debug_img)
 
