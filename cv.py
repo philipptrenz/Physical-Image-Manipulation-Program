@@ -13,8 +13,7 @@ from skimage.transform import hough_ellipse, hough_circle
 from skimage.draw import ellipse_perimeter, circle_perimeter
 
 
-
-def detect_coloured_circles(rgb_img, radius_range, hsv_color_ranges, debug=False):
+def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False):
 	"""
 	TODO: Desicption
 	"""
@@ -312,4 +311,4 @@ if __name__ == '__main__':
 
 	rgb_img = imread(path)
 	print('points detection from file',path,'with circle radii from',radius_range[0],'to',radius_range[1],'\n') 	
-	detect_coloured_circles(rgb_img, radius_range, hsv_color_ranges)
+	detect_colored_circles(rgb_img, radius_range, hsv_color_ranges)
