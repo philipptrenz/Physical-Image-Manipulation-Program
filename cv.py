@@ -141,7 +141,7 @@ def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges):
 		found_color = find_colors(pixel_color, hsv_color_ranges, False)	# string of color, 'blue', 'green', 'red' or 'white'
 		if found_color is not None: 
 			coords[found_color].append(centers[idx])
-			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], pixel_color) # 23 is radius
+			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], pixel_color) 
 		else:
 			# draw also all circles not matching the specific colors, but in dark gray
 			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], (30,30,30))
@@ -306,7 +306,7 @@ if __name__ == '__main__':
 	print('Import the main function via \'from cv import detect_colored_circles\'')
 	path = './img/0_photo.jpg'
 
-	radius_range = (20,25) # radius of circles in pixels
+	radius_range = (85,95) # radius of circles in pixels
 
 	# ((h_min, s_min, v_min),(h_max, s_max, v_max))
 	hsv_color_ranges = {
