@@ -205,7 +205,7 @@ class DraughtsGameWindow(QWidget):
 				'blue': ((0.52,0.85,120.),(0.56,0.95,130.)),		# upper left circle
 				'green': ((0.25,0.55,125.),(0.29,0.63,132.)),	# lower left circle
 				'red': ((0.96,0.72,140.),(1.,0.79,154.)),		# lower right circle
-				'black': ((0.05,0.19,40.),(0.15,0.30,50.))		# upper right circle
+				'black': ((0.05,0.19,20.),(0.15,0.30,60.))		# upper right circle
 			}
 
 			circle_coords = detect_colored_circles(img, radius_range, hsv_color_ranges, debug=True)
@@ -225,11 +225,8 @@ class DraughtsGameWindow(QWidget):
 			
 				transformer = tf.ProjectiveTransform()
 				transformer.estimate(src, self.calibrationPoints)
-				transformed_image = tf.warp(test_image, transformer, output_shape = (1280,1024))
-				
-				#print("Transformed Image: ",transformed_image)
-
-				
+				transformed_image = tf.warp(test_image, transformer, output_shape = (1024,1280))
+								
 				scipy.misc.imsave('./img/3_transformed.jpg', transformed_image)
 				#break
 			else: print('try it again ...')

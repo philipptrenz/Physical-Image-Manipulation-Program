@@ -321,7 +321,7 @@ if __name__ == '__main__':
 		'red': ((0.93, 0.81 ,200.), (1. ,1. ,255.)),
 		'white': ((0.08, 0.15 ,210.), (0.7 ,0.50 ,255.))
 	}
-	print('white',rgb2hsv((250,250,250)))
+	print('white',rgb2hsv((44,39,35)))
 
 	rgb_img = imread(path)
 	print('points detection from file',path,'with circle radii from',radius_range[0],'to',radius_range[1],'\n') 	
