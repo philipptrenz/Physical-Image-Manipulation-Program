@@ -307,12 +307,21 @@ if __name__ == '__main__':
 	radius_range = (42,48) # radius of circles in pixels
 
 	# ((h_min, s_min, v_min),(h_max, s_max, v_max))
+	"""
 	hsv_color_ranges = {
 		'blue': ((0.59 , 0.95 ,188.), (0.62 ,1. ,242.)),
 		'green': ((0.32, 0.98 ,225.), (0.41 ,1. ,240.)),
 		'red': ((0.97, 0.84 ,210.), (1. ,1. ,250.)),
 		'white': ((0.12, 0.2 ,225.), (0.6 ,0.45 ,245.))
 	}
+	"""
+	hsv_color_ranges = {
+		'blue': ((0.55 , 0.92 ,180.), (0.65 ,1. ,255.)),
+		'green': ((0.28, 0.94 ,210.), (0.45 ,1. ,255.)),
+		'red': ((0.93, 0.81 ,200.), (1. ,1. ,255.)),
+		'white': ((0.08, 0.15 ,210.), (0.7 ,0.50 ,255.))
+	}
+	print('white',rgb2hsv((250,250,250)))
 
 	rgb_img = imread(path)
 	print('points detection from file',path,'with circle radii from',radius_range[0],'to',radius_range[1],'\n') 	
