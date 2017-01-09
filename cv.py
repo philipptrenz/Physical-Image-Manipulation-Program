@@ -52,7 +52,7 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 	# 
 	print('eliminating with peak_local_max ...')
 	start = time.time()
-	centers, accums = find_best_circles(hough_radii, hough_res, circles_per_area=16)
+	centers, accums, radii = circles_per_radiuss(hough_radii, hough_res, circles_per_area=16)
 	print('finished, duration: ',time.time()-start,'seconds')
 	print("#Circles: ", len(accums))
 	print()
@@ -64,7 +64,7 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 
 	print('finding coordinates by color of circles ...')
 	start = time.time()
-	color_coords_dictionary, debug_img = find_circles_by_color(centers, accums, rgb_img, hsv_color_ranges)
+	color_coords_dictionary, debug_img = find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges)
 	print('finished, duration: ',time.time()-start,'seconds')
 
 
@@ -98,17 +98,18 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 
 def find_circles(edges_img, min_radius, max_radius):
 	
-	hough_radii = numpy.arange(min_radius, max_radius, 1) # Ellipsen - Radius
+	hough_radii = numpy.arange(min_radius, max_radius, 1) # Liste von Radii von min_radius bis max_radius in Schritten von 1
 	hough_res = hough_circle(edges_img, hough_radii) # gibt für jeden index (radius) koordinaten
 
 	return (hough_radii, hough_res)
 
-def find_best_circles(hough_radii, hough_res, circles_per_area=16):
+def circles_per_radiuss(hough_radii, hough_res, circles_per_area=16):
 	"""
 	circles_per_area: take the x best circles 		
 	"""
 	centers = []
 	accums = []
+	radii = []
 
 	# Alle Kreise unterschiedlicher Radii in ein Array
 	# Menge der Kreise reduzieren vor peak_local_max:
@@ -119,11 +120,13 @@ def find_best_circles(hough_radii, hough_res, circles_per_area=16):
 		peaks = peak_local_max(h, num_peaks=circles_per_area) # beste X kreise fuer radius
 		centers.extend(peaks)
 		accums.extend(h[peaks[:, 0], peaks[:, 1]]) # wie 'gut' ??
+		radii.extend([radius] * circles_per_area)
+		#
 	
-	return (centers, accums)
+	return (centers, accums, radii)
 
 
-def find_circles_by_color(centers, accums, rgb_img, hsv_color_ranges):
+def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges):
 
 	debug_img = numpy.zeros((len(rgb_img), len(rgb_img[0]), 3), dtype=numpy.uint8)	# start with black image
 	coords = {}
@@ -138,10 +141,10 @@ def find_circles_by_color(centers, accums, rgb_img, hsv_color_ranges):
 		found_color = find_colors(pixel_color, hsv_color_ranges, False)	# string of color, 'blue', 'green', 'red' or 'white'
 		if found_color is not None: 
 			coords[found_color].append(centers[idx])
-			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, 23, pixel_color) # 23 is radius
+			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], pixel_color) # 23 is radius
 		else:
 			# draw also all circles not matching the specific colors, but in dark gray
-			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, 23, (30,30,30))
+			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], (30,30,30))
 
 	return (coords, debug_img)
 

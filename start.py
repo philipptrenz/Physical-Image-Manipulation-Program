@@ -197,7 +197,7 @@ class DraughtsGameWindow(QWidget):
 
 
 			#radius_range = (20,25) # radius of circles in pixels, from min to max
-			radius_range = (85,130)
+			radius_range = (85,95)
 			# ((h_min, s_min, v_min),(h_max, s_max, v_max))
 
 			hsv_color_ranges = {
@@ -228,7 +228,7 @@ class DraughtsGameWindow(QWidget):
 				
 				scipy.misc.imsave('./img/3_transformed.jpg', transformed_image)
 				#break
-			else: print('ups')
+			else: print('try it again ...')
 		print(self.corners)
 
 	# 
