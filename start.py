@@ -212,7 +212,7 @@ class DraughtsGameWindow(QWidget):
 
 			if circle_coords is not None:
 
-				self.calibrationPoints = numpy.array((circle_coords['blue'], circle_coords['green'], circle_coords['red'], circle_coords['white']))
+				self.calibrationPoints = numpy.array((circle_coords['blue'], circle_coords['green'], circle_coords['red'], circle_coords['black']))
 
 				src = numpy.array((
 					(0, 0), #upper left
