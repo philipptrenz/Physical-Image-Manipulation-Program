@@ -15,7 +15,6 @@ from PyQt5.QtCore import *
 import PyQt5.QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-import gtk
 
 import scipy.misc
 from skimage import color
