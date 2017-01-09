@@ -36,7 +36,7 @@ import scipy.misc
 import picamera
 import picamera.array
 
-from cv import circle_detection, rgb2gray, calibration_points_detection
+from cv import calibration_points_detection
 from _thread import start_new_thread
 
 
@@ -196,22 +196,28 @@ class DraughtsGameWindow(QWidget):
 		
 	def calibrate(self, ignore1, ignore2): # pythonmaster
 		camera = picamera.PiCamera()
-		self.calibrationPoints = -1
 
 		#while True:
 		with picamera.array.PiRGBArray(camera) as stream:
 			camera.capture(stream, format='rgb')
 			img = stream.array
 			camera.close()
-			scipy.misc.imsave('./0_photo.jpg', img)
 
-			#img, coords = circle_detection(img, 20, 25)
-			#self.calibrationPoints = self.checkCoords(img, coords)
-			
-			self.calibrationPoints = calibration_points_detection(img, 20, 25)
-			
 
-			if isinstance(self.calibrationPoints, (numpy.ndarray, numpy.generic) ):
+			radius_range = (20,25) # radius of circles in pixels, from min to max
+			# ((h_min, s_min, v_min),(h_max, s_max, v_max))
+
+			hsv_color_ranges = {
+				'blue': ((0.59,0.95,188.),(0.62,1.1,242.)),		# upper left circle
+				'green': ((0.32,0.98,225.),(0.41,1.1,240.)),	# lower left circle
+				'red': ((0.97,0.84,210.),(1.0,1.1,250.)),		# lower right circle
+				'white': ((0.12,0.2,225.),(0.6,0.45,245.))		# upper right circle
+			}
+
+			circle_coords = detect_coloured_circles(img, radius_range, hsv_color_ranges, debug=True)
+			self.calibrationPoints = numpy.array((circle_coords['blue'], circle_coords['green'], circle_coords['red'], circle_coords['white']))
+
+			if self.calibrationPoints is not None:
 				src = numpy.array((
 					(0, 0), #upper left
 					(0, 800), #lower left
