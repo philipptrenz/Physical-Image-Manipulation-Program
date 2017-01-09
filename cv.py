@@ -294,6 +294,7 @@ def save_image(name, image):
 
 
 if __name__ == '__main__':
+	print('\n')
 	print('NOTE: THIS IS JUST FOR TESTING PURPOSES')
 	print('Import the main function via \'from cv import detect_colored_circles\'')
 	path = './img/0_photo.jpg'
