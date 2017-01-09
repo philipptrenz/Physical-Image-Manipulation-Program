@@ -225,7 +225,7 @@ class DraughtsGameWindow(QWidget):
 			
 				transformer = tf.ProjectiveTransform()
 				transformer.estimate(src, self.calibrationPoints)
-				transformed_image = tf.warp(test_image, transformer, output_shape = (800,800))
+				transformed_image = tf.warp(test_image, transformer, output_shape = (1280,1024))
 				
 				#print("Transformed Image: ",transformed_image)
 
