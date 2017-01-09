@@ -18,6 +18,7 @@ from PyQt5.QtWidgets import *
 import scipy.misc
 from skimage import color
 from skimage import transform as tf
+from skimage.io import imread
 from skimage.util import img_as_ubyte
 from skimage.feature import canny, peak_local_max
 from skimage.transform import hough_ellipse, hough_circle
@@ -219,12 +220,15 @@ class DraughtsGameWindow(QWidget):
 					(800, 800), #lright
 					(800, 0) #uright
 				))
+
+				test_image = imread('./src/board.jpg')
 			
 				transformer = tf.ProjectiveTransform()
 				transformer.estimate(src, self.calibrationPoints)
-				transformed_image = tf.warp(Image.fromarray(img), transformer, output_shape = (800,800))
+				transformed_image = tf.warp(test_image, transformer, output_shape = (800,800))
 				
 				#print("Transformed Image: ",transformed_image)
+
 				
 				scipy.misc.imsave('./img/3_transformed.jpg', transformed_image)
 				#break
