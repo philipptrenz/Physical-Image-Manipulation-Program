@@ -126,7 +126,9 @@ def find_best_circles(hough_radii, hough_res, circles_per_area=16):
 def find_circles_by_color(centers, accums, rgb_img, hsv_color_ranges):
 
 	debug_img = numpy.zeros((len(rgb_img), len(rgb_img[0]), 3), dtype=numpy.uint8)	# start with black image
-	coords = { "blue": [], "green": [], "red": [], "white": [] }
+	coords = {}
+	for color, array in hsv_color_ranges.items():	# initialize coords 
+		coords[color] = []
 
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		center_y, center_x = centers[idx]

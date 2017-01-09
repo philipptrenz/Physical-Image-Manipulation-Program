@@ -207,9 +207,11 @@ class DraughtsGameWindow(QWidget):
 			}
 
 			circle_coords = detect_colored_circles(img, radius_range, hsv_color_ranges, debug=True)
-			self.calibrationPoints = numpy.array((circle_coords['blue'], circle_coords['green'], circle_coords['red'], circle_coords['white']))
 
-			if self.calibrationPoints is not None:
+			if circle_coords is not None:
+
+				self.calibrationPoints = numpy.array((circle_coords['blue'], circle_coords['green'], circle_coords['red'], circle_coords['white']))
+
 				src = numpy.array((
 					(0, 0), #upper left
 					(0, 800), #lower left
@@ -223,7 +225,7 @@ class DraughtsGameWindow(QWidget):
 				
 				#print("Transformed Image: ",transformed_image)
 				
-				scipy.misc.imsave('./3_transformed.jpg', transformed_image)
+				scipy.misc.imsave('./img/3_transformed.jpg', transformed_image)
 				#break
 			else: print('ups')
 		print(self.corners)
