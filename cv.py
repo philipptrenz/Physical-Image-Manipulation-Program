@@ -64,7 +64,7 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 
 	print('finding coordinates by color of circles ...')
 	start = time.time()
-	color_coords_dictionary, debug_img = find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges)
+	color_coords_dictionary, debug_img = find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, debug)
 	print('finished, duration: ',time.time()-start,'seconds')
 
 
@@ -126,7 +126,7 @@ def circles_per_radiuss(hough_radii, hough_res, circles_per_area=16):
 	return (centers, accums, radii)
 
 
-def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges):
+def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, debug):
 
 	debug_img = numpy.zeros((len(rgb_img), len(rgb_img[0]), 3), dtype=numpy.uint8)	# start with black image
 	coords = {}
@@ -138,13 +138,14 @@ def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges):
 		pixel_color = rgb_img[center_y, center_x]
 
 		# if valid color was found, add it to coords list to specific color key
-		found_color = find_colors(pixel_color, hsv_color_ranges, False)	# string of color, 'blue', 'green', 'red' or 'white'
+		found_color = find_colors(pixel_color, hsv_color_ranges, debug)	# string of color, 'blue', 'green', 'red' or 'white'
 		if found_color is not None: 
 			coords[found_color].append(centers[idx])
 			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], pixel_color) 
-		#else:
-			# draw also all circles not matching the specific colors, but in dark gray
-			#debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], (255,255,255))
+		else:
+			if debug:
+				# draw also all circles not matching the specific colors, but in dark gray
+				#debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], (255,255,255))
 
 	return (coords, debug_img)
 
