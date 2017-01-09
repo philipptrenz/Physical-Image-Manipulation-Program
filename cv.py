@@ -146,8 +146,6 @@ def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges):
 			# draw also all circles not matching the specific colors, but in dark gray
 			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], (30,30,30))
 
-		print('radius: ',radii[idx])
-
 	return (coords, debug_img)
 
 
@@ -177,6 +175,7 @@ def add_circle_outlines_to_image(image, center_y, center_x, radius, color):
 	# paramters: y, x, radius; returns y, x
 	cy, cx = circle_perimeter(center_y, center_x, radius, method='bresenham', shape=(len(image), len(image[0])))
 	image[cy, cx] = color
+	print('radius',radius)
 	return image # needed?
 
 def find_colors(pixel_color, hsv_color_ranges, debug=False):
