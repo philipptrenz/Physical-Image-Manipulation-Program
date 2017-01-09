@@ -305,7 +305,7 @@ if __name__ == '__main__':
 	print('Import the main function via \'from cv import detect_colored_circles\'')
 	path = './img/0_photo.jpg'
 
-	radius_range = (85,95) # radius of circles in pixels
+	radius_range = (40,50) # radius of circles in pixels
 
 	# ((h_min, s_min, v_min),(h_max, s_max, v_max))
 	hsv_color_ranges = {

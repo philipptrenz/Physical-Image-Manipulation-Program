@@ -197,7 +197,7 @@ class DraughtsGameWindow(QWidget):
 
 
 			#radius_range = (20,25) # radius of circles in pixels, from min to max
-			radius_range = (85,95)
+			radius_range = (40,50)
 			# ((h_min, s_min, v_min),(h_max, s_max, v_max))
 
 			hsv_color_ranges = {
