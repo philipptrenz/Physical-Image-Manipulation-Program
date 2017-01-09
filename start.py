@@ -8,7 +8,6 @@ import time
 from time import sleep
 
 import numpy
-import matplotlib
 from PIL import Image
 
 from PyQt5.QtCore import *
