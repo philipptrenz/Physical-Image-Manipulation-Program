@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # mac backup files
-.DS_Store
+*DS_Store
 
 # Windows bat
 allTheThings.bat
