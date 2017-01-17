@@ -227,6 +227,29 @@ class DraughtsGameWindow(QWidget):
 					(test_image_size[0], test_image_size[1]), #lright
 					(test_image_size[0], 0) #uright
 				))
+				"""
+				skaliere test_image in x auf camera_resultion_x
+				skaliere test_image in y anhang Verhältnis test_image_x/camera_resolution_x
+				wenn test_image_y > camera_resolution_y:
+					
+
+				sonst:
+					y_offset = (camera_resolution_y-test_image_y)/2
+				"""
+				x_offset = 0
+				y_offset = 0
+				if test_image[1]/test_image[0] > camera_resolution[1]/camera_resolution[0]:
+					# test_image ist in x breiter
+					y_offset = (camera_resolution[0]-(camera_resolution[1]/test_image[1]*test_image[0]))/2
+					for i in range(len(self.calibrationPoints)):
+						coord = self.calibrationPoints[i]
+						x = test_image[1]/camera_resolution[1]*coord[1]
+						y = y-y_offset
+
+				else:
+					x_offset = (camera_resolution[1]-(camera_resolution[0]/test_image[0]*test_image[1]))/2
+					
+
 
 				x_ratio = test_image_size[1]/camera_resolution[1]
 				y_ratio = test_image_size[0]/camera_resolution[0]
@@ -234,7 +257,7 @@ class DraughtsGameWindow(QWidget):
 					coord = self.calibrationPoints[i]
 					self.calibrationPoints[i] = (int(coord[0]*y_ratio), int(coord[1]*x_ratio))
 
-					
+
 				transformer = tf.ProjectiveTransform()
 				transformer.estimate(src, self.calibrationPoints)
 				transformed_image = tf.warp(test_image, transformer, output_shape = camera_resolution)

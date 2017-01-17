@@ -7,9 +7,10 @@ import scipy.misc
 from skimage import color
 from skimage.io import imread
 from skimage.util import img_as_ubyte
-from skimage.feature import canny, peak_local_max
+from skimage.feature import canny, peak_local_max, corner_fast, corner_foerstner, corner_harris, corner_kitchen_rosenfeld, corner_moravec, corner_shi_tomasi
 from skimage.transform import hough_ellipse, hough_circle
 from skimage.draw import ellipse_perimeter, circle_perimeter
+from skimage.filters import roberts, sobel, scharr, prewitt
 
 
 def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False):
@@ -35,6 +36,16 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 	print('find edges in grayscale image ...')
 	start = time.time()
 	edges_img = canny(gray_img, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
+	#edges_img = corner_fast(gray_img, n=9, threshold=1.2)
+	#edges_img = corner_foerstner(gray_img)[0]
+	#edges_img = corner_harris(gray_img, method='k', k=0.05, eps=1e-06, sigma=1)
+	#edges_img = corner_kitchen_rosenfeld(gray_img, mode='constant', cval=0)
+	#edges_img = corner_moravec(gray_img, window_size=1)
+	#edges_img = corner_shi_tomasi(gray_img, sigma=0.1)
+	#edges_img = roberts(gray_img)
+	#edges_img = sobel(gray_img)
+	#edges_img = scharr(gray_img)
+	#edges_img = prewitt(gray_img)
 	print('finished, duration: ',time.time()-start,'seconds')
 	save_image('1_edges', edges_img)
 	print()
@@ -77,21 +88,15 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 	save_image('2_detected_circles', debug_img)
 	print()
 
+	print('total duration: ',time.time()-start_all,'seconds')
+	print()
 
 	if color_not_found:
 		print('less than 4 corners for calibration detected, quitting')
 		return None
 
-
-	print('calculating coordinates by building average of circles with same color ...')
-	start = time.time()
 	color_coords = calc_coordinate_averages(color_coords_dictionary)
-	print('finished, duration: ',time.time()-start,'seconds')
-	print()
-
-	print('total duration: ',time.time()-start_all,'seconds')
 	print('Coordiantes: ',color_coords)
-
 	return color_coords
 
 
@@ -306,24 +311,13 @@ if __name__ == '__main__':
 	path = './img/0_photo.jpg'
 
 	radius_range = (42,48) # radius of circles in pixels
-
-	# ((h_min, s_min, v_min),(h_max, s_max, v_max))
-	"""
 	hsv_color_ranges = {
-		'blue': ((0.59 , 0.95 ,188.), (0.62 ,1. ,242.)),
-		'green': ((0.32, 0.98 ,225.), (0.41 ,1. ,240.)),
-		'red': ((0.97, 0.84 ,210.), (1. ,1. ,250.)),
-		'white': ((0.12, 0.2 ,225.), (0.6 ,0.45 ,245.))
+		'blue': ((0.52,0.85,120.),(0.56,0.95,130.)),		# upper left circle
+		'green': ((0.25,0.55,125.),(0.29,0.63,132.)),	# lower left circle
+		'red': ((0.96,0.72,140.),(1.,0.79,154.)),		# lower right circle
+		'black': ((0.05,0.19,20.),(0.15,0.30,60.))		# upper right circle
 	}
-	"""
-	hsv_color_ranges = {
-		'blue': ((0.55 , 0.92 ,180.), (0.65 ,1. ,255.)),
-		'green': ((0.28, 0.94 ,210.), (0.45 ,1. ,255.)),
-		'red': ((0.93, 0.81 ,200.), (1. ,1. ,255.)),
-		'white': ((0.08, 0.15 ,210.), (0.7 ,0.50 ,255.))
-	}
-	print('white',rgb2hsv((44,39,35)))
 
 	rgb_img = imread(path)
 	print('points detection from file',path,'with circle radii from',radius_range[0],'to',radius_range[1],'\n') 	
-	detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, True)
+	detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, False)
