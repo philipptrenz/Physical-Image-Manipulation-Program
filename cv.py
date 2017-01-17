@@ -99,6 +99,42 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 	print('Coordiantes: ',color_coords)
 	return color_coords
 
+def detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, debug=False):
+	"""
+	TODO: Desicption
+	"""
+
+	min_radius, max_radius = radius_range
+
+	start_all = time.time()
+
+	# convert image to gray
+	gray_img = rgb2gray(rgb_img)
+
+	# find edges in image
+	edges_img = canny(gray_img, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
+
+	# find circles from edge_image
+	hough_radii, hough_res = find_circles(edges_img, min_radius, max_radius)
+
+	# 
+	centers, accums, radii = circles_per_radiuss(hough_radii, hough_res, circles_per_area=16)
+
+	color_coords_dictionary, debug_img = find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, debug)
+
+	color_not_found = False
+	for key, array in color_coords_dictionary.items():
+		if len(array) == 0: color_not_found = True
+
+	print('total duration: ',time.time()-start_all,'seconds')
+
+	if color_not_found:
+		print('less than 4 corners for calibration detected, quitting')
+		return None
+
+	color_coords = calc_coordinate_averages(color_coords_dictionary)
+	return color_coords
+
 
 
 def find_circles(edges_img, min_radius, max_radius):
@@ -141,7 +177,6 @@ def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, deb
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		center_y, center_x = centers[idx]
 		pixel_color = rgb_img[center_y, center_x]
-
 		# if valid color was found, add it to coords list to specific color key
 		found_color = find_colors(pixel_color, hsv_color_ranges, debug)	# string of color, 'blue', 'green', 'red' or 'white'
 		if found_color is not None: 
@@ -151,6 +186,7 @@ def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, deb
 			if debug:
 				# draw also all circles not matching the specific colors, but in dark gray
 				debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], (255,255,255))
+				print('@ coord (x,y)', center_x, ', ', center_y, '\n')
 
 	return (coords, debug_img)
 
@@ -228,19 +264,20 @@ def rgb2hsv(rgb):
 	x[0,0] = rgb
 	return color.rgb2hsv(x)[0][0]
 
-def debug_points(centers, accums, image):
+def debug_points(centers, accums, image, searched_range=None):
 	"""
 	This function lists hsv color values of all detected circle centers, sorted by given coord ranges
 	"""
 	# define areas to search for, there are just temporary correct!
 	# don't move camera or monitor when set!
 	# ((x_min, y_min)(x_max, y_max))
-	searched_range = {	
-		'upper_left': ((300, 400), (370, 470)), 
-		'lower_left': ((440, 580),  (520, 660)), 
-		'lower_right': ((820, 560), (900, 630)), 
-		'upper_right': ((650, 240),  (730, 320))
-	}
+	if searched_range is None:
+		searched_range = {	
+			'upper_left': ((240, 110), (290, 150)), 
+			'lower_left': ((170, 360),  (220, 400)), 
+			'lower_right': ((400, 340), (450, 390)), 
+			'upper_right': ((510, 150),  (560, 190))
+		}
 	correct_coords = {'upper_left': [], 'lower_left': [], 'lower_right': [], 'upper_right': []}
 
 	# coords is (y,x)
@@ -299,6 +336,79 @@ def save_image(name, image):
 		scipy.misc.imsave(path, image)
 	threading.Thread(target=save).start()
 
+#########################################################################################################
+#########################################################################################################
+
+
+def calibrate_colors(rgb_img, radius_range, searched_range):
+	min_radius, max_radius = radius_range
+
+	# convert image to gray
+	gray_img = rgb2gray(rgb_img)
+
+	# find edges in image
+	edges_img = canny(gray_img, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
+
+	# find circles from edge_image
+	hough_radii, hough_res = find_circles(edges_img, min_radius, max_radius)
+
+	# 
+	centers, accums, radii = circles_per_radiuss(hough_radii, hough_res, circles_per_area=16)
+
+	def in_range(coords, key):
+		in_picture = 0 <= coords[0] <= len(rgb_img) and 0 <= coords[1] <= len(rgb_img[0])
+		x_okay = searched_range[key][0][0] <= coords[1] <= searched_range[key][1][0]
+		y_okay = searched_range[key][0][1] <= coords[0] <= searched_range[key][1][1]
+		return in_picture and x_okay and y_okay
+	
+	# initialize
+	correct_colors= {}
+	hsv_color_ranges = {}
+	for key, coord_range in searched_range.items():
+		correct_colors[key] = []
+		hsv_color_ranges[key] = None
+
+	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
+		center_y, center_x = centers[idx]
+		
+		# get all circle centers to the correct array
+		for key, coord_range in searched_range.items():
+			if in_range(centers[idx], key):
+				# get rgb color of center
+				rgb_color = rgb_img[center_y, center_x]
+				hsv_color = rgb2hsv(rgb_color)
+				correct_colors[key].append(hsv_color)
+
+	for key, color_array in correct_colors.items():
+		if len(color_array) == 0: 
+			print('at least one color not detected')
+			return None
+
+	for key, color_array in correct_colors.items():
+
+		h_min = None
+		s_min = None
+		v_min = None
+		h_max = None
+		s_max = None
+		v_max = None
+
+		for i in range(len(color_array)):
+			hsv = color_array[i]
+
+			h_min = hsv[0] if h_min is None or h_min > hsv[0] else h_min
+			s_min = hsv[1] if s_min is None or s_min > hsv[1] else s_min
+			v_min = hsv[2] if v_min is None or v_min > hsv[2] else v_min
+
+			h_max = hsv[0] if h_max is None or h_max < hsv[0] else h_max
+			s_max = hsv[1] if s_max is None or s_max < hsv[1] else s_max
+			v_max = hsv[2] if v_max is None or v_max < hsv[2] else v_max
+
+		print(h_min, s_min, v_min, h_max, s_max, v_max)
+		#correct_colors[key] = ((h_min-0.1, s_min-0.1, v_min-20),(h_max+0.1, s_max+0.1, v_max+20))
+		correct_colors[key] = ((h_min, s_min, v_min),(h_max, s_max, v_max))
+
+	return correct_colors
 
 #########################################################################################################
 #########################################################################################################
@@ -310,7 +420,7 @@ if __name__ == '__main__':
 	print('Import the main function via \'from cv import detect_colored_circles\'')
 	path = './img/0_photo.jpg'
 
-	radius_range = (42,48) # radius of circles in pixels
+	radius_range = (20,25) # radius of circles in pixels
 	hsv_color_ranges = {
 		'blue': ((0.52,0.85,120.),(0.56,0.95,130.)),		# upper left circle
 		'green': ((0.25,0.55,125.),(0.29,0.63,132.)),	# lower left circle
