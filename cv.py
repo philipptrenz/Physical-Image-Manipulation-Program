@@ -462,7 +462,7 @@ if __name__ == '__main__':
 	print('points detection from file',path,'with circle radii from',radius_range[0],'to',radius_range[1],'\n') 	
 
 	c = 0
-	while c < 15:
+	while c < 10:
 		c +=1
 		start = time.time()
 		circle_coords = detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, debug=False)
