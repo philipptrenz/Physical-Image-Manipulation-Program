@@ -12,6 +12,8 @@ from skimage.transform import hough_ellipse, hough_circle
 from skimage.draw import ellipse_perimeter, circle_perimeter
 from skimage.filters import roberts, sobel, scharr, prewitt
 
+from skimage import transform
+
 def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False):
 	"""
 	TODO: Desicption
@@ -408,7 +410,7 @@ def calibrate_colors(rgb_img, radius_range, searched_range):
 #########################################################################################################
 #########################################################################################################
 
-def warp(img, edges):
+def warp_david(img, edges):
 
     width = len(img[1])
     height = len(img)
@@ -439,15 +441,38 @@ def warp(img, edges):
     
     return warped
 
-#########################################################################################################
-#########################################################################################################
+def warp(img, edges):
 
+	width = len(img[0])
+	height = len(img)
+
+	src = numpy.array((
+	    edges['upper_left'],
+	    edges['lower_left'],
+	    edges['lower_right'],
+	    edges['upper_right']
+	))
+
+	dst = numpy.array((
+	    (0, 0),
+	    (0, height),
+	    (width, height),
+	    (width, 0)
+	))
+
+	tform = transform.ProjectiveTransform()
+	tform.estimate(src, dst)
+
+	return transform.warp(img, tform, output_shape=(height,width))
+
+#########################################################################################################
+#########################################################################################################
 
 if __name__ == '__main__':
 	print('\n')
 	print('NOTE: THIS IS JUST FOR TESTING PURPOSES')
 	print('Import the main function via \'from cv import detect_colored_circles\'')
-	path = 'img/0_photo.jpg'
+	path = 'test/image.jpg'
 
 	radius_range = (20,25) # radius of circles in pixels
 	hsv_color_ranges = {
@@ -458,18 +483,44 @@ if __name__ == '__main__':
 	}
 
 	rgb_img = imread(path)
-	overlay = scipy.misc.imread('0.jpg')
+	overlay = scipy.misc.imread('./test/overlay.jpg')
 	print('points detection from file',path,'with circle radii from',radius_range[0],'to',radius_range[1],'\n') 	
 
+	times = 10
+	print('testing',times,'times, printing average')
+
+	tmp = []
 	c = 0
-	while c < 10:
-		c +=1
-		start = time.time()
+	while c < times:
+		c += 1
+		
 		circle_coords = detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, debug=False)
 		if circle_coords is not None:
-			warped = warp(overlay, circle_coords)
-			print('duration: ',time.time()-start,'seconds')
-			scipy.misc.imsave('test.png', warped)
+			start = time.time()
+			warped = warp_david(overlay, circle_coords)
+			tmp.append(time.time()-start)
+			scipy.misc.imsave('./test/warped_david.png', warped)
 		else:
 			print('error')
+	print('warp david (avg):',(sum(tmp)/len(tmp)),'seconds')
+
+	tmp = []
+	c = 0
+	while c < times:
+		c += 1
+		
+		circle_coords = detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, debug=False)
+		if circle_coords is not None:
+			start = time.time()
+			warped = warp(overlay, circle_coords)
+			tmp.append(time.time()-start)
+			scipy.misc.imsave('./test/warped_skimage.png', warped)
+		else:
+			print('error')
+	print('warp skimage (avg):',(sum(tmp)/len(tmp)),'seconds')
+	print()
+
+
+
+
 
