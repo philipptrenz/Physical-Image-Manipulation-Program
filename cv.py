@@ -12,7 +12,6 @@ from skimage.transform import hough_ellipse, hough_circle
 from skimage.draw import ellipse_perimeter, circle_perimeter
 from skimage.filters import roberts, sobel, scharr, prewitt
 
-
 def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False):
 	"""
 	TODO: Desicption
@@ -106,8 +105,6 @@ def detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, de
 
 	min_radius, max_radius = radius_range
 
-	start_all = time.time()
-
 	# convert image to gray
 	gray_img = rgb2gray(rgb_img)
 
@@ -126,16 +123,12 @@ def detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, de
 	for key, array in color_coords_dictionary.items():
 		if len(array) == 0: color_not_found = True
 
-	print('total duration: ',time.time()-start_all,'seconds')
-
 	if color_not_found:
 		print('less than 4 corners for calibration detected, quitting')
 		return None
 
 	color_coords = calc_coordinate_averages(color_coords_dictionary)
 	return color_coords
-
-
 
 def find_circles(edges_img, min_radius, max_radius):
 	
@@ -166,7 +159,6 @@ def circles_per_radiuss(hough_radii, hough_res, circles_per_area=16):
 	
 	return (centers, accums, radii)
 
-
 def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, debug):
 
 	debug_img = numpy.zeros((len(rgb_img), len(rgb_img[0]), 3), dtype=numpy.uint8)	# start with black image
@@ -189,7 +181,6 @@ def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, deb
 				print('@ coord (x,y)', center_x, ', ', center_y, '\n')
 
 	return (coords, debug_img)
-
 
 def calc_coordinate_averages(coord_arrays):
 	"""
@@ -235,8 +226,12 @@ def find_colors(pixel_color, hsv_color_ranges, debug=False):
 	for color, color_range in hsv_color_ranges.items():	# for every hsv color range in hsv_color_ranges
 		couldbe[color] = 0
 		for i in range(0,3): # for every channel
-			## if hsv channel between hsv color range_min and range_max
-			if color_range[0][i] <= hsv[i] <= color_range[1][i]: couldbe[color] +=1
+			if color_range[0][i] > color_range[1][i]:
+				# its red, so from 0 to max or min to 1
+				if (0. <= hsv[i] <= color_range[1][i]) or (color_range[0][i] <= hsv[i] <= 1.): couldbe[color] += 1
+			else:
+				## if hsv channel between hsv color range_min and range_max
+				if color_range[0][i] <= hsv[i] <= color_range[1][i]: couldbe[color] +=1
 
 	# save all colors where score in couldbe is 3, so all channels have matched
 	# should not happen, but this is good for debugging the hsv color ranges
@@ -413,21 +408,68 @@ def calibrate_colors(rgb_img, radius_range, searched_range):
 #########################################################################################################
 #########################################################################################################
 
+def warp(img, edges):
+
+    width = len(img[1])
+    height = len(img)
+
+    warped = numpy.empty((width, height, 3), dtype=numpy.uint8)
+
+    for x in range(width):
+        x_share = x / width
+        x_share_comp = 1 - x_share
+
+        y_start = edges['upper_left'][1] * x_share_comp + edges['upper_right'][1] * x_share
+        y_end = edges['lower_left'][1] * x_share_comp + edges['lower_right'][1] * x_share
+
+        for y in range(height):
+            y_share = y / height
+            y_share_comp = 1 - y_share
+
+            x_start = edges['upper_left'][0] * y_share_comp + edges['lower_left'][0] * y_share
+            x_end = edges['upper_right'][0] * y_share_comp + edges['lower_right'][0] * y_share
+
+            x_len = x_end - x_start
+            y_len = y_end - y_start
+
+            x_new = x_start + x_share * x_len
+            y_new = y_start + y_share * y_len
+                   
+            warped[int(x_new), int(y_new)] = (img[y,x][0], img[y,x][1], img[y,x][2])
+    
+    return warped
+
+#########################################################################################################
+#########################################################################################################
+
 
 if __name__ == '__main__':
 	print('\n')
 	print('NOTE: THIS IS JUST FOR TESTING PURPOSES')
 	print('Import the main function via \'from cv import detect_colored_circles\'')
-	path = './img/0_photo.jpg'
+	path = 'img/0_photo.jpg'
 
 	radius_range = (20,25) # radius of circles in pixels
 	hsv_color_ranges = {
-		'blue': ((0.52,0.85,120.),(0.56,0.95,130.)),		# upper left circle
-		'green': ((0.25,0.55,125.),(0.29,0.63,132.)),	# lower left circle
-		'red': ((0.96,0.72,140.),(1.,0.79,154.)),		# lower right circle
-		'black': ((0.05,0.19,20.),(0.15,0.30,60.))		# upper right circle
+		'lower_right': ((0.52,0.4,100.),(0.78,1.,255.)),		# upper left circle
+		'upper_left': ((0.24,0.4,100.),(0.47,1.,255.)),	# lower left circle
+		'upper_right': ((0.86,0.4,100.),(0.10,1.,255.)),		# lower right circle
+		'lower_left': ((0.0,0.,0.),(1.,1.,60.))		# upper right circle
 	}
 
 	rgb_img = imread(path)
+	overlay = scipy.misc.imread('0.jpg')
 	print('points detection from file',path,'with circle radii from',radius_range[0],'to',radius_range[1],'\n') 	
-	detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, False)
+
+	c = 0
+	while c < 15:
+		c +=1
+		start = time.time()
+		circle_coords = detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, debug=False)
+		if circle_coords is not None:
+			warped = warp(overlay, circle_coords)
+			print('duration: ',time.time()-start,'seconds')
+			scipy.misc.imsave('test.png', warped)
+		else:
+			print('error')
+
