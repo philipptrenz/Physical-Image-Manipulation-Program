@@ -64,7 +64,7 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 	# 
 	print('eliminating with peak_local_max ...')
 	start = time.time()
-	centers, accums, radii = circles_per_radiuss(hough_radii, hough_res, circles_per_area=16)
+	centers, accums, radii = circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16)
 	print('finished, duration: ',time.time()-start,'seconds')
 	print("#Circles: ", len(accums))
 	print()
@@ -100,7 +100,7 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 	print('Coordiantes: ',color_coords)
 	return color_coords
 
-def detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, debug=False):
+def detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges):
 	"""
 	TODO: Desicption
 	"""
@@ -117,9 +117,9 @@ def detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, de
 	hough_radii, hough_res = find_circles(edges_img, min_radius, max_radius)
 
 	# 
-	centers, accums, radii = circles_per_radiuss(hough_radii, hough_res, circles_per_area=16)
+	centers, accums, radii = circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16)
 
-	color_coords_dictionary, debug_img = find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, debug)
+	color_coords_dictionary, debug_img = find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, False)
 
 	color_not_found = False
 	for key, array in color_coords_dictionary.items():
@@ -139,9 +139,9 @@ def find_circles(edges_img, min_radius, max_radius):
 
 	return (hough_radii, hough_res)
 
-def circles_per_radiuss(hough_radii, hough_res, circles_per_area=16):
+def circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16):
 	"""
-	circles_per_area: take the x best circles 		
+	number_circles_per_radius: take the x best circles 		
 	"""
 	centers = []
 	accums = []
@@ -153,10 +153,10 @@ def circles_per_radiuss(hough_radii, hough_res, circles_per_area=16):
 	# 	DANACH schmeisse alle "doppelten" heraus (Abstand < 0.8 * radius)
 	for radius, h in zip(hough_radii, hough_res): # iterieren durch circles (h)
 		# For each radius, extract num_peaks circles
-		peaks = peak_local_max(h, num_peaks=circles_per_area) # beste X kreise fuer radius
+		peaks = peak_local_max(h, num_peaks=number_circles_per_radius) # beste X kreise fuer radius
 		centers.extend(peaks)
 		accums.extend(h[peaks[:, 0], peaks[:, 1]]) # wie 'gut' ??
-		radii.extend([radius] * circles_per_area)
+		radii.extend([radius] * number_circles_per_radius)
 		#
 	
 	return (centers, accums, radii)
@@ -350,7 +350,7 @@ def calibrate_colors(rgb_img, radius_range, searched_range):
 	hough_radii, hough_res = find_circles(edges_img, min_radius, max_radius)
 
 	# 
-	centers, accums, radii = circles_per_radiuss(hough_radii, hough_res, circles_per_area=16)
+	centers, accums, radii = circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16)
 
 	def in_range(coords, key):
 		in_picture = 0 <= coords[0] <= len(rgb_img) and 0 <= coords[1] <= len(rgb_img[0])
@@ -494,12 +494,12 @@ if __name__ == '__main__':
 	while c < times:
 		c += 1
 		
-		circle_coords = detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, debug=False)
+		circle_coords = detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges)
 		if circle_coords is not None:
 			start = time.time()
 			warped = warp_david(overlay, circle_coords)
 			tmp.append(time.time()-start)
-			scipy.misc.imsave('./test/warped_david.png', warped)
+			if c is times: scipy.misc.imsave('./test/warped_david.png', warped)
 		else:
 			print('error')
 	print('warp david (avg):',(sum(tmp)/len(tmp)),'seconds')
@@ -509,12 +509,12 @@ if __name__ == '__main__':
 	while c < times:
 		c += 1
 		
-		circle_coords = detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges, debug=False)
+		circle_coords = detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges)
 		if circle_coords is not None:
 			start = time.time()
 			warped = warp(overlay, circle_coords)
 			tmp.append(time.time()-start)
-			scipy.misc.imsave('./test/warped_skimage.png', warped)
+			if c is times: scipy.misc.imsave('./test/warped_skimage.png', warped)
 		else:
 			print('error')
 	print('warp skimage (avg):',(sum(tmp)/len(tmp)),'seconds')
