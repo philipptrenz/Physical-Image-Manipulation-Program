@@ -486,7 +486,7 @@ if __name__ == '__main__':
 	overlay = scipy.misc.imread('./test/overlay.jpg')
 	print('points detection from file',path,'with circle radii from',radius_range[0],'to',radius_range[1],'\n') 	
 
-	times = 10
+	times = 1
 	print('testing',times,'times, printing average')
 
 	tmp = []
