@@ -14,7 +14,7 @@ from skimage.filters import roberts, sobel, scharr, prewitt
 
 from skimage import transform
 
-def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, searched_range=None, debug=False):
+def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False):
 	"""
 	TODO: Desicption
 	"""
@@ -26,16 +26,16 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, searched_ran
 
 
 	# convert image to gray
-	print('convert rgb image to grayscale ...')
-	start = time.time()
+	#print('convert rgb image to grayscale ...')
+	#start = time.time()
 	gray_img = rgb2gray(rgb_img)
-	print('finished, duration: ',time.time()-start,'seconds')
-	print()
+	#print('finished, duration: ',time.time()-start,'seconds')
+	#print()
 
 
 	# find edges in image
-	print('find edges in grayscale image ...')
-	start = time.time()
+	#print('find edges in grayscale image ...')
+	#start = time.time()
 	edges_img = canny(gray_img, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
 	#edges_img = corner_fast(gray_img, n=9, threshold=1.2)
 	#edges_img = corner_foerstner(gray_img)[0]
@@ -47,57 +47,69 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, searched_ran
 	#edges_img = sobel(gray_img)
 	#edges_img = scharr(gray_img)
 	#edges_img = prewitt(gray_img)
-	print('finished, duration: ',time.time()-start,'seconds')
-	save_image('1_edges', edges_img)
-	print()
+	#print('finished, duration: ',time.time()-start,'seconds')
+	#save_image('1_edges', edges_img)
+	#print()
 	
 
 	# find circles from edge_image
-	print('find circles in image ...')
-	start = time.time()
+	#print('find circles in image ...')
+	#start = time.time()
 	hough_radii, hough_res = find_circles(edges_img, min_radius, max_radius)
-	print('finished, duration: ',time.time()-start,'seconds')
-	print("#Circles: ", count_circles_of_2d_array(hough_res))
-	print()
+	#print('finished, duration: ',time.time()-start,'seconds')
+	#print("#Circles: ", count_circles_of_2d_array(hough_res))
+	#print()
 
 
 	# 
-	print('eliminating with peak_local_max ...')
-	start = time.time()
+	#print('eliminating with peak_local_max ...')
+	#start = time.time()
 	centers, accums, radii = circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16)
-	print('finished, duration: ',time.time()-start,'seconds')
-	print("#Circles: ", len(accums))
-	print()
+	#print('finished, duration: ',time.time()-start,'seconds')
+	#print("#Circles: ", len(accums))
+	#print()
 
 
 	# hsv color debug
-	if searched_range is not None: debug_points(centers, accums, rgb_img, searched_range)
+	if debug: debug_points(centers, accums, rgb_img)
 
 
-	print('finding coordinates by color of circles ...')
-	start = time.time()
+	#print('finding coordinates by color of circles ...')
+	#start = time.time()
 	color_coords_dictionary, debug_img = find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, debug)
-	print('finished, duration: ',time.time()-start,'seconds')
+	#print('finished, duration: ',time.time()-start,'seconds')
 
-
-
-	print('#Circles: ',count_circles_of_dictionary_with_arrays(color_coords_dictionary))
+	#print('#Circles: ',count_circles_of_dictionary_with_arrays(color_coords_dictionary))
 	color_not_found = False
 	for key, array in color_coords_dictionary.items():
 		print('\t',key,':\t',len(array))
-		if len(array) == 0: color_not_found = True
+		if len(array) == 0: 
+			color_not_found = True
+		else:
+			arr = []
+			for i in range(len(array)):
+				coord = array[i]
+				rgb = rgb_img[coord[0], coord[1]]
+				hsv = rgb2hsv((rgb[0], rgb[1], rgb[2]))
+
+				arr.append(hsv)
+				print('\t',hsv)
+			avg = numpy.average(arr, axis=0)
+			print('avg',avg)
+		print()
+
 	save_image('2_detected_circles', debug_img)
 	print()
 
-	print('total duration: ',time.time()-start_all,'seconds')
-	print()
+	#print('total duration: ',time.time()-start_all,'seconds')
+	#print()
 
 	if color_not_found:
 		print('less than 4 corners for calibration detected, quitting')
 		return None
 
 	color_coords = calc_coordinate_averages(color_coords_dictionary)
-	print('Coordiantes: ',color_coords)
+	#print('Coordiantes: ',color_coords)
 	return color_coords
 
 def detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges):
