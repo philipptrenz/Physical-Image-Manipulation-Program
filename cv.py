@@ -14,7 +14,7 @@ from skimage.filters import roberts, sobel, scharr, prewitt
 
 from skimage import transform
 
-def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False):
+def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, searched_range=None, debug=False):
 	"""
 	TODO: Desicption
 	"""
@@ -71,7 +71,7 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 
 
 	# hsv color debug
-	if debug: debug_points(centers, accums, rgb_img)
+	if searched_range is not None: debug_points(centers, accums, rgb_img, searched_range)
 
 
 	print('finding coordinates by color of circles ...')
@@ -126,7 +126,6 @@ def detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges):
 		if len(array) == 0: color_not_found = True
 
 	if color_not_found:
-		print('less than 4 corners for calibration detected, quitting')
 		return None
 
 	color_coords = calc_coordinate_averages(color_coords_dictionary)
@@ -210,7 +209,7 @@ def add_circle_outlines_to_image(image, center_y, center_x, radius, color):
 	# paramters: y, x, radius; returns y, x
 	cy, cx = circle_perimeter(center_y, center_x, radius, method='bresenham', shape=(len(image), len(image[0])))
 	image[cy, cx] = color
-	return image # needed?
+	return image
 
 def find_colors(pixel_color, hsv_color_ranges, debug=False):
 	"""
@@ -228,7 +227,7 @@ def find_colors(pixel_color, hsv_color_ranges, debug=False):
 	for color, color_range in hsv_color_ranges.items():	# for every hsv color range in hsv_color_ranges
 		couldbe[color] = 0
 		for i in range(0,3): # for every channel
-			if color_range[0][i] > color_range[1][i]:
+			if i is 0 and color_range[0][i] > color_range[1][i]: # if it is h and min and max are reversed
 				# its red, so from 0 to max or min to 1
 				if (0. <= hsv[i] <= color_range[1][i]) or (color_range[0][i] <= hsv[i] <= 1.): couldbe[color] += 1
 			else:
@@ -358,15 +357,22 @@ def calibrate_colors(rgb_img, radius_range, searched_range):
 		y_okay = searched_range[key][0][1] <= coords[0] <= searched_range[key][1][1]
 		return in_picture and x_okay and y_okay
 	
+
+	debug_img = numpy.zeros((len(rgb_img), len(rgb_img[0]), 3), dtype=numpy.uint8)
+
 	# initialize
 	correct_colors= {}
 	hsv_color_ranges = {}
 	for key, coord_range in searched_range.items():
 		correct_colors[key] = []
 		hsv_color_ranges[key] = None
+		add_circle_outlines_to_image(debug_img, coord_range[0][1], coord_range[0][0], 5, [255,250,0])
+		add_circle_outlines_to_image(debug_img, coord_range[1][1], coord_range[1][0], 5, [255,250,0])
 
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		center_y, center_x = centers[idx]
+
+		add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], rgb_img[center_y, center_x])
 		
 		# get all circle centers to the correct array
 		for key, coord_range in searched_range.items():
@@ -375,6 +381,17 @@ def calibrate_colors(rgb_img, radius_range, searched_range):
 				rgb_color = rgb_img[center_y, center_x]
 				hsv_color = rgb2hsv(rgb_color)
 				correct_colors[key].append(hsv_color)
+
+	scipy.misc.imsave('./test/calibrate_debug.png', debug_img)
+
+
+	# debug
+	"""
+	for key, color_array in correct_colors.items():
+		print('\n',key)
+		for i in range(len(color_array)):
+			print('\t',color_array[i])
+	"""
 
 	for key, color_array in correct_colors.items():
 		if len(color_array) == 0: 
@@ -401,9 +418,11 @@ def calibrate_colors(rgb_img, radius_range, searched_range):
 			s_max = hsv[1] if s_max is None or s_max < hsv[1] else s_max
 			v_max = hsv[2] if v_max is None or v_max < hsv[2] else v_max
 
-		print(h_min, s_min, v_min, h_max, s_max, v_max)
+		#print(h_min, s_min, v_min, h_max, s_max, v_max)
 		#correct_colors[key] = ((h_min-0.1, s_min-0.1, v_min-20),(h_max+0.1, s_max+0.1, v_max+20))
-		correct_colors[key] = ((h_min, s_min, v_min),(h_max, s_max, v_max))
+
+		color_tolerance = 0.02 # 2%
+		correct_colors[key] = ((h_min-color_tolerance, s_min-color_tolerance , v_min-(color_tolerance*256)),(h_max+color_tolerance, s_max+color_tolerance, v_max+(color_tolerance*256)))
 
 	return correct_colors
 
