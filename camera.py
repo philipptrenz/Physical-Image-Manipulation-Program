@@ -7,7 +7,7 @@ import cv
 
 DEVICE = '/dev/video1'
 SIZE = (640, 480)
-radius_range = (15,30)
+radius_range = (12,25)
 
 capture = True
 screen = None
@@ -50,11 +50,11 @@ def camstream():
         while capture:
             # paint once for calibrating
             screen = camera.get_image(screen) # screen is pygame surface object
+            screen = pygame.transform.flip(screen, True, True)
             display.blit(screen, (0,0))
-            screen = pygame.transform.flip(screen, True, False)
-
             pygame.image.save(screen, 'image.jpg')
             pygame.display.flip() # actually update ...
+            screen = pygame.transform.flip(screen, True, False)
 
             for event in pygame.event.get():
                 if event.type == KEYDOWN or event.type == MOUSEBUTTONUP:
@@ -75,12 +75,13 @@ def camstream():
     while capture:
         screen_is_locked_manually = True
         screen = camera.get_image(screen) # screen is pygame surface object
+        screen = pygame.transform.flip(screen, True, True)
         display.blit(screen, (0,0))
         if not warped_surface.get_locked(): 
             display.blit(warped_surface, (0,0))
-        screen = pygame.transform.flip(screen, True, False)
         screen_is_locked_manually = False
         pygame.display.flip() # actually update ...
+        screen = pygame.transform.flip(screen, True, False)
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -143,7 +144,7 @@ def ui():
                 warped_array = cv.warp(overlay, circle_coords)
 
                 scipy.misc.imsave('test/warped_array.png', warped_array)
-                warped_surface = pygame.image.load('test/warped_array.png')
+                warped_surface = pygame.transform.flip(pygame.image.load('test/warped_array.png'), True, False)
             else:
                 print('put the tiles back, man!')
 
@@ -154,47 +155,8 @@ def wait_for_mouseclick():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONUP:
-                return pygame.mouse.get_pos()
-
-"""
-def warp(img, edges):
-
-    my_time = 0
-
-    width = len(img[1])
-    height = len(img)
-
-    warped = pygame.Surface(SIZE, pygame.SRCALPHA)
-    warped.set_alpha(0)
-    pxarray = pygame.PixelArray(warped)
-
-    for x in range(width):
-        x_share = x / width
-        x_share_comp = 1 - x_share
-
-        y_start = edges['upper_left'][1] * x_share_comp + edges['upper_right'][1] * x_share
-        y_end = edges['lower_left'][1] * x_share_comp + edges['lower_right'][1] * x_share
-
-        for y in range(height):
-            y_share = y / height
-            y_share_comp = 1 - y_share
-
-            x_start = edges['upper_left'][0] * y_share_comp + edges['lower_left'][0] * y_share
-            x_end = edges['upper_right'][0] * y_share_comp + edges['lower_right'][0] * y_share
-
-            x_len = x_end - x_start
-            y_len = y_end - y_start
-
-            x_new = x_start + x_share * x_len
-            y_new = y_start + y_share * y_len
-            
-            start = time.time()         
-            pxarray[int(x_new), int(y_new)] = (img[y,x][0], img[y,x][1], img[y,x][2], 255)
-            my_time += time.time()-start
-    
-    print('Warp time finished, duration: ',my_time,'seconds \t\t <----')
-    return warped
-"""
+                pos = pygame.mouse.get_pos()
+                return pos
 
 if __name__ == '__main__':
     camstream()
