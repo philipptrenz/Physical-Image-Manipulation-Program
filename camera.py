@@ -175,7 +175,7 @@ def load_hsv_color_ranges():
 
 def save_hsv_color_ranges():
     global hsv_color_ranges
-    target = open('hsv_color_ranges.txt', 'a')
+    target = open('hsv_color_ranges.txt', 'w')
     target.write(str(hsv_color_ranges))
 
 
