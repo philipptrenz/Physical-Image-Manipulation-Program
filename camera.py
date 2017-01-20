@@ -5,7 +5,7 @@ from pygame.locals import *
 import cv
 
 
-DEVICE = '/dev/video1'
+DEVICE = '/dev/video0'
 SIZE = (640, 480)
 radius_range = (12,25)
 
@@ -27,7 +27,7 @@ def camstream():
     global warped_surface
     global screen_is_locked_manually
 
-    overlay = scipy.misc.imread('0.jpg', mode='RGBA')
+    overlay = scipy.misc.imread('test/overlay.jpg', mode='RGBA')
 
 
     pygame.init()
@@ -41,27 +41,36 @@ def camstream():
     screen = pygame.surface.Surface(SIZE, 0, display)
     warped_surface = pygame.surface.Surface(SIZE, pygame.SRCALPHA)
     
-
     def wait_for_user():
         global screen
         counter = 0
-        total = 4
-        print('you have to accomplish',total,'calibration rounds\npress any key to start\n')
+        total = 3
+        print('Do you want to load hsv calibration colors from file?\n Press y for yes and n for no')
         while capture:
             # paint once for calibrating
             screen = camera.get_image(screen) # screen is pygame surface object
             screen = pygame.transform.flip(screen, True, True)
             display.blit(screen, (0,0))
-            pygame.image.save(screen, 'image.jpg')
             pygame.display.flip() # actually update ...
             screen = pygame.transform.flip(screen, True, False)
 
             for event in pygame.event.get():
-                if event.type == KEYDOWN or event.type == MOUSEBUTTONUP:
+                if event.type == KEYDOWN:
+                    if event.key == K_y:
+                        if load_hsv_color_ranges():
+                            print('HSV color ranges got loaded')
+                            return
+                        else:
+                            print('Could not read, calibration necessary')
+
                     if counter < total:
-                        calibrate(screen)
-                        print(counter, 'accomplished, move the tiles and click any key to get to the next round!')
+                        calibrate(screen, counter)
                         counter += 1
+                        if counter < total:
+                            print(counter, 'accomplished, move the tiles and click any key to get to the next round!')                        
+                        else:
+                            save_hsv_color_ranges()
+                            return
                     else:
                         return
 
@@ -91,13 +100,13 @@ def camstream():
     pygame.quit()
     return
 
-def calibrate(screen):
+def calibrate(screen, counter):
     global hsv_color_ranges
 
     temp = pygame.transform.rotate(screen, 90)
     img = numpy.copy(pygame.surfarray.pixels3d(temp))
 
-    scipy.misc.imsave('test/to_calibrate.png', img)
+    scipy.misc.imsave('test/calibrate_raw_'+str(counter)+'.png', img)
 
     searched_range = {'upper_left': None, 'lower_left': None, 'lower_right': None, 'upper_right': None}
     tolerance = radius_range[0]
@@ -106,7 +115,7 @@ def calibrate(screen):
         pos = wait_for_mouseclick()
         searched_range[key] = ((pos[0]-tolerance, pos[1]-tolerance), (pos[0]+tolerance, pos[1]+tolerance))
 
-    new_hsv_color_ranges = cv.calibrate_colors(img, radius_range, searched_range)
+    new_hsv_color_ranges = cv.calibrate_colors(img, radius_range, searched_range, counter)
     if new_hsv_color_ranges is not None:
         if hsv_color_ranges is None:
             hsv_color_ranges = new_hsv_color_ranges
@@ -126,7 +135,7 @@ def calibrate(screen):
 
     if hsv_color_ranges is None:
         print('please try again ...')
-        calibrate(screen)
+        calibrate(screen, counter)
     return
 
 def ui():
@@ -145,8 +154,30 @@ def ui():
 
                 scipy.misc.imsave('test/warped_array.png', warped_array)
                 warped_surface = pygame.transform.flip(pygame.image.load('test/warped_array.png'), True, False)
+                warped_surface.set_alpha(150)
             else:
                 print('put the tiles back, man!')
+
+
+
+def load_hsv_color_ranges():
+    try:
+        hsv_color_ranges_new = eval(open('hsv_color_ranges.txt', 'r').read())
+        if hsv_color_ranges_new is not None:
+            global hsv_color_ranges
+            hsv_color_ranges = hsv_color_ranges_new
+            return True
+        else:
+            return False
+    except FileNotFoundError:
+        return False
+
+
+def save_hsv_color_ranges():
+    global hsv_color_ranges
+    target = open('hsv_color_ranges.txt', 'a')
+    target.write(str(hsv_color_ranges))
+
 
 def wait_for_mouseclick():
     while True:

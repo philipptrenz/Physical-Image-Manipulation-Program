@@ -340,7 +340,7 @@ def rgb2gray(rgb_img):
 def save_image(name, image):
 	# save images to file in thread
 	def save():
-		path = './img/'+name	+'.jpg'
+		path = './img/'+name+'.jpg'
 		scipy.misc.imsave(path, image)
 	threading.Thread(target=save).start()
 
@@ -348,7 +348,7 @@ def save_image(name, image):
 #########################################################################################################
 
 
-def calibrate_colors(rgb_img, radius_range, searched_range):
+def calibrate_colors(rgb_img, radius_range, searched_range, counter=0):
 	min_radius, max_radius = radius_range
 
 	# convert image to gray
@@ -356,6 +356,8 @@ def calibrate_colors(rgb_img, radius_range, searched_range):
 
 	# find edges in image
 	edges_img = canny(gray_img, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
+
+	scipy.misc.imsave('./test/calibrate_edges_'+str(counter)+'.png', edges_img)
 
 	# find circles from edge_image
 	hough_radii, hough_res = find_circles(edges_img, min_radius, max_radius)
@@ -394,7 +396,7 @@ def calibrate_colors(rgb_img, radius_range, searched_range):
 				hsv_color = rgb2hsv(rgb_color)
 				correct_colors[key].append(hsv_color)
 
-	scipy.misc.imsave('./test/calibrate_debug.png', debug_img)
+	scipy.misc.imsave('./test/calibrate_circles_'+str(counter)+'.png', debug_img)
 
 
 	# debug
