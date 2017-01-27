@@ -235,13 +235,17 @@ def add_rect_outlines_to_image(image, upper_left, lower_right, color):
 	Draw rectange depending on the upper_left and lower_right corners.
 	"""
 	for y in range(upper_left[1], lower_right[1]):
-		image[y][upper_left[0]] = color
+		x = upper_left[0]
+		if 0 <= y < len(image) and 0 <= x < len(image[0]): image[y][x] = color
 	for y in range(upper_left[1], lower_right[1]):
-		image[y][lower_right[0]] = color
+		x = lower_right[0]
+		if 0 <= y < len(image) and 0 <= x < len(image[0]): image[y][x] = color
 	for x in range(upper_left[0], lower_right[0]):
-		image[upper_left[1], x] = color
+		y = upper_left[1]
+		if 0 <= y < len(image) and 0 <= x < len(image[0]): image[y, x] = color
 	for x in range(upper_left[0], lower_right[0]):
-		image[lower_right[1], x] = color
+		y = lower_right[1]
+		if 0 <= y < len(image) and 0 <= x < len(image[0]): image[y, x] = color
 
 def identify_color(pixel_color, hsv_color_ranges, debug=False):
 	"""
