@@ -28,6 +28,7 @@ def camstream():
     global overlay
     global warped_surface
     global screen_is_locked_manually
+    global DEVICE
 
     overlay = scipy.misc.imread('overlay3.jpg', mode='RGBA')
     overlay = cv.scale_to_fit(overlay, SIZE)
@@ -39,6 +40,7 @@ def camstream():
     
     DEVICE = ''
     def choose_cam():
+        global DEVICE
         """
         User input method to choose a camera in case multiple cameras were found.
         """
@@ -47,6 +49,7 @@ def camstream():
         for i in range(len(available_cams)):
             print('\''+str(i)+'\' for camera on\''+available_cams[i]+'\'')
 
+        display = pygame.display.set_mode(SIZE, 0)
         while True:
             for event in pygame.event.get():
                 # it's the way pygame handles inputs ... sorry :'(
@@ -93,10 +96,10 @@ def camstream():
         choose_cam()
     
 
-    display = pygame.display.set_mode(SIZE, 0)
     camera = pygame.camera.Camera(DEVICE, SIZE)
 
     camera.start()
+    display = pygame.display.set_mode(SIZE, 0)
     screen = pygame.surface.Surface(SIZE, 0, display)
     warped_surface = pygame.surface.Surface(SIZE, pygame.SRCALPHA)
     
