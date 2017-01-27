@@ -6,6 +6,8 @@ __pycache__/
 # C extensions
 *.so
 
+doc/*
+
 # mac backup files
 *DS_Store
 
