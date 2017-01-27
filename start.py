@@ -11,37 +11,99 @@ radius_range = (12,25)
 
 capture = True
 screen = None
-
 hsv_color_ranges = None
 overlay = None
 warped_surface = None
-
 screen_is_locked_manually = False
 
-#warped_array = None
 
 def camstream():
+    """
+    This method is basically the main method. It contains the loop for camera images and
+    starts an image processing thread, so it works independently and camera stream is not
+    affected by image processing time.
+    """
     global capture 
     global screen
     global overlay
     global warped_surface
     global screen_is_locked_manually
 
-    overlay = scipy.misc.imread('overlay.jpg', mode='RGBA')
-
+    overlay = scipy.misc.imread('overlay3.jpg', mode='RGBA')
+    overlay = cv.scale_to_fit(overlay, SIZE)
 
     pygame.init()
     pygame.camera.init()
 
-    print(pygame.camera.list_cameras())
+    available_cams = pygame.camera.list_cameras()
+    
+    DEVICE = ''
+    def choose_cam():
+        """
+        User input method to choose a camera in case multiple cameras were found.
+        """
+
+        print('Please choose your camera, press')
+        for i in range(len(available_cams)):
+            print('\''+str(i)+'\' for camera on\''+available_cams[i]+'\'')
+
+        while True:
+            for event in pygame.event.get():
+                # it's the way pygame handles inputs ... sorry :'(
+                if event.type == KEYDOWN and event.key == K_0:
+                    DEVICE = available_cams[0]
+                    return
+                elif event.type == KEYDOWN and event.key == K_1:
+                    DEVICE = available_cams[1]
+                    return
+                elif event.type == KEYDOWN and event.key == K_2:
+                    DEVICE = available_cams[2]
+                    return
+                elif event.type == KEYDOWN and event.key == K_3:
+                    DEVICE = available_cams[3]
+                    return
+                elif event.type == KEYDOWN and event.key == K_4:
+                    DEVICE = available_cams[4]
+                    return
+                elif event.type == KEYDOWN and event.key == K_5:
+                    DEVICE = available_cams[5]
+                    return
+                elif event.type == KEYDOWN and event.key == K_6:
+                    DEVICE = available_cams[6]
+                    return
+                elif event.type == KEYDOWN and event.key == K_7:
+                    DEVICE = available_cams[7]
+                    return
+                elif event.type == KEYDOWN and event.key == K_8:
+                    DEVICE = available_cams[8]
+                    return
+                elif event.type == KEYDOWN and event.key == K_9:
+                    DEVICE = available_cams[9]
+                    return
+                else:
+                    print('Please type a number between 0 and '+str(len(available_cams)-1))
+
+    if len(available_cams) == 0:
+        print('We do need a camera, though.\nWe quit while you search. Bye!')
+        pygame.quit()
+        return
+    elif len(available_cams) == 1:
+        DEVICE = available_cams[0]
+    else:
+        choose_cam()
+    
 
     display = pygame.display.set_mode(SIZE, 0)
     camera = pygame.camera.Camera(DEVICE, SIZE)
+
     camera.start()
     screen = pygame.surface.Surface(SIZE, 0, display)
     warped_surface = pygame.surface.Surface(SIZE, pygame.SRCALPHA)
     
     def wait_for_user():
+        """
+        Either calibrate or load calibration data from hsv_color_ranges.txt
+        """
         global screen
         counter = 0
         total = 3
@@ -77,11 +139,12 @@ def camstream():
 
     wait_for_user()
     
-    #calibrate(screen)
-
+    # start image processing thread
     threading.Thread(target=ui).start()
 
     while capture:
+        # camera stream loop, updates the screen
+
         screen_is_locked_manually = True
         screen = camera.get_image(screen) # screen is pygame surface object
         screen = pygame.transform.flip(screen, True, True)
@@ -101,6 +164,12 @@ def camstream():
     return
 
 def calibrate(screen, counter):
+    """
+    User selects tiles on the screen by clicking into the mid of each tile, repeatedly.
+    From the received user inputs a color range as HSV color gets calculated for later 
+    comparison of colors.
+    The tiles should be moved with each iteration to optimize the color ranges.
+    """
     global hsv_color_ranges
 
     temp = pygame.transform.rotate(screen, 90)
@@ -139,6 +208,9 @@ def calibrate(screen, counter):
     return
 
 def ui():
+    """
+    warp the image according to the current tile locations. The whole image processing is done here.
+    """
     global warped_surface
     counter = 0
     while capture:
@@ -166,6 +238,9 @@ def ui():
 
 
 def load_hsv_color_ranges():
+    """
+    Read color ranges from hsv_color_ranges.txt
+    """
     try:
         hsv_color_ranges_new = eval(open('hsv_color_ranges.txt', 'r').read())
         if hsv_color_ranges_new is not None:
@@ -179,12 +254,19 @@ def load_hsv_color_ranges():
 
 
 def save_hsv_color_ranges():
+    """
+    Save color ranges to hsv_color_ranges.txt
+    """
     global hsv_color_ranges
     target = open('hsv_color_ranges.txt', 'w')
     target.write(str(hsv_color_ranges))
 
 
 def wait_for_mouseclick():
+    """
+    Wait for the mouse click.
+    Returns: Position of mouse as touple
+    """
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -195,4 +277,7 @@ def wait_for_mouseclick():
                 return pos
 
 if __name__ == '__main__':
+    """
+    Main method
+    """
     camstream()

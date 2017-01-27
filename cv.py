@@ -7,13 +7,14 @@ from skimage import color, transform
 from skimage.io import imread
 from skimage.util import img_as_ubyte
 from skimage.feature import canny, peak_local_max, corner_fast, corner_foerstner, corner_harris, corner_kitchen_rosenfeld, corner_moravec, corner_shi_tomasi
-from skimage.transform import hough_ellipse, hough_circle
+from skimage.transform import hough_ellipse, hough_circle, rescale
 from skimage.draw import ellipse_perimeter, circle_perimeter
 from skimage.filters import roberts, sobel, scharr, prewitt
 
 def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False, counter=0):
 	"""
-	TODO: Desicption
+	Detects circles filled with color contained in hsv_color_ranges
+	Returns: Collection of circle centers for each color as dictionary
 	"""
 
 	min_radius, max_radius = radius_range
@@ -23,16 +24,16 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False,
 
 
 	# convert image to gray
-	#print('convert rgb image to grayscale ...')
-	#start = time.time()
+	print('convert rgb image to grayscale ...')
+	start = time.time()
 	gray_img = rgb2gray(rgb_img)
-	#print('finished, duration: ',time.time()-start,'seconds')
-	#print()
+	print('finished, duration: ',time.time()-start,'seconds')
+	print()
 
 
 	# find edges in image
-	#print('find edges in grayscale image ...')
-	#start = time.time()
+	print('find edges in grayscale image ...')
+	start = time.time()
 	edges_img = canny(gray_img, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
 	#edges_img = corner_fast(gray_img, n=9, threshold=1.2)
 	#edges_img = corner_foerstner(gray_img)[0]
@@ -44,39 +45,39 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False,
 	#edges_img = sobel(gray_img)
 	#edges_img = scharr(gray_img)
 	#edges_img = prewitt(gray_img)
-	#print('finished, duration: ',time.time()-start,'seconds')
+	print('finished, duration: ',time.time()-start,'seconds')
 	save_image('1_edges_'+str(counter), edges_img)
-	#print()
+	print()
 	
 
 	# find circles from edge_image
-	#print('find circles in image ...')
-	#start = time.time()
+	print('find circles in image ...')
+	start = time.time()
 	hough_radii, hough_res = find_circles(edges_img, min_radius, max_radius)
-	#print('finished, duration: ',time.time()-start,'seconds')
-	#print("#Circles: ", count_circles_of_2d_array(hough_res))
-	#print()
+	print('finished, duration: ',time.time()-start,'seconds')
+	print("#Circles: ", count_circles_of_2d_array(hough_res))
+	print()
 
 
 	# 
-	#print('eliminating with peak_local_max ...')
-	#start = time.time()
+	print('eliminating with peak_local_max ...')
+	start = time.time()
 	centers, accums, radii = circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16)
-	#print('finished, duration: ',time.time()-start,'seconds')
-	#print("#Circles: ", len(accums))
-	#print()
+	print('finished, duration: ',time.time()-start,'seconds')
+	print("#Circles: ", len(accums))
+	print()
 
 
 	# hsv color debug
 	if debug: debug_points(centers, accums, rgb_img)
 
 
-	#print('finding coordinates by color of circles ...')
-	#start = time.time()
+	print('finding coordinates by color of circles ...')
+	start = time.time()
 	color_coords_dictionary, debug_img = find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, debug)
-	#print('finished, duration: ',time.time()-start,'seconds')
+	print('finished, duration: ',time.time()-start,'seconds')
 
-	#print('#Circles: ',count_circles_of_dictionary_with_arrays(color_coords_dictionary))
+	print('#Circles: ',count_circles_of_dictionary_with_arrays(color_coords_dictionary))
 	color_not_found = False
 	for key, array in color_coords_dictionary.items():
 		print('\t',key,':\t',len(array))
@@ -98,20 +99,20 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False,
 	save_image('2_detected_circles_'+str(counter), debug_img)
 	print()
 
-	#print('total duration: ',time.time()-start_all,'seconds')
-	#print()
+	print('total duration: ',time.time()-start_all,'seconds')
+	print()
 
 	if color_not_found:
 		print('less than 4 corners for calibration detected, quitting')
 		return None
 
 	color_coords = calc_coordinate_averages(color_coords_dictionary)
-	#print('Coordiantes: ',color_coords)
+	print('Coordiantes: ',color_coords)
 	return color_coords
 
 def detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges):
 	"""
-	TODO: Desicption
+	Detects circles by color as above, without prints.
 	"""
 
 	min_radius, max_radius = radius_range
@@ -141,34 +142,33 @@ def detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges):
 	return color_coords
 
 def find_circles(edges_img, min_radius, max_radius):
-	
-	hough_radii = numpy.arange(min_radius, max_radius, 1) # Liste von Radii von min_radius bis max_radius in Schritten von 1
-	hough_res = hough_circle(edges_img, hough_radii) # gibt für jeden index (radius) koordinaten
-
-	# TODO: print hough_res as image
+	"""
+	Finds circles using the Hough transformation
+	For each radius a Hough transformation matrix is calculated and retured
+	"""
+	hough_radii = numpy.arange(min_radius, max_radius, 1)
+	hough_res = hough_circle(edges_img, hough_radii)
 
 	return (hough_radii, hough_res)
 
 def circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16):
 	"""
-	number_circles_per_radius: take the x best circles 		
+	Rates found circles by intensity of peaks inside the Hough matrix. 
+	Chooses the best circles for each radius
+	Returns: Selected circle centers with their quality and radius		
 	"""
 	centers = []
 	accums = []
 	radii = []
 
-	# Alle Kreise unterschiedlicher Radii in ein Array
-	# Menge der Kreise reduzieren vor peak_local_max:
-	# 	Schmeisse alle heraus, die weniger als 5 mal auftreten
-	# 	DANACH schmeisse alle "doppelten" heraus (Abstand < 0.8 * radius)
+	# for each radius and hough peak image
+	# zip([32,33,34,35,36],[(32, hough_peaks_img),(33, hough_peaks_img),(34, hough_peaks_img), ... ])
 	for radius, h in zip(hough_radii, hough_res): # iterieren durch circles (h)
-		# h is peak img from hough transform
-		# zip([32,33,34,35,36],[(32, hough_peaks_img),(33, hough_peaks_img),(34, hough_peaks_img), ... ])
-		# For each radius, extract num_peaks circles
-		peaks = peak_local_max(h, num_peaks=number_circles_per_radius) # beste X kreise fuer radius
-		# peaks: coordinates of peaks sorted decreasingly w.r.t. the corresponding intensities
+		
+		# sort peaks, which represent the quality of circles by intensity
+		peaks = peak_local_max(h, num_peaks=number_circles_per_radius)
 		centers.extend(peaks)
-		accums.extend(h[peaks[:, 0], peaks[:, 1]]) # wie 'gut' ??
+		accums.extend(h[peaks[:, 0], peaks[:, 1]])
 		# iterate through every (y,x) in peaks and get corresponding color value from h, which represents quality value of circle (?)
 		# so acuums represents quality
 		radii.extend([radius] * number_circles_per_radius)
@@ -177,17 +177,20 @@ def circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16):
 	return (centers, accums, radii)
 
 def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, debug):
-
+	"""
+	Finds circles by given hsv color ranges for each color key
+	Returns: Dictionary with color key and coordinates
+	"""
 	debug_img = numpy.zeros((len(rgb_img), len(rgb_img[0]), 3), dtype=numpy.uint8)	# start with black image
 	coords = {}
 	for color, array in hsv_color_ranges.items():	# initialize coords 
 		coords[color] = []
 
-	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
+	for idx in numpy.argsort(accums)[::-1][:]: # sort by quality (accums)
 		center_y, center_x = centers[idx]
 		pixel_color = rgb_img[center_y, center_x]
 		# if valid color was found, add it to coords list to specific color key
-		found_color = identify_color(pixel_color, hsv_color_ranges, debug)	# string of color, 'blue', 'green', 'red' or 'white'
+		found_color = identify_color(pixel_color, hsv_color_ranges, debug)	# string of color
 		if found_color is not None: 
 			coords[found_color].append(centers[idx])
 			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], pixel_color) 
@@ -201,10 +204,10 @@ def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, deb
 
 def calc_coordinate_averages(coord_arrays):
 	"""
-	Calculate average of all coord touples for the correct color of the corner
+	Calculate average of all coordinate touples for the correct color
 
-	gets: dictionary with color key and value is array of coords in (y,x)
-	returns: dictionary with color key and value is array of coords in (x,y)!!!
+	parameter: dictionary with color key and value as array of coords in (y,x)
+	returns: dictionary with color key and value as array of coords in (x,y)!!!
 	"""
 	# TODO: Sort out all circles not matching specific pixel range
 	coords = {}
@@ -220,7 +223,7 @@ def calc_coordinate_averages(coord_arrays):
 
 def add_circle_outlines_to_image(image, center_y, center_x, radius, color):
 	"""
-	This method draws a outline of a circle with the given position, color and radius to the image
+	This method draws an outline of a circle with the given position, color and radius to the image
 	"""
 	# paramters: y, x, radius; returns y, x
 	cy, cx = circle_perimeter(center_y, center_x, radius, method='bresenham', shape=(len(image), len(image[0])))
@@ -228,6 +231,9 @@ def add_circle_outlines_to_image(image, center_y, center_x, radius, color):
 	return image
 
 def add_rect_outlines_to_image(image, upper_left, lower_right, color):
+	"""
+	Draw rectange depending on the upper_left and lower_right corners.
+	"""
 	for y in range(upper_left[1], lower_right[1]):
 		image[y][upper_left[0]] = color
 	for y in range(upper_left[1], lower_right[1]):
@@ -280,64 +286,27 @@ def identify_color(pixel_color, hsv_color_ranges, debug=False):
 		return None
 
 def rgb2hsv(rgb):
-	# convert RGB to HSV
-	# rgb2hsv just accepts image arrays, so we make an array with one pixel
+	"""
+	Converts an RGB pixel to HSV
+	scikit-image rgb2hsv method just accepts image arrays, so we make an array with one pixel
+	"""
 	x = numpy.zeros((1,1,3))
 	x[0,0] = rgb
 	return color.rgb2hsv(x)[0][0]
 
-def debug_points(centers, accums, image, searched_range=None):
-	"""
-	This function lists hsv color values of all detected circle centers, sorted by given coord ranges
-	"""
-	# define areas to search for, there are just temporary correct!
-	# don't move camera or monitor when set!
-	# ((x_min, y_min)(x_max, y_max))
-	if searched_range is None:
-		searched_range = {	
-			'upper_left': ((240, 110), (290, 150)), 
-			'lower_left': ((170, 360),  (220, 400)), 
-			'lower_right': ((400, 340), (450, 390)), 
-			'upper_right': ((510, 150),  (560, 190))
-		}
-	correct_coords = {'upper_left': [], 'lower_left': [], 'lower_right': [], 'upper_right': []}
-
-	# coords is (y,x)
-	def in_range(coords, key):
-		in_picture = 0 <= coords[0] <= len(image) and 0 <= coords[1] <= len(image[0])
-		x_okay = searched_range[key][0][0] <= coords[1] <= searched_range[key][1][0]
-		y_okay = searched_range[key][0][1] <= coords[0] <= searched_range[key][1][1]
-		return in_picture and x_okay and y_okay
-
-	# iterate over all circles, then look for all 4 positions if coord is in range
-	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
-		for key, value in searched_range.items():
-			if in_range(centers[idx],key): correct_coords[key].append(centers[idx])
-
-	print('\nCOLOR DEBUG:')
-	print('\tListing circles depending on in code given ranges')
-	print('\tBe careful, has to fit your current setup or picture!')
-	for key, coords in correct_coords.items():
-		print('\t',key, ' hsv colors:')
-		for i in range(len(coords)):
-			coord = coords[i]
-			print('\t\t',rgb2hsv(image[coord[0], coord[1]]))	# print hsv color of coord in image
-	total_circles = len(correct_coords["upper_left"])+len(correct_coords["lower_left"])+len(correct_coords["lower_right"])+len(correct_coords["upper_right"])
-	print('\t#Circles: ',total_circles)
-	print('\t\t','upper_left',':\t',len(correct_coords['upper_left']))
-	print('\t\t','lower_left',':\t',len(correct_coords['lower_left']))
-	print('\t\t','lower_right',':\t',len(correct_coords['lower_right']))
-	print('\t\t','upper_right',':\t',len(correct_coords['upper_right']))
-
-	print('COLOR DEBUG: END\n')
-
 def count_circles_of_2d_array(array):
+	"""
+	Returns: Total number of circles in array
+	"""
 	total_circles = 0
 	for row in range(len(array)):
 		total_circles += len(array[row])
 	return total_circles
 
 def count_circles_of_dictionary_with_arrays(dictionary):
+	"""
+	Returns: Total number of circles in dictionary
+	"""
 	total_circles = 0
 	for key, array in dictionary.items():
 		total_circles += len(array)
@@ -345,14 +314,16 @@ def count_circles_of_dictionary_with_arrays(dictionary):
 
 def rgb2gray(rgb_img):
 	"""
-	python magic
-	converting a rgb image array to grayscale array
+	python/numpy magic
+	converting an rgb image array to grayscale array
 	"""
 	temp = numpy.array(rgb_img, copy=True)
 	return numpy.dot(temp[...,:3],[0.2989,0.5870,0.1140])
 
 def save_image(name, image, img_type='jpg'):
-	# save images to file in thread
+	"""
+	Saves image within a thread for better performance.
+	"""
 	def save():
 		path = './doc/'+name+'.'+img_type
 		scipy.misc.imsave(path, image)
@@ -363,6 +334,15 @@ def save_image(name, image, img_type='jpg'):
 
 
 def calibrate_colors(rgb_img, radius_range, searched_range, counter=0):
+	"""
+	This method defines a color range as hsv color touple depending on detected circles inside a rgb image.
+
+	The algorithm finds circles inside the rgb image. Every circle whose center coordinate fits a pixel
+	range in searched_range is stored. For each collection the minimum and maximum hsv channel values
+	are returned.
+
+	Returns: hsv color range, min m
+	"""
 	min_radius, max_radius = radius_range
 
 	# convert image to gray
@@ -376,7 +356,6 @@ def calibrate_colors(rgb_img, radius_range, searched_range, counter=0):
 	# find circles from edge_image
 	hough_radii, hough_res = find_circles(edges_img, min_radius, max_radius)
 
-	# 
 	centers, accums, radii = circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16)
 
 	def in_range(coords, key):
@@ -416,14 +395,6 @@ def calibrate_colors(rgb_img, radius_range, searched_range, counter=0):
 	save_image('calibrate_circles_'+str(counter), debug_img)
 
 
-	# debug
-	"""
-	for key, color_array in correct_colors.items():
-		print('\n',key)
-		for i in range(len(color_array)):
-			print('\t',color_array[i])
-	"""
-
 	for key, color_array in correct_colors.items():
 		if len(color_array) == 0: 
 			print('at least one color not detected')
@@ -449,8 +420,6 @@ def calibrate_colors(rgb_img, radius_range, searched_range, counter=0):
 			s_max = hsv[1] if s_max is None or s_max < hsv[1] else s_max
 			v_max = hsv[2] if v_max is None or v_max < hsv[2] else v_max
 
-		#print(h_min, s_min, v_min, h_max, s_max, v_max)
-		#correct_colors[key] = ((h_min-0.1, s_min-0.1, v_min-20),(h_max+0.1, s_max+0.1, v_max+20))
 
 		color_tolerance = 0.02 # 2%
 		correct_colors[key] = ((h_min-color_tolerance, s_min-color_tolerance , v_min-(color_tolerance*256)),(h_max+color_tolerance, s_max+color_tolerance, v_max+(color_tolerance*256)))
@@ -461,47 +430,84 @@ def calibrate_colors(rgb_img, radius_range, searched_range, counter=0):
 #########################################################################################################
 
 def warp_david(img, edges):
+	"""
+	Warpes an image by keeping its size, transforming the pixel data to 
+	be distorted between the four corners.
+	David style => slow ...
+	"""
+	width = len(img[1])
+	height = len(img)
+	warped = numpy.empty((width, height, 3), dtype=numpy.uint8)
 
-    width = len(img[1])
-    height = len(img)
+	for x in range(width):
+		x_share = x / width
+		x_share_comp = 1 - x_share
 
-    warped = numpy.empty((width, height, 3), dtype=numpy.uint8)
+		y_start = edges['upper_left'][1] * x_share_comp + edges['upper_right'][1] * x_share
+		y_end = edges['lower_left'][1] * x_share_comp + edges['lower_right'][1] * x_share
 
-    for x in range(width):
-        x_share = x / width
-        x_share_comp = 1 - x_share
+		for y in range(height):
+			y_share = y / height
+			y_share_comp = 1 - y_share
 
-        y_start = edges['upper_left'][1] * x_share_comp + edges['upper_right'][1] * x_share
-        y_end = edges['lower_left'][1] * x_share_comp + edges['lower_right'][1] * x_share
+			x_start = edges['upper_left'][0] * y_share_comp + edges['lower_left'][0] * y_share
+			x_end = edges['upper_right'][0] * y_share_comp + edges['lower_right'][0] * y_share
 
-        for y in range(height):
-            y_share = y / height
-            y_share_comp = 1 - y_share
+			x_len = x_end - x_start
+			y_len = y_end - y_start
 
-            x_start = edges['upper_left'][0] * y_share_comp + edges['lower_left'][0] * y_share
-            x_end = edges['upper_right'][0] * y_share_comp + edges['lower_right'][0] * y_share
+			x_new = x_start + x_share * x_len
+			y_new = y_start + y_share * y_len
+			   
+			warped[int(x_new), int(y_new)] = (img[y,x][0], img[y,x][1], img[y,x][2])
 
-            x_len = x_end - x_start
-            y_len = y_end - y_start
+	return warped
 
-            x_new = x_start + x_share * x_len
-            y_new = y_start + y_share * y_len
-                   
-            warped[int(x_new), int(y_new)] = (img[y,x][0], img[y,x][1], img[y,x][2])
-    
-    return warped
-
-def warp(img, edges):
+def warp(img, corners):
+	"""
+	Warpes an image by keeping its size, transforming the pixel data to 
+	be distorted between the four corners.
+	"""
 
 	width = len(img[0])
 	height = len(img)
 
 	src = numpy.array((
-	    edges['upper_left'],
-	    edges['lower_left'],
-	    edges['lower_right'],
-	    edges['upper_right']
+		corners['upper_left'],
+		corners['lower_left'],
+		corners['lower_right'],
+		corners['upper_right']
 	))
+
+	dst = numpy.array((
+		(0, 0),
+		(0, height),
+		(width, height),
+		(width, 0)
+	))
+
+	tform = transform.ProjectiveTransform()
+	tform.estimate(src, dst)
+
+	return transform.warp(img, tform, output_shape=(height,width))
+
+
+def scale_to_fit(img, size):
+	"""
+	Scales an image to a given size by warping with no regard to the ratio.
+	Returns: warped image as ndarray
+	"""
+
+	width = len(img[0])
+	height = len(img)
+
+	src = numpy.array((
+	    (0, 0),
+	    (0, size[1]),
+	    (size[0], size[1]),
+	    (size[0], 0)
+	))
+
 
 	dst = numpy.array((
 	    (0, 0),
@@ -513,62 +519,17 @@ def warp(img, edges):
 	tform = transform.ProjectiveTransform()
 	tform.estimate(src, dst)
 
-	return transform.warp(img, tform, output_shape=(height,width))
+	return transform.warp(img, tform, output_shape=(size[1],size[0]))
+
+
+
+
 
 #########################################################################################################
 #########################################################################################################
 
 if __name__ == '__main__':
-	print('\n')
-	print('NOTE: THIS IS JUST FOR TESTING PURPOSES')
-	print('Import the main function via \'from cv import detect_colored_circles\'')
-	path = 'test/image.jpg'
-
-	radius_range = (20,25) # radius of circles in pixels
-	hsv_color_ranges = {
-		'lower_right': ((0.52,0.4,100.),(0.78,1.,255.)),		# upper left circle
-		'upper_left': ((0.24,0.4,100.),(0.47,1.,255.)),	# lower left circle
-		'upper_right': ((0.86,0.4,100.),(0.10,1.,255.)),		# lower right circle
-		'lower_left': ((0.0,0.,0.),(1.,1.,60.))		# upper right circle
-	}
-
-	rgb_img = imread(path)
-	overlay = scipy.misc.imread('./test/overlay.jpg')
-	print('points detection from file',path,'with circle radii from',radius_range[0],'to',radius_range[1],'\n') 	
-
-	times = 1
-	print('testing',times,'times, printing average')
-
-	tmp = []
-	c = 0
-	while c < times:
-		c += 1
-		
-		circle_coords = detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges)
-		if circle_coords is not None:
-			start = time.time()
-			warped = warp_david(overlay, circle_coords)
-			tmp.append(time.time()-start)
-			if c is times: scipy.misc.imsave('./test/warped_david.png', warped)
-		else:
-			print('error')
-	print('warp david (avg):',(sum(tmp)/len(tmp)),'seconds')
-
-	tmp = []
-	c = 0
-	while c < times:
-		c += 1
-		
-		circle_coords = detect_colored_circles_no_prints(rgb_img, radius_range, hsv_color_ranges)
-		if circle_coords is not None:
-			start = time.time()
-			warped = warp(overlay, circle_coords)
-			tmp.append(time.time()-start)
-			if c is times: scipy.misc.imsave('./test/warped_skimage.png', warped)
-		else:
-			print('error')
-	print('warp skimage (avg):',(sum(tmp)/len(tmp)),'seconds')
-	print()
+	print('Start the program with \'python3 start.py\', you are wrong here.')
 
 
 
