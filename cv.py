@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 
-import sys, io, os, time, threading
+import numpy, sys, io, os, time, threading
 
-import numpy
 import scipy.misc
-from skimage import color
+from skimage import color, transform
 from skimage.io import imread
 from skimage.util import img_as_ubyte
 from skimage.feature import canny, peak_local_max, corner_fast, corner_foerstner, corner_harris, corner_kitchen_rosenfeld, corner_moravec, corner_shi_tomasi
 from skimage.transform import hough_ellipse, hough_circle
 from skimage.draw import ellipse_perimeter, circle_perimeter
 from skimage.filters import roberts, sobel, scharr, prewitt
-
-from skimage import transform
 
 def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False, counter=0):
 	"""
@@ -148,6 +145,8 @@ def find_circles(edges_img, min_radius, max_radius):
 	hough_radii = numpy.arange(min_radius, max_radius, 1) # Liste von Radii von min_radius bis max_radius in Schritten von 1
 	hough_res = hough_circle(edges_img, hough_radii) # gibt für jeden index (radius) koordinaten
 
+	# TODO: print hough_res as image
+
 	return (hough_radii, hough_res)
 
 def circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16):
@@ -163,10 +162,15 @@ def circles_per_radius(hough_radii, hough_res, number_circles_per_radius=16):
 	# 	Schmeisse alle heraus, die weniger als 5 mal auftreten
 	# 	DANACH schmeisse alle "doppelten" heraus (Abstand < 0.8 * radius)
 	for radius, h in zip(hough_radii, hough_res): # iterieren durch circles (h)
+		# h is peak img from hough transform
+		# zip([32,33,34,35,36],[(32, hough_peaks_img),(33, hough_peaks_img),(34, hough_peaks_img), ... ])
 		# For each radius, extract num_peaks circles
 		peaks = peak_local_max(h, num_peaks=number_circles_per_radius) # beste X kreise fuer radius
+		# peaks: coordinates of peaks sorted decreasingly w.r.t. the corresponding intensities
 		centers.extend(peaks)
 		accums.extend(h[peaks[:, 0], peaks[:, 1]]) # wie 'gut' ??
+		# iterate through every (y,x) in peaks and get corresponding color value from h, which represents quality value of circle (?)
+		# so acuums represents quality
 		radii.extend([radius] * number_circles_per_radius)
 		#
 	
@@ -183,7 +187,7 @@ def find_circles_by_color(centers, accums, radii, rgb_img, hsv_color_ranges, deb
 		center_y, center_x = centers[idx]
 		pixel_color = rgb_img[center_y, center_x]
 		# if valid color was found, add it to coords list to specific color key
-		found_color = find_colors(pixel_color, hsv_color_ranges, debug)	# string of color, 'blue', 'green', 'red' or 'white'
+		found_color = identify_color(pixel_color, hsv_color_ranges, debug)	# string of color, 'blue', 'green', 'red' or 'white'
 		if found_color is not None: 
 			coords[found_color].append(centers[idx])
 			debug_img = add_circle_outlines_to_image(debug_img, center_y, center_x, radii[idx], pixel_color) 
@@ -233,9 +237,7 @@ def add_rect_outlines_to_image(image, upper_left, lower_right, color):
 	for x in range(upper_left[0], lower_right[0]):
 		image[lower_right[1], x] = color
 
-
-
-def find_colors(pixel_color, hsv_color_ranges, debug=False):
+def identify_color(pixel_color, hsv_color_ranges, debug=False):
 	"""
 	This method compares colors to red, green, blue and white
 	using the HSV color model to be able to detect colors more or
@@ -349,10 +351,10 @@ def rgb2gray(rgb_img):
 	temp = numpy.array(rgb_img, copy=True)
 	return numpy.dot(temp[...,:3],[0.2989,0.5870,0.1140])
 
-def save_image(name, image):
+def save_image(name, image, img_type='jpg'):
 	# save images to file in thread
 	def save():
-		path = './doc/'+name+'.jpg'
+		path = './doc/'+name+'.'+img_type
 		scipy.misc.imsave(path, image)
 	threading.Thread(target=save).start()
 

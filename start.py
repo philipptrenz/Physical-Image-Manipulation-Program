@@ -27,7 +27,7 @@ def camstream():
     global warped_surface
     global screen_is_locked_manually
 
-    overlay = scipy.misc.imread('test/overlay.jpg', mode='RGBA')
+    overlay = scipy.misc.imread('overlay.jpg', mode='RGBA')
 
 
     pygame.init()
@@ -140,24 +140,28 @@ def calibrate(screen, counter):
 
 def ui():
     global warped_surface
-    x = 0
+    counter = 0
     while capture:
         if not screen_is_locked_manually:
-            x += 1
+            
             start = time.time()
             temp = pygame.transform.rotate(screen.copy(), 90)
             img = numpy.copy(pygame.surfarray.pixels3d(temp))
 
-            circle_coords = cv.detect_colored_circles(img, radius_range, hsv_color_ranges, counter=x, debug=False)
+            circle_coords = cv.detect_colored_circles(img, radius_range, hsv_color_ranges, counter=counter, debug=False)
             if circle_coords is not None:
                 warped_array = cv.warp(overlay, circle_coords)
 
-                cv.save_image('3_warped_array_'+str(counter), warped_array)
+                path = 'doc/3_warped_array_'+str(counter)+'.png'
 
-                warped_surface = pygame.transform.flip(pygame.image.load('test/warped_array.png'), True, False)
+                scipy.misc.imsave(path, warped_array)
+                warped_surface = pygame.transform.flip(pygame.image.load(path), True, False)
+
                 warped_surface.set_alpha(150)
             else:
                 print('put the tiles back, man!')
+
+            counter += 1
 
 
 
