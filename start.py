@@ -106,7 +106,7 @@ def calibrate(screen, counter):
     temp = pygame.transform.rotate(screen, 90)
     img = numpy.copy(pygame.surfarray.pixels3d(temp))
 
-    scipy.misc.imsave('test/calibrate_raw_'+str(counter)+'.png', img)
+    cv.save_image('calibrate_raw_'+str(counter), img)
 
     searched_range = {'upper_left': None, 'lower_left': None, 'lower_right': None, 'upper_right': None}
     tolerance = radius_range[0]
@@ -148,11 +148,12 @@ def ui():
             temp = pygame.transform.rotate(screen.copy(), 90)
             img = numpy.copy(pygame.surfarray.pixels3d(temp))
 
-            circle_coords = cv.detect_colored_circles(img, radius_range, hsv_color_ranges, debug=False)
+            circle_coords = cv.detect_colored_circles(img, radius_range, hsv_color_ranges, counter=x, debug=False)
             if circle_coords is not None:
                 warped_array = cv.warp(overlay, circle_coords)
 
-                scipy.misc.imsave('test/warped_array.png', warped_array)
+                cv.save_image('3_warped_array_'+str(counter), warped_array)
+
                 warped_surface = pygame.transform.flip(pygame.image.load('test/warped_array.png'), True, False)
                 warped_surface.set_alpha(150)
             else:

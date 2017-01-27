@@ -14,7 +14,7 @@ from skimage.filters import roberts, sobel, scharr, prewitt
 
 from skimage import transform
 
-def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False):
+def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False, counter=0):
 	"""
 	TODO: Desicption
 	"""
@@ -22,7 +22,7 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 	min_radius, max_radius = radius_range
 
 	start_all = time.time()
-	save_image('0_photo', rgb_img)
+	save_image('0_photo_'+str(counter), rgb_img)
 
 
 	# convert image to gray
@@ -48,7 +48,7 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 	#edges_img = scharr(gray_img)
 	#edges_img = prewitt(gray_img)
 	#print('finished, duration: ',time.time()-start,'seconds')
-	#save_image('1_edges', edges_img)
+	save_image('1_edges_'+str(counter), edges_img)
 	#print()
 	
 
@@ -98,7 +98,7 @@ def detect_colored_circles(rgb_img, radius_range, hsv_color_ranges, debug=False)
 			print('avg',avg)
 		print()
 
-	save_image('2_detected_circles', debug_img)
+	save_image('2_detected_circles_'+str(counter), debug_img)
 	print()
 
 	#print('total duration: ',time.time()-start_all,'seconds')
@@ -223,6 +223,18 @@ def add_circle_outlines_to_image(image, center_y, center_x, radius, color):
 	image[cy, cx] = color
 	return image
 
+def add_rect_outlines_to_image(image, upper_left, lower_right, color):
+	for y in range(upper_left[1], lower_right[1]):
+		image[y][upper_left[0]] = color
+	for y in range(upper_left[1], lower_right[1]):
+		image[y][lower_right[0]] = color
+	for x in range(upper_left[0], lower_right[0]):
+		image[upper_left[1], x] = color
+	for x in range(upper_left[0], lower_right[0]):
+		image[lower_right[1], x] = color
+
+
+
 def find_colors(pixel_color, hsv_color_ranges, debug=False):
 	"""
 	This method compares colors to red, green, blue and white
@@ -340,7 +352,7 @@ def rgb2gray(rgb_img):
 def save_image(name, image):
 	# save images to file in thread
 	def save():
-		path = './img/'+name+'.jpg'
+		path = './doc/'+name+'.jpg'
 		scipy.misc.imsave(path, image)
 	threading.Thread(target=save).start()
 
@@ -357,7 +369,7 @@ def calibrate_colors(rgb_img, radius_range, searched_range, counter=0):
 	# find edges in image
 	edges_img = canny(gray_img, sigma=15.0, low_threshold=0.55, high_threshold=0.8)
 
-	scipy.misc.imsave('./test/calibrate_edges_'+str(counter)+'.png', edges_img)
+	save_image('calibrate_edges_'+str(counter), edges_img)
 
 	# find circles from edge_image
 	hough_radii, hough_res = find_circles(edges_img, min_radius, max_radius)
@@ -380,9 +392,6 @@ def calibrate_colors(rgb_img, radius_range, searched_range, counter=0):
 	for key, coord_range in searched_range.items():
 		correct_colors[key] = []
 		hsv_color_ranges[key] = None
-		add_circle_outlines_to_image(debug_img, coord_range[0][1], coord_range[0][0], 5, [255,250,0])
-		add_circle_outlines_to_image(debug_img, coord_range[1][1], coord_range[1][0], 5, [255,250,0])
-
 	for idx in numpy.argsort(accums)[::-1][:]: # nach quali sortieren (beste x)
 		center_y, center_x = centers[idx]
 
@@ -396,7 +405,13 @@ def calibrate_colors(rgb_img, radius_range, searched_range, counter=0):
 				hsv_color = rgb2hsv(rgb_color)
 				correct_colors[key].append(hsv_color)
 
-	scipy.misc.imsave('./test/calibrate_circles_'+str(counter)+'.png', debug_img)
+
+	for key, coord_range in searched_range.items():
+		#add_circle_outlines_to_image(debug_img, coord_range[0][1], coord_range[0][0], 5, [255,250,0])
+		#add_circle_outlines_to_image(debug_img, coord_range[1][1], coord_range[1][0], 5, [255,250,0])
+		add_rect_outlines_to_image(debug_img, coord_range[0], coord_range[1], [255,250,0])
+
+	save_image('calibrate_circles_'+str(counter), debug_img)
 
 
 	# debug
