@@ -1,4 +1,4 @@
-import pygame, numpy, time, threading, scipy.misc
+import os, shutil, pygame, numpy, time, threading, scipy.misc
 import pygame.transform
 import pygame.camera
 from pygame.locals import *
@@ -283,4 +283,8 @@ if __name__ == '__main__':
     """
     Main method
     """
+    dir = 'doc'
+    if os.path.exists(dir):
+        shutil.rmtree(dir)
+    os.makedirs(dir)
     camstream()
