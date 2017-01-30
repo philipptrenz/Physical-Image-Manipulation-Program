@@ -9,7 +9,7 @@ __pycache__/
 doc/*
 
 # mac backup files
-*DS_Store
+.DS_Store
 
 # Windows bat
 allTheThings.bat
